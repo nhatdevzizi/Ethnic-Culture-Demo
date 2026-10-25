@@ -1,0 +1,17 @@
+{
+  "guide": {
+    "name": {"vi":"An · Người hướng dẫn hư cấu","en":"An · Fictional guide"},
+    "pages": [
+      {"vi":"Chào Nhật! Đây là Cultural Crossroads, khu vườn triển lãm tưởng tượng. Các nhân vật không đại diện cho cộng đồng nào.","en":"Welcome, Nhật! This is Cultural Crossroads, an imaginary exhibition garden. These characters do not represent any community."},
+      {"vi":"Hãy đi sang phải đến Xưởng Sắp Xếp. Thử sắp ba bước làm mô hình giấy, rồi nhận dấu tham gia trong hộ chiếu.","en":"Walk right to Pattern Studio. Arrange three paper-model steps, then record your participation in the passport."}
+    ]
+  },
+  "paper": {
+    "steps":[
+      {"id":"plan","symbol":"✎","label":{"vi":"Phác thảo","en":"Plan"}},
+      {"id":"cut","symbol":"✂","label":{"vi":"Cắt giấy","en":"Cut"}},
+      {"id":"assemble","symbol":"◇","label":{"vi":"Ghép hình","en":"Assemble"}}
+    ],
+    "order":["plan","cut","assemble"]
+  }
+}

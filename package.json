@@ -1,0 +1,38 @@
+{
+  "name": "cultural-trails",
+  "description": "Original Phaser 4 educational adventure prototype",
+  "version": "1.4.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/phaserjs/template-vite-ts.git"
+  },
+  "author": "Phaser Studio <support@phaser.io> (https://phaser.io/)",
+  "license": "MIT",
+  "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
+  "bugs": {
+    "url": "https://github.com/phaserjs/template-vite-ts/issues"
+  },
+  "homepage": "https://github.com/phaserjs/template-vite-ts#readme",
+  "scripts": {
+    "dev": "vite --config vite/config.dev.mjs --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "npm run typecheck && tsx scripts/validate-content.ts && vite build --config vite/config.prod.mjs",
+    "build:release": "npm run typecheck && tsx scripts/validate-content.ts --release && vite build --config vite/config.prod.mjs",
+    "preview": "vite preview --host 127.0.0.1 --port 4173",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "phaser": "4.2.1",
+    "terser": "^5.39.0"
+  },
+  "type": "module"
+}

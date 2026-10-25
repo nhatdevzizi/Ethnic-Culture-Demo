@@ -1,0 +1,6 @@
+[
+  {"id":"M01","sceneKey":"PatternStudio","titleKey":"m01","objectiveKey":"m01Objective","factIds":["demo-paper"],"estimatedSeconds":60,"requiredInPresentation":true,"enabled":true,"portal":{"x":960,"y":672},"symbol":"◇"},
+  {"id":"M02","sceneKey":"SoundGarden","titleKey":"m02","objectiveKey":"m02Objective","factIds":[],"estimatedSeconds":60,"requiredInPresentation":true,"enabled":false,"portal":{"x":416,"y":416},"symbol":"♫"},
+  {"id":"M03","sceneKey":"StoryTrail","titleKey":"m03","objectiveKey":"m03Objective","factIds":[],"estimatedSeconds":90,"requiredInPresentation":true,"enabled":false,"portal":{"x":1120,"y":384},"symbol":"☷"},
+  {"id":"M04","sceneKey":"HeritageExplorer","titleKey":"m04","objectiveKey":"m04Objective","factIds":[],"estimatedSeconds":90,"requiredInPresentation":false,"enabled":false,"portal":{"x":416,"y":896},"symbol":"⌖"}
+]

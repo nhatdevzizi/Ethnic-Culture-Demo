@@ -1,0 +1,13 @@
+[
+  {
+    "id": "demo-paper",
+    "communityIds": [],
+    "title": {"vi": "Mô hình giấy tưởng tượng", "en": "An imaginary paper model"},
+    "body": {"vi": "Trong xưởng hư cấu này, Nhật chuẩn bị mô hình giấy theo thứ tự: phác thảo → cắt giấy → ghép hình. Đây là luật chơi mẫu, không mô tả nghề thủ công hay cộng đồng có thật.", "en": "In this fictional studio, Nhật prepares a paper model in this order: plan → cut → assemble. This is a prototype rule, not a description of a real craft or community."},
+    "context": {"place": "Cultural Crossroads (fictional)", "qualifiers": ["Non-cultural fictional prototype"]},
+    "sourceUrls": [],
+    "reviewStatus": "draft",
+    "fictional": true,
+    "permittedAssetIds": ["garden-pixels"]
+  }
+]
