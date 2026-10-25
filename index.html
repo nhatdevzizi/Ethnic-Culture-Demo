@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#183b38" />
+    <title>Hành Trình Sắc Màu · Cultural Trails</title>
+    <link rel="icon" href="data:," />
+  </head>
+  <body>
+    <main id="app" aria-label="Cultural Trails game">
+      <div id="game-container" tabindex="0" aria-label="Game world. WASD or arrow keys to move. E to interact."></div>
+      <div id="ui">
+        <div id="demo-badge"></div>
+        <header id="hud" hidden></header>
+        <div id="screen"></div>
+        <button id="interact" hidden></button>
+        <div id="toast" role="status" aria-live="polite"></div>
+      </div>
+      <dialog id="modal" aria-labelledby="modal-title"></dialog>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

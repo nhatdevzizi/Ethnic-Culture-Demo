@@ -19,8 +19,9 @@
     "test": "vitest run",
     "build": "npm run typecheck && tsx scripts/validate-content.ts && vite build --config vite/config.prod.mjs",
     "build:release": "npm run typecheck && tsx scripts/validate-content.ts --release && vite build --config vite/config.prod.mjs",
-    "preview": "vite preview --host 127.0.0.1 --port 4173",
-    "test:e2e": "playwright test"
+    "preview": "vite preview --host 127.0.0.1 --port 4281 --strictPort",
+    "test:e2e": "playwright test",
+    "test:production": "playwright test --config playwright.prod.config.ts"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",

@@ -1,3 +1,4 @@
 [
-  {"id":"garden-pixels","path":"generated://garden-pixels","creator":"Cultural Trails prototype","license":"Original project artwork; prototype use","attribution":"Original geometric pixel textures generated locally in PreloadScene.","allowedUse":"Local demo and project builds","reviewStatus":"approved"}
+  {"id":"garden-pixels","path":"generated://garden-pixels","creator":"Cultural Trails prototype","license":"Original project artwork; prototype use","attribution":"Original geometric pixel textures generated locally in PreloadScene.","allowedUse":"Local demo and project builds","reviewStatus":"approved"},
+  {"id":"hub-map","path":"assets/maps/hub.json","creator":"Cultural Trails prototype","license":"Original project map; prototype use","attribution":"Original fictional deterministic garden layout.","allowedUse":"Local demo and project builds","reviewStatus":"approved"}
 ]
