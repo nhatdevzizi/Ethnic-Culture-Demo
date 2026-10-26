@@ -1,0 +1,26 @@
+#screen .first-run-tutorial{position:absolute;right:24px;bottom:26px;width:315px;max-width:36%;padding:15px 18px;background:var(--paper);border-top:4px solid var(--coral);box-shadow:0 3px 0 #183b3833}
+#screen .first-run-tutorial h2{font-family:var(--font-heading);font-weight:500;font-size:21px;line-height:1.4;margin:0 0 7px}
+#screen .first-run-tutorial p{font-size:13px;line-height:1.6;margin:0 0 9px}
+#screen .first-run-tutorial button{font-size:13px;padding:8px 12px}
+.route-direction{display:block;margin-top:5px;font-weight:600;font-size:13px;color:var(--green)}
+#screen .world-hint small{display:block}
+#screen .journal-ending{width:min(880px,88%);max-height:calc(100% - 95px);overflow:auto;padding:26px 34px}
+#screen .journal-ending h1{font-size:clamp(30px,3.3vw,46px);margin:4px 0 12px}
+.review-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0}
+.review-card{border-top:3px solid var(--coral);padding:12px 0;min-width:0}
+#app .review-card h2{font-size:21px;font-family:var(--font-heading);font-weight:500;margin:0 0 8px;line-height:1.4}
+.review-card p{font-size:14px;line-height:1.6;margin:8px 0}
+.review-status{font-size:12px;font-weight:700;padding:5px 8px;display:inline-block;background:#e9dfbd}
+.review-status.completed{background:#dce8cd}.review-card small{display:block;font-size:11px;color:#665739}
+.closing-prompt{border-top:1px solid var(--line);padding-top:14px;margin-bottom:18px}.closing-prompt h2{font-size:21px;font-weight:500;margin:0 0 7px}.closing-prompt p{font-size:14px;margin:0}
+.audio-settings{border-top:1px solid var(--line);margin-top:22px;padding-top:15px;display:grid;gap:12px}
+.audio-settings label{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:12px}.audio-settings input{width:100%;min-height:44px;accent-color:var(--green)}.audio-settings small{font-size:12px;line-height:1.5}
+.motion-settings{display:grid;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}.motion-settings small{font-size:12px;line-height:1.5}
+#app button{min-height:44px}
+#app .rhythm-beat[aria-current="step"]{outline-color:var(--green)}
+#screen .fatal-recovery{z-index:20;max-height:calc(100% - 70px);overflow:auto}
+#screen .studio.rhythm-studio{height:auto}
+#app:fullscreen{width:100vw;height:100dvh;aspect-ratio:auto}
+@media(min-width:1600px){#screen .first-run-tutorial{width:360px;padding:20px}#screen .first-run-tutorial p{font-size:16px}#screen .journal-ending{padding:36px 42px;width:min(1050px,85%)}.review-card p,.closing-prompt p{font-size:18px}}
+@media(max-width:700px){#screen .first-run-tutorial{right:12px;bottom:20px;max-width:44%;width:260px;padding:12px}#screen .first-run-tutorial h2{font-size:17px}#screen .first-run-tutorial p{font-size:11px}.review-cards{grid-template-columns:1fr;gap:8px}#screen .journal-ending{padding:20px 24px;max-height:calc(100% - 65px)}#hud .tools{gap:4px}#hud .tools button{padding-inline:7px}.tools .presenter-button{font-size:11px}}
+@media(max-height:650px){#screen .first-run-tutorial{bottom:24px;padding:10px 13px}#screen .first-run-tutorial h2{font-size:18px}#screen .first-run-tutorial p{font-size:11px}#screen .journal-ending{max-height:calc(100% - 60px);padding:20px 28px}}

@@ -1,17 +1,55 @@
 {
+  "instructorName": {
+    "vi": "Người hướng dẫn",
+    "en": "Instructor"
+  },
   "guide": {
-    "name": {"vi":"An · Người hướng dẫn hư cấu","en":"An · Fictional guide"},
+    "name": {
+      "vi": "An · Người hướng dẫn hư cấu",
+      "en": "An · Fictional guide"
+    },
     "pages": [
-      {"vi":"Chào Nhật! Đây là Cultural Crossroads, khu vườn triển lãm tưởng tượng. Các nhân vật không đại diện cho cộng đồng nào.","en":"Welcome, Nhật! This is Cultural Crossroads, an imaginary exhibition garden. These characters do not represent any community."},
-      {"vi":"Hãy đi sang phải đến Xưởng Sắp Xếp. Thử sắp ba bước làm mô hình giấy, rồi nhận dấu tham gia trong hộ chiếu.","en":"Walk right to Pattern Studio. Arrange three paper-model steps, then record your participation in the passport."}
+      {
+        "vi": "Chào Nhật! Đây là Cultural Crossroads, khu vườn triển lãm tưởng tượng. Các nhân vật không đại diện cho cộng đồng nào.",
+        "en": "Welcome, Nhật! This is Cultural Crossroads, an imaginary exhibition garden. These characters do not represent any community."
+      },
+      {
+        "vi": "Mỗi trạm có một lối đi và cảnh quan riêng. Xem bản đồ nhỏ, rồi theo Lối Đồng Hoa ở phía dưới bên phải để đến Xưởng Sắp Xếp. Đường uốn quanh nhà dẫn đến cửa phía trước.",
+        "en": "Each station has its own trail and landscape. Use the small map and follow the lower-right Flower Meadow trail to Pattern Studio. The winding road reaches the front entrance."
+      }
     ]
   },
   "paper": {
-    "steps":[
-      {"id":"plan","symbol":"✎","label":{"vi":"Phác thảo","en":"Plan"}},
-      {"id":"cut","symbol":"✂","label":{"vi":"Cắt giấy","en":"Cut"}},
-      {"id":"assemble","symbol":"◇","label":{"vi":"Ghép hình","en":"Assemble"}}
+    "steps": [
+      {
+        "id": "plan",
+        "symbol": "✎",
+        "label": {
+          "vi": "Phác thảo",
+          "en": "Plan"
+        }
+      },
+      {
+        "id": "cut",
+        "symbol": "✂",
+        "label": {
+          "vi": "Cắt giấy",
+          "en": "Cut"
+        }
+      },
+      {
+        "id": "assemble",
+        "symbol": "◇",
+        "label": {
+          "vi": "Ghép hình",
+          "en": "Assemble"
+        }
+      }
     ],
-    "order":["plan","cut","assemble"]
+    "order": [
+      "plan",
+      "cut",
+      "assemble"
+    ]
   }
 }

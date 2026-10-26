@@ -1,0 +1,184 @@
+{
+  "clearings": [
+    {
+      "anchor": "M01",
+      "dx": -280,
+      "dy": 144,
+      "width": 560,
+      "height": 264
+    },
+    {
+      "anchor": "M01",
+      "dx": -56,
+      "dy": 48,
+      "width": 112,
+      "height": 148
+    },
+    {
+      "anchor": "M02",
+      "dx": -36,
+      "dy": 12,
+      "width": 328,
+      "height": 72
+    },
+    {
+      "anchor": "M02",
+      "dx": 220,
+      "dy": -88,
+      "width": 72,
+      "height": 172
+    },
+    {
+      "anchor": "M02",
+      "dx": 220,
+      "dy": -88,
+      "width": 384,
+      "height": 72
+    },
+    {
+      "anchor": "M04",
+      "dx": 240,
+      "dy": 136,
+      "width": 224,
+      "height": 128
+    },
+    {
+      "anchor": "M04",
+      "dx": 416,
+      "dy": 16,
+      "width": 128,
+      "height": 128
+    }
+  ],
+  "lakes": [
+    {
+      "anchor": "M02",
+      "dx": 320,
+      "dy": -144,
+      "width": 224,
+      "height": 160,
+      "bridgeY": 72,
+      "bridgeHeight": 64
+    }
+  ],
+  "props": [
+    {
+      "anchor": "M01",
+      "frameId": "stone-well",
+      "dx": -168,
+      "dy": -36
+    },
+    {
+      "anchor": "M01",
+      "frameId": "loom",
+      "dx": -136,
+      "dy": 216
+    },
+    {
+      "anchor": "M01",
+      "frameId": "upright-loom",
+      "dx": 72,
+      "dy": 216
+    },
+    {
+      "anchor": "M01",
+      "frameId": "craft-stall",
+      "dx": 0,
+      "dy": 352
+    },
+    {
+      "anchor": "M01",
+      "frameId": "woven-basket",
+      "dx": -248,
+      "dy": 216
+    },
+    {
+      "anchor": "M02",
+      "frameId": "stone-well",
+      "dx": 168,
+      "dy": -36
+    },
+    {
+      "anchor": "M02",
+      "frameId": "waterwheel",
+      "dx": 560,
+      "dy": -96
+    },
+    {
+      "anchor": "M02",
+      "frameId": "bamboo-bench",
+      "dx": 416,
+      "dy": 88
+    },
+    {
+      "anchor": "M02",
+      "frameId": "bamboo-bridge",
+      "dx": 432,
+      "dy": 0,
+      "width": 256,
+      "height": 96,
+      "collides": false
+    },
+    {
+      "anchor": "M03",
+      "frameId": "stone-well",
+      "dx": -168,
+      "dy": -36
+    },
+    {
+      "anchor": "M03",
+      "frameId": "log-pile",
+      "dx": -312,
+      "dy": -24
+    },
+    {
+      "anchor": "M03",
+      "frameId": "bamboo-bench",
+      "dx": -312,
+      "dy": 112
+    },
+    {
+      "anchor": "M04",
+      "frameId": "stone-well",
+      "dx": 168,
+      "dy": -36
+    },
+    {
+      "anchor": "M04",
+      "frameId": "stone-steps",
+      "dx": 288,
+      "dy": -24,
+      "collides": false
+    },
+    {
+      "anchor": "M04",
+      "frameId": "mossy-rocks",
+      "dx": 352,
+      "dy": -96
+    },
+    {
+      "anchor": "M04",
+      "frameId": "cooking-hearth",
+      "dx": 352,
+      "dy": 216
+    },
+    {
+      "anchor": "M04",
+      "frameId": "log-pile",
+      "dx": 480,
+      "dy": 216
+    },
+    {
+      "anchor": "M02",
+      "frameId": "bamboo-instrument",
+      "dx": 192,
+      "dy": 160
+    },
+    {
+      "anchor": "M04",
+      "frameId": "smith-anvil",
+      "dx": 480,
+      "dy": 80
+    }
+  ]
+}

@@ -2,6 +2,15 @@ AGENTS.md — Cultural Trails / Hành Trình Sắc Màu
 Instructions for AI coding agents working on an educational 2D browser game built with Phaser.
 Status: implementation specification. Cultural facts, community names, language samples, recordings, artwork, and captions must be researched and reviewed before public presentation.
 
+Mandatory user rule — Main agent and up to three sub-agents
+- Do not use Qwen Local or the qwen-local-orchestrator workflow. This rule replaces the earlier Qwen-only coding requirement.
+- The main agent may use at most three sub-agents in total for the active task, including any nested delegation. Reuse those agents for revisions; sub-agents must not create additional agents without the main agent accounting for this limit.
+- Coding work may be assigned to sub-agents. The main agent owns task scope, shared contracts, integration decisions, and final verification against the current system architecture.
+- Follow this loop: main assigns bounded work and acceptance criteria → sub-agent returns output → main reviews architecture fit and runs relevant checks → main assigns concrete revisions → main verifies the revised output. Repeat until the integrated result matches the existing system and works functionally.
+- Review connected callers, state ownership, scene lifecycle, registry, typed events, content boundaries, and input/audio cleanup where affected. A sub-agent success report alone does not prove correctness or passing tests.
+- Verify returned work before accepting it or assigning dependent work. Preserve existing changes and keep agent file ownership clear to prevent conflicting edits. Report unresolved external blockers honestly; do not claim completion while functional or architectural failures remain.
+- This rule takes precedence over earlier project or skill guidance requiring Qwen or a different agent workflow.
+
 0. Agent mission
 Build a complete, playable, presentation-ready, original 2D pixel-art educational adventure inspired by the structural design of Google's Doodle Champion Island Games: one explorable top-down hub, NPCs, portals to mechanically different minigames, short side quests, collectible rewards, and a final recap.
 

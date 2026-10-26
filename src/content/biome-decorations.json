@@ -1,0 +1,863 @@
+{
+  "referenceWidth": 1664,
+  "referenceHeight": 936,
+  "atlases": [
+    {
+      "key": "supplied-biome-1",
+      "path": "assets/sprites/supplied-biome-1.png"
+    },
+    {
+      "key": "supplied-biome-2",
+      "path": "assets/sprites/supplied-biome-2.png"
+    },
+    {
+      "key": "supplied-biome-3",
+      "path": "assets/sprites/supplied-biome-3.png"
+    },
+    {
+      "key": "supplied-biome-4",
+      "path": "assets/sprites/supplied-biome-4.png"
+    },
+    {
+      "key": "nature-roads",
+      "path": "assets/sprites/nature-roads.png"
+    },
+    {
+      "key": "nature-workshop",
+      "path": "assets/sprites/nature-workshop.png"
+    },
+    {
+      "key": "nature-houses",
+      "path": "assets/sprites/nature-houses.png"
+    }
+  ],
+  "frames": [
+    {
+      "id": "thatched-gate",
+      "atlas": "supplied-biome-1",
+      "bounds": [
+        30,
+        40,
+        640,
+        450
+      ],
+      "width": 176,
+      "height": 132
+    },
+    {
+      "id": "waterwheel",
+      "atlas": "supplied-biome-1",
+      "bounds": [
+        1180,
+        40,
+        475,
+        450
+      ],
+      "width": 164,
+      "height": 144
+    },
+    {
+      "id": "craft-stall",
+      "atlas": "supplied-biome-1",
+      "bounds": [
+        550,
+        526,
+        405,
+        370
+      ],
+      "width": 164,
+      "height": 124
+    },
+    {
+      "id": "trail-sign",
+      "atlas": "supplied-biome-1",
+      "bounds": [
+        960,
+        603,
+        162,
+        292
+      ],
+      "width": 76,
+      "height": 112
+    },
+    {
+      "id": "stone-well",
+      "atlas": "supplied-biome-1",
+      "bounds": [
+        1135,
+        630,
+        245,
+        270
+      ],
+      "width": 120,
+      "height": 112
+    },
+    {
+      "id": "bamboo-bench",
+      "atlas": "supplied-biome-1",
+      "bounds": [
+        1387,
+        717,
+        264,
+        182
+      ],
+      "width": 136,
+      "height": 88
+    },
+    {
+      "id": "loom",
+      "atlas": "supplied-biome-2",
+      "bounds": [
+        35,
+        25,
+        483,
+        495
+      ],
+      "width": 160,
+      "height": 128
+    },
+    {
+      "id": "cloth-rack",
+      "atlas": "supplied-biome-2",
+      "bounds": [
+        578,
+        40,
+        370,
+        345
+      ],
+      "width": 144,
+      "height": 124
+    },
+    {
+      "id": "woven-basket",
+      "atlas": "supplied-biome-2",
+      "bounds": [
+        334,
+        625,
+        207,
+        275
+      ],
+      "width": 56,
+      "height": 68
+    },
+    {
+      "id": "campfire",
+      "atlas": "supplied-biome-2",
+      "bounds": [
+        1323,
+        376,
+        321,
+        245
+      ],
+      "width": 120,
+      "height": 100
+    },
+    {
+      "id": "log-pile",
+      "atlas": "supplied-biome-2",
+      "bounds": [
+        944,
+        672,
+        351,
+        239
+      ],
+      "width": 148,
+      "height": 100
+    },
+    {
+      "id": "bamboo-clump",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        8,
+        10,
+        412,
+        425
+      ],
+      "width": 84,
+      "height": 112
+    },
+    {
+      "id": "banana-tree",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        428,
+        20,
+        395,
+        410
+      ],
+      "width": 88,
+      "height": 108
+    },
+    {
+      "id": "slender-palms",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        824,
+        8,
+        262,
+        460
+      ],
+      "width": 68,
+      "height": 116
+    },
+    {
+      "id": "coconut-tree",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        1087,
+        46,
+        298,
+        420
+      ],
+      "width": 82,
+      "height": 116
+    },
+    {
+      "id": "fruit-tree",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        1386,
+        130,
+        272,
+        338
+      ],
+      "width": 88,
+      "height": 108
+    },
+    {
+      "id": "banyan-tree",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        7,
+        452,
+        536,
+        460
+      ],
+      "width": 112,
+      "height": 116
+    },
+    {
+      "id": "mossy-rocks",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        554,
+        460,
+        278,
+        200
+      ],
+      "width": 96,
+      "height": 72
+    },
+    {
+      "id": "flower-bed",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        846,
+        492,
+        156,
+        125
+      ],
+      "width": 72,
+      "height": 64
+    },
+    {
+      "id": "flower-planter",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        862,
+        639,
+        174,
+        139
+      ],
+      "width": 96,
+      "height": 72
+    },
+    {
+      "id": "grass-clump",
+      "atlas": "supplied-biome-3",
+      "bounds": [
+        1340,
+        491,
+        132,
+        122
+      ],
+      "width": 66,
+      "height": 64
+    },
+    {
+      "id": "bamboo-bridge",
+      "atlas": "supplied-biome-4",
+      "bounds": [
+        39,
+        474,
+        356,
+        196
+      ],
+      "width": 176,
+      "height": 100
+    },
+    {
+      "id": "stone-steps",
+      "atlas": "supplied-biome-4",
+      "bounds": [
+        432,
+        493,
+        197,
+        188
+      ],
+      "width": 120,
+      "height": 112
+    },
+    {
+      "height": 32,
+      "id": "grass-tile",
+      "width": 32,
+      "bounds": [
+        1557,
+        114,
+        32,
+        32
+      ],
+      "atlas": "nature-roads"
+    },
+    {
+      "height": 32,
+      "id": "dirt-tile",
+      "width": 32,
+      "bounds": [
+        280,
+        116,
+        32,
+        32
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 32,
+      "id": "stone-tile",
+      "width": 32,
+      "bounds": [
+        480,
+        100,
+        32,
+        32
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 32,
+      "id": "brick-tile",
+      "width": 32,
+      "bounds": [
+        904,
+        100,
+        32,
+        32
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 32,
+      "id": "wood-tile",
+      "width": 32,
+      "bounds": [
+        1320,
+        70,
+        32,
+        32
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 96,
+      "id": "pond-nw",
+      "width": 128,
+      "bounds": [
+        1284,
+        497,
+        184,
+        200
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 96,
+      "id": "pond-ne",
+      "width": 128,
+      "bounds": [
+        1473,
+        497,
+        177,
+        200
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 96,
+      "id": "pond-sw",
+      "width": 128,
+      "bounds": [
+        1284,
+        704,
+        184,
+        200
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "height": 96,
+      "id": "pond-se",
+      "width": 128,
+      "bounds": [
+        1473,
+        704,
+        177,
+        200
+      ],
+      "atlas": "supplied-biome-4"
+    },
+    {
+      "id": "road-cobble-horizontal",
+      "atlas": "nature-roads",
+      "bounds": [
+        2,
+        114,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-cobble-vertical",
+      "atlas": "nature-roads",
+      "bounds": [
+        226,
+        2,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-cobble-corner",
+      "atlas": "nature-roads",
+      "bounds": [
+        2,
+        226,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-cobble-junction",
+      "atlas": "nature-roads",
+      "bounds": [
+        226,
+        114,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-brick-horizontal",
+      "atlas": "nature-roads",
+      "bounds": [
+        562,
+        114,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-brick-vertical",
+      "atlas": "nature-roads",
+      "bounds": [
+        786,
+        2,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-brick-corner",
+      "atlas": "nature-roads",
+      "bounds": [
+        562,
+        226,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-brick-junction",
+      "atlas": "nature-roads",
+      "bounds": [
+        786,
+        114,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-stepping-horizontal",
+      "atlas": "nature-roads",
+      "bounds": [
+        1122,
+        114,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-stepping-vertical",
+      "atlas": "nature-roads",
+      "bounds": [
+        1346,
+        2,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-stepping-corner",
+      "atlas": "nature-roads",
+      "bounds": [
+        1122,
+        226,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-stepping-junction",
+      "atlas": "nature-roads",
+      "bounds": [
+        1346,
+        114,
+        108,
+        104
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-bamboo-horizontal",
+      "atlas": "nature-roads",
+      "bounds": [
+        564,
+        600,
+        212,
+        216
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-bamboo-vertical",
+      "atlas": "nature-roads",
+      "bounds": [
+        786,
+        474,
+        108,
+        116
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-bamboo-corner",
+      "atlas": "nature-roads",
+      "bounds": [
+        676,
+        600,
+        108,
+        216
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-bamboo-junction",
+      "atlas": "nature-roads",
+      "bounds": [
+        786,
+        600,
+        108,
+        216
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-earth-horizontal",
+      "atlas": "nature-roads",
+      "bounds": [
+        1124,
+        600,
+        212,
+        216
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-earth-vertical",
+      "atlas": "nature-roads",
+      "bounds": [
+        1320,
+        474,
+        128,
+        116
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-earth-corner",
+      "atlas": "nature-roads",
+      "bounds": [
+        1320,
+        600,
+        128,
+        216
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "road-earth-junction",
+      "atlas": "nature-roads",
+      "bounds": [
+        1320,
+        600,
+        128,
+        216
+      ],
+      "width": 64,
+      "height": 64
+    },
+    {
+      "id": "steep-wood-house",
+      "atlas": "nature-workshop",
+      "bounds": [
+        12,
+        10,
+        428,
+        502
+      ],
+      "width": 192,
+      "height": 128
+    },
+    {
+      "id": "upright-loom",
+      "atlas": "nature-workshop",
+      "bounds": [
+        1350,
+        98,
+        302,
+        375
+      ],
+      "width": 128,
+      "height": 144
+    },
+    {
+      "id": "bamboo-instrument",
+      "atlas": "nature-workshop",
+      "bounds": [
+        720,
+        240,
+        248,
+        232
+      ],
+      "width": 144,
+      "height": 112
+    },
+    {
+      "id": "smith-anvil",
+      "atlas": "nature-workshop",
+      "bounds": [
+        1184,
+        536,
+        148,
+        148
+      ],
+      "width": 88,
+      "height": 84
+    },
+    {
+      "id": "cooking-hearth",
+      "atlas": "nature-workshop",
+      "bounds": [
+        672,
+        742,
+        272,
+        182
+      ],
+      "width": 120,
+      "height": 100
+    },
+    {
+      "id": "clay-tile-house",
+      "atlas": "nature-houses",
+      "bounds": [
+        594,
+        44,
+        552,
+        286
+      ],
+      "width": 192,
+      "height": 128
+    },
+    {
+      "id": "clay-thatch-house",
+      "atlas": "nature-houses",
+      "bounds": [
+        1166,
+        44,
+        484,
+        286
+      ],
+      "width": 192,
+      "height": 128
+    },
+    {
+      "id": "garden-swing",
+      "atlas": "nature-houses",
+      "bounds": [
+        752,
+        564,
+        378,
+        350
+      ],
+      "width": 160,
+      "height": 148
+    },
+    {
+      "id": "lake-water-tile",
+      "atlas": "supplied-biome-4",
+      "bounds": [
+        1362,
+        625,
+        16,
+        16
+      ],
+      "width": 32,
+      "height": 32
+    }
+  ],
+  "biomes": {
+    "meadow": {
+      "plant": [
+        "flower-bed",
+        "flower-planter",
+        "fruit-tree"
+      ],
+      "landmark": [
+        "loom",
+        "craft-stall",
+        "cloth-rack",
+        "thatched-gate"
+      ]
+    },
+    "wetland": {
+      "plant": [
+        "banana-tree",
+        "slender-palms",
+        "coconut-tree",
+        "grass-clump"
+      ],
+      "landmark": [
+        "waterwheel",
+        "bamboo-bridge",
+        "stone-well",
+        "bamboo-bench"
+      ]
+    },
+    "woodland": {
+      "plant": [
+        "bamboo-clump",
+        "banyan-tree",
+        "grass-clump"
+      ],
+      "landmark": [
+        "log-pile",
+        "bamboo-bench",
+        "trail-sign",
+        "banyan-tree"
+      ]
+    },
+    "highland": {
+      "plant": [
+        "mossy-rocks",
+        "grass-clump"
+      ],
+      "landmark": [
+        "stone-steps",
+        "campfire",
+        "stone-well",
+        "log-pile"
+      ]
+    }
+  },
+  "terrain": {
+    "plaza": "brick-tile",
+    "wetland": "wood-tile",
+    "woodland": "dirt-tile",
+    "meadow": "dirt-tile",
+    "highland": "stone-tile",
+    "ground": "grass-tile",
+    "water": "lake-water-tile"
+  },
+  "roadVariants": {
+    "cobble": {
+      "horizontal": "road-cobble-horizontal",
+      "vertical": "road-cobble-vertical",
+      "corner": "road-cobble-corner",
+      "junction": "road-cobble-junction"
+    },
+    "brick": {
+      "horizontal": "road-brick-horizontal",
+      "vertical": "road-brick-vertical",
+      "corner": "road-brick-corner",
+      "junction": "road-brick-junction"
+    },
+    "stepping": {
+      "horizontal": "road-stepping-horizontal",
+      "vertical": "road-stepping-vertical",
+      "corner": "road-stepping-corner",
+      "junction": "road-stepping-junction"
+    },
+    "bamboo": {
+      "horizontal": "road-bamboo-horizontal",
+      "vertical": "road-bamboo-vertical",
+      "corner": "road-bamboo-corner",
+      "junction": "road-bamboo-junction"
+    },
+    "earth": {
+      "horizontal": "road-earth-horizontal",
+      "vertical": "road-earth-vertical",
+      "corner": "road-earth-corner",
+      "junction": "road-earth-junction"
+    }
+  }
+}

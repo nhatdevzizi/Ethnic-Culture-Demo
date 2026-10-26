@@ -6,8 +6,9 @@ export class TitleScene extends Phaser.Scene {
   create() {
     ui.bind({}); ui.hideHud(); ui.toast('');
     this.cameras.main.setBackgroundColor('#244f45');
-    for (let row = 0; row < 18; row++) for (let col = 0; col < 30; col++) this.add.image(col * 32, row * 32, 'grass').setOrigin(0).setAlpha(0.36);
-    for (const [x, y] of [[64, 80], [832, 112], [736, 384], [80, 416]]) this.add.image(x, y, 'tree').setScale(3);
+    const { width, height } = this.cameras.main;
+    this.add.tileSprite(0, 0, width, height, 'grass-tile').setOrigin(0).setAlpha(0.36);
+    for (const [x, y] of [[0.07, 0.16], [0.9, 0.2], [0.85, 0.8], [0.08, 0.84]]) this.add.image(width * x, height * y, 'supplied-biome-3', 'banyan-tree').setDisplaySize(200, 180);
     const journal = element('section', 'title-journal');
     journal.append(element('span', 'eyebrow', 'CULTURAL CROSSROADS · 01'), element('h1', '', ui.t('title')), element('p', 'subtitle', ui.t('subtitle')), element('p', 'premise', ui.t('premise')));
     const choices = element('div', 'button-row mode-row');

@@ -1,4 +1,105 @@
 [
-  {"id":"garden-pixels","path":"generated://garden-pixels","creator":"Cultural Trails prototype","license":"Original project artwork; prototype use","attribution":"Original geometric pixel textures generated locally in PreloadScene.","allowedUse":"Local demo and project builds","reviewStatus":"approved"},
-  {"id":"hub-map","path":"assets/maps/hub.json","creator":"Cultural Trails prototype","license":"Original project map; prototype use","attribution":"Original fictional deterministic garden layout.","allowedUse":"Local demo and project builds","reviewStatus":"approved"}
+  {
+    "id": "user-supplied-hub-art",
+    "path": "assets/sprites/instructor-a.png",
+    "paths": [
+      "assets/sprites/instructor-a.png",
+      "assets/sprites/instructor-b.png",
+      "assets/sprites/demo-house.png"
+    ],
+    "creator": "User-supplied Gemini image assets; transparent cutouts prepared with OpenAI ImageGen",
+    "license": "User supplied for this local demo; publication permission and cultural review pending",
+    "attribution": "Adapted from Gemini_Generated_Image_witzcqwitzcqwitz (2), (3), and (4).png in the user's Game Assets folder. These are fictional exhibition instructors and scenery, not verified depictions of a community, dress, or architecture.",
+    "allowedUse": "Local project demo only until permission and representation review are complete",
+    "reviewStatus": "draft"
+  },
+  {
+    "id": "interface-tap",
+    "path": "assets/audio/tap.wav",
+    "creator": "Cultural Trails contributors",
+    "license": "MIT (bundled assets/audio/LICENSE.txt)",
+    "attribution": "Original synthetic 660 Hz interface cue, generated locally by scripts/generate-media.mjs. Not a traditional instrument or cultural recording.",
+    "allowedUse": "Embedding, modification and redistribution under the bundled MIT notice",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "interface-rest",
+    "path": "assets/audio/rest.wav",
+    "creator": "Cultural Trails contributors",
+    "license": "MIT (bundled assets/audio/LICENSE.txt)",
+    "attribution": "Original synthetic 330 Hz interface cue, generated locally by scripts/generate-media.mjs. Not a traditional instrument or cultural recording.",
+    "allowedUse": "Embedding, modification and redistribution under the bundled MIT notice",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "interface-stamp",
+    "path": "assets/audio/stamp.wav",
+    "creator": "Cultural Trails contributors",
+    "license": "MIT (bundled assets/audio/LICENSE.txt)",
+    "attribution": "Original synthetic 880 Hz activity-completion cue, generated locally by scripts/generate-media.mjs. Not a traditional instrument or cultural recording.",
+    "allowedUse": "Embedding, modification and redistribution under the bundled MIT notice",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "hub-map",
+    "path": "assets/maps/hub.json",
+    "creator": "Cultural Trails prototype",
+    "license": "Original project map; prototype use",
+    "attribution": "Original fictional deterministic garden layout.",
+    "allowedUse": "Local demo and project builds",
+    "reviewStatus": "approved"
+  },
+  {
+    "id": "be-vietnam-pro",
+    "path": "assets/fonts/BeVietnamPro-Regular.ttf",
+    "creator": "The Be Vietnam Pro Project Authors; Lâm Bảo, Tony Le, ViệtAnh Nguyễn",
+    "license": "SIL Open Font License 1.1 (bundled BeVietnamPro-OFL.txt)",
+    "attribution": "Be Vietnam Pro, copyright 2021 The Be Vietnam Pro Project Authors. Regular, SemiBold, Bold and ExtraBold bundled locally.",
+    "allowedUse": "Embedded and redistributed with the game under the bundled OFL",
+    "reviewStatus": "approved",
+    "sourceUrls": [
+      "https://github.com/google/fonts/tree/main/ofl/bevietnampro"
+    ]
+  },
+  {
+    "id": "lora",
+    "path": "assets/fonts/Lora-Variable.ttf",
+    "creator": "The Lora Project Authors / Cyreal",
+    "license": "SIL Open Font License 1.1 (bundled Lora-OFL.txt)",
+    "attribution": "Lora, copyright 2011 The Lora Project Authors. Reserved Font Name Lora; original variable font bundled unmodified.",
+    "allowedUse": "Embedded and redistributed with the game under the bundled OFL",
+    "reviewStatus": "approved",
+    "sourceUrls": [
+      "https://github.com/google/fonts/tree/main/ofl/lora"
+    ]
+  },
+  {
+    "allowedUse": "Local demo only until permission and representation review",
+    "paths": [
+      "assets/sprites/supplied-biome-1.png",
+      "assets/sprites/supplied-biome-2.png",
+      "assets/sprites/supplied-biome-3.png",
+      "assets/sprites/supplied-biome-4.png"
+    ],
+    "reviewStatus": "draft",
+    "path": "assets/sprites/supplied-biome-1.png",
+    "creator": "User-supplied asset1.png through asset4.png; transparent sheets prepared with OpenAI ImageGen",
+    "attribution": "Selected structures, craft props, plants, bridges and stone steps from the four sheets in the user Game Assets folder. Used as fictional scenery; no verified cultural attribution is claimed.",
+    "id": "supplied-biome-decoration-sheets",
+    "license": "User supplied for local demo; publication permission and cultural review pending"
+  },
+  {
+    "attribution": "Selected matching road pieces, front-facing houses, an upright loom, a bamboo instrument, an anvil, a cooking hearth and a garden swing. Used as fictional scenery without cultural identification. The reference screenshot informs only the layout principles; its images are not used.",
+    "allowedUse": "Local project demo pending permission and cultural review",
+    "paths": [
+      "assets/sprites/nature-roads.png",
+      "assets/sprites/nature-workshop.png",
+      "assets/sprites/nature-houses.png"
+    ],
+    "reviewStatus": "draft",
+    "path": "assets/sprites/nature-roads.png",
+    "creator": "User-supplied asset5.png, ảnh2.png and ảnh4.png; transparent sheets prepared with OpenAI ImageGen",
+    "license": "User supplied for local demo; publication permission and cultural review pending",
+    "id": "new-user-trail-assets"
+  }
 ]

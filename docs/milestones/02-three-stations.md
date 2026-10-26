@@ -1,7 +1,7 @@
 # Milestone 02: Three distinct activities
 
 ## Status
-In progress. The user explicitly requested Phase 2 and assigned coding work to Qwen Local on 2026-10-26.
+Implemented and verified as a fictional demo. The user explicitly requested Phase 2 and assigned coding work to Qwen Local on 2026-10-26. Real cultural content and hardware acceptance remain pending.
 
 ## Objective
 Keep M01 playable and add M02 visual rhythm practice and M03 branching evidence conversations. The user can finish, retry, skip, abandon, and revisit all three without losing stamps or hub position.
@@ -30,19 +30,19 @@ Keep the existing warm paper/ink/garden palette, serif headings and readable san
 2. Qwen: M02 scene/content/registry integration, with browser acceptance evidence reviewed by Codex.
 3. Qwen: M03 evidence rules, scene/content/registry integration and tests.
 4. Qwen: shared progress/help/recap and browser regression corrections.
-Each task has a clean local Git baseline, explicit file scope, and less than 16k target input context. No changes to test scripts or unrelated source files. Codex independently executes tests; Qwen's report is not verification.
+The Qwen Code wrapper tasks started from clean local Git baselines. After those tasks failed to follow the contract, the same Qwen3-Coder 30B model was called directly with explicit file lists and bounded context. Codex supplied bilingual content and independent browser tests, applied Qwen-generated code/patches, and verified the results. No package scripts or dependencies changed. Qwen's report alone was not verification.
 
 ## Acceptance criteria
-- [ ] M01 original drag/drop and keyboard path still pass.
-- [ ] M02 normal and slow rhythm work; missed/extra beats produce specific retry feedback.
-- [ ] M02 untimed input can complete without a deadline; rest steps have an accessible action.
-- [ ] Pause/help/passport/hidden tabs freeze M02 timing and prevent input through overlays.
-- [ ] M03 includes three fictional helper conversations, consequential choices, evidence requirements, recovery and recap.
-- [ ] All three results return to the entered portal; stamps are unique; skips remain distinct.
-- [ ] Passport shows the enabled station count; M04 remains unavailable.
-- [ ] Unit checks, strict typecheck, build, browser regressions, and cold local production checks pass.
-- [ ] Screenshots reviewed at 1280×720 and 1920×1080.
-- [ ] Publication gate still rejects unapproved demo facts.
+- [x] M01 original drag/drop and keyboard path still pass — `tests/e2e/game.spec.ts`.
+- [x] M02 normal and slow rhythm work; missed/extra beats produce specific retry feedback — `tests/unit/rhythm.test.ts`, `tests/e2e/phase2.spec.ts`.
+- [x] M02 untimed input can complete without a deadline; rest steps have an accessible action — same unit/browser tests.
+- [x] Pause and overlay guards freeze M02; hidden-tab event simulation exercises the visibility handler — `phase2.spec.ts`. Physical tab switching on presentation hardware remains a user check.
+- [x] M03 includes three fictional helper conversations, consequential choices, evidence requirements, recovery and recap — `tests/unit/story.test.ts`, `phase2.spec.ts`.
+- [x] Results return to the entered portal; stamps are unique; skips survive abandoned retries — `session.test.ts`, `phase2.spec.ts`.
+- [x] Passport shows enabled station count; M04 stays disabled — registry review and three-stamp browser assertion.
+- [x] Strict typecheck, unit, build, browser and cold production checks pass — `PHASE_2_QA.md`.
+- [x] Screenshots reviewed at 1280×720 and 1920×1080 — `output/playtest/phase2-*`.
+- [x] Publication gate rejects all three draft fictional facts — actual `npm run build:release` rejection.
 
 ## Exit condition
 User plays three different activities and returns from each with the correct stamp or skip status, without refreshing or becoming stuck.
@@ -52,3 +52,6 @@ Pure rules: timing boundaries, missed/rest/duplicate input, slow/untimed mode, b
 
 ## Dependencies / limits
 Depends on Phase 1. Real cultural approval, real laptop/projector testing, final art, and audio remain unresolved. No account, network service, new framework, or dependency is required.
+
+## Delivery
+See [Phase 2 QA](../PHASE_2_QA.md). Phase 3 was not started. Full MVP presentation readiness is not claimed.

@@ -1,0 +1,84 @@
+{
+  "pattern": [
+    true,
+    false,
+    true,
+    true,
+    false,
+    true
+  ],
+  "labels": {
+    "normal": {
+      "vi": "Bình thường",
+      "en": "Normal"
+    },
+    "slow": {
+      "vi": "Chậm",
+      "en": "Slow"
+    },
+    "untimed": {
+      "vi": "Không giới hạn",
+      "en": "Untimed"
+    },
+    "start": {
+      "vi": "Bắt đầu luyện tập",
+      "en": "Start practice"
+    },
+    "tap": {
+      "vi": "Gõ",
+      "en": "Tap"
+    },
+    "rest": {
+      "vi": "Lượt nghỉ tiếp",
+      "en": "Next rest"
+    },
+    "ready": {
+      "vi": "Gõ một lần ở lượt gõ; chờ ở lượt nghỉ.",
+      "en": "Tap once on each hit beat; wait on rest beats."
+    },
+    "hit": {
+      "vi": "Đúng",
+      "en": "Hit"
+    },
+    "restError": {
+      "vi": "Xem lượt hiện tại: gõ một lần ở lượt gõ; chỉ chọn Lượt nghỉ tiếp khi đến lượt nghỉ.",
+      "en": "Check the current step: tap once on a hit; use Next rest only on a rest."
+    },
+    "duplicate": {
+      "vi": "Lượt này đã gõ rồi. Hãy chờ đến lượt gõ tiếp theo.",
+      "en": "This beat already has a tap. Wait for the next hit beat."
+    },
+    "missed": {
+      "vi": "Bị bỏ lỡ",
+      "en": "Missed"
+    },
+    "retry": {
+      "vi": "Có lượt bị lỡ hoặc gõ thừa. Bạn có thể thử lại, chọn nhịp chậm hoặc chế độ không giới hạn.",
+      "en": "A beat was missed or tapped extra. Retry, slow down, or choose Untimed."
+    },
+    "complete": {
+      "vi": "Đã hoàn thành nhịp",
+      "en": "Rhythm complete"
+    },
+    "instructions": {
+      "vi": "Chọn tốc độ rồi chọn Bắt đầu luyện tập. Gõ một lần ở mỗi lượt gõ, không gõ ở lượt nghỉ. Chế độ Không giới hạn dùng nút Lượt nghỉ tiếp và không có thời hạn.",
+      "en": "Choose a speed, then Start practice. Tap once on each hit and wait through each rest. Untimed mode uses Next rest and has no deadline."
+    },
+    "recap": {
+      "vi": "Bạn đã thực hành lượt gõ và lượt nghỉ trong chuỗi đèn hư cấu. Dấu hộ chiếu ghi nhận việc tham gia hoạt động này.",
+      "en": "You practiced the hit and rest sequence in a fictional garden. The passport stamp records participation in this activity."
+    },
+    "restartNote": {
+      "vi": "Làm lại sẽ xóa lượt nhịp hiện tại. Những dấu hộ chiếu đã nhận vẫn được giữ.",
+      "en": "Restart clears this rhythm attempt. Passport stamps already earned stay saved."
+    },
+    "returnNote": {
+      "vi": "Rời trạm sẽ xóa lượt nhịp hiện tại. Những dấu hộ chiếu đã nhận vẫn được giữ.",
+      "en": "Leaving resets this rhythm attempt. Passport stamps already earned stay saved."
+    },
+    "caption": {
+      "vi": "Nhịp đèn hư cấu với tín hiệu âm thanh tổng hợp tùy chọn. Bạn có thể chơi bằng đèn và chú thích khi tắt tiếng. Không mô phỏng nhạc cụ hay biểu diễn văn hóa có thật.",
+      "en": "Fictional light rhythm with optional original synthetic cues. Lights and captions support silent play. No real instrument or cultural performance is represented."
+    }
+  }
+}

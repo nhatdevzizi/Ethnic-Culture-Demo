@@ -1,9 +1,85 @@
 {
-  "width":48,"height":36,"tileSize":32,
-  "spawn":{"x":704,"y":672},
-  "guide":{"x":768,"y":640},
-  "board":{"x":672,"y":864},
-  "pond":{"x":1168,"y":848,"width":224,"height":128},
-  "beds":[{"x":544,"y":480,"width":96,"height":64},{"x":800,"y":480,"width":96,"height":64},{"x":544,"y":784,"width":96,"height":64}],
-  "trees":[[192,224],[288,192],[608,224],[800,192],[1024,224],[1312,192],[192,448],[1312,416],[192,672],[1344,640],[224,960],[864,992],[1024,1024],[1328,1008],[640,1024],[96,864]]
+  "width": 80,
+  "trees": [],
+  "roads": [
+    {
+      "height": 192,
+      "width": 480,
+      "x": 1040,
+      "y": 912
+    }
+  ],
+  "pond": {
+    "x": 1088,
+    "cellSize": 32,
+    "y": 224,
+    "height": 288,
+    "width": 544,
+    "rows": [
+      "      XXXXX      ",
+      "   XXXXXXXXXXX   ",
+      " XXXXXXXXXXXXXXX ",
+      "XXXXXXXXXXXXXXXXX",
+      "XXXXXXXXXXXXXXXX ",
+      " XXXXXXXXXXXXXX  ",
+      "   XXXXXXXXXXX   ",
+      "      XXXXXX     ",
+      "       XXX       "
+    ]
+  },
+  "guide": {
+    "y": 976,
+    "x": 1344
+  },
+  "beds": [],
+  "tileSize": 32,
+  "spawn": {
+    "y": 1008,
+    "x": 1280
+  },
+  "height": 60,
+  "benches": [
+    {
+      "y": 816,
+      "x": 1248
+    }
+  ],
+  "board": {
+    "y": 1168,
+    "x": 1280
+  },
+  "biomes": [
+    {
+      "theme": "meadow",
+      "title": {
+        "en": "Flower Meadow",
+        "vi": "Lối Đồng Hoa"
+      },
+      "stationId": "M01"
+    },
+    {
+      "theme": "wetland",
+      "title": {
+        "en": "Reed Wetlands",
+        "vi": "Lối Đầm Nước"
+      },
+      "stationId": "M02"
+    },
+    {
+      "theme": "woodland",
+      "title": {
+        "en": "Whispering Woods",
+        "vi": "Lối Rừng Xanh"
+      },
+      "stationId": "M03"
+    },
+    {
+      "theme": "highland",
+      "title": {
+        "en": "Stone Highlands",
+        "vi": "Lối Đồi Đá"
+      },
+      "stationId": "M04"
+    }
+  ]
 }

@@ -1,0 +1,127 @@
+.story-studio {
+  color: var(--ink);
+}
+
+.story-studio .story-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(220px, 1fr);
+  gap: 24px;
+}
+
+.story-studio .story-conversation {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.story-studio .story-helpers {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.story-studio .story-helpers button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.story-studio .story-helpers button[aria-pressed="true"] {
+  background-color: var(--gold);
+  color: var(--ink);
+}
+
+.story-studio .greeting {
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 14px 0;
+}
+
+.story-studio .choice-area,
+.story-studio .plan-area {
+  display: grid;
+  gap: 8px;
+}
+
+.story-studio .choice-area button,
+.story-studio .plan-area button {
+  width: 100%;
+  text-align: left;
+  min-height: 44px;
+  white-space: normal;
+  line-height: 1.4;
+  padding: 10px 14px;
+}
+
+.story-studio .feedback {
+  margin: 12px 0;
+  min-height: 48px;
+  color: var(--ink);
+  border-left: 2px solid var(--green);
+  padding-left: 12px;
+}
+
+.story-studio .story-notebook {
+  padding-left: 20px;
+  border-left: 1px solid var(--line);
+}
+
+.story-studio .story-notebook h2 {
+  font-family: serif;
+  font-size: 22px;
+  margin: 0 0 16px 0;
+}
+
+.story-studio .evidence-item {
+  display: block;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.story-studio .evidence-name {
+  font-weight: 600;
+}
+
+.story-studio .evidence-status {
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.story-studio .recap {
+  margin: 16px 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.story-studio .recap h2 {
+  font-family: serif;
+  font-size: 24px;
+  margin: 0 0 8px 0;
+}
+
+.story-studio .recap p {
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .story-studio .story-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .story-studio .story-notebook {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (min-width: 1600px) {
+  .story-studio {
+    font-size: 18px;
+  }
+
+  .story-studio .story-layout {
+    gap: 32px;
+  }
+}

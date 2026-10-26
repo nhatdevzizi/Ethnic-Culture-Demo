@@ -23,6 +23,7 @@ export class PatternStudioScene extends Phaser.Scene {
     if (this.payload?.minigameId !== 'M01') throw new Error('M01 needs a valid station payload');
     this.puzzle = new PatternPuzzle(dialogue.paper.order); this.cards.clear(); this.slots = [];
     ui.bind({
+      help: () => ui.panel(ui.t('m01'), ui.t('instructions'), [{label:ui.t('close'),run:()=>ui.close()}]),
       restart: () => ui.confirm(ui.t('restart'), ui.t('restartNote'), ui.t('confirmRestart'), () => this.scene.restart(this.payload)),
       back: () => ui.confirm(ui.t('back'), ui.t('returnNote'), ui.t('confirmBack'), () => this.result('abandoned')),
       skip: () => this.result('skipped'), finish: () => this.result('abandoned', 'Ending'),

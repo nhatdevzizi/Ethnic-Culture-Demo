@@ -2,12 +2,73 @@
   {
     "id": "demo-paper",
     "communityIds": [],
-    "title": {"vi": "Mô hình giấy tưởng tượng", "en": "An imaginary paper model"},
-    "body": {"vi": "Trong xưởng hư cấu này, Nhật chuẩn bị mô hình giấy theo thứ tự: phác thảo → cắt giấy → ghép hình. Đây là luật chơi mẫu, không mô tả nghề thủ công hay cộng đồng có thật.", "en": "In this fictional studio, Nhật prepares a paper model in this order: plan → cut → assemble. This is a prototype rule, not a description of a real craft or community."},
-    "context": {"place": "Cultural Crossroads (fictional)", "qualifiers": ["Non-cultural fictional prototype"]},
+    "title": {
+      "vi": "Mô hình giấy tưởng tượng",
+      "en": "An imaginary paper model"
+    },
+    "body": {
+      "vi": "Trong xưởng hư cấu này, Nhật chuẩn bị mô hình giấy theo thứ tự: phác thảo → cắt giấy → ghép hình. Đây là luật chơi mẫu, không mô tả nghề thủ công hay cộng đồng có thật.",
+      "en": "In this fictional studio, Nhật prepares a paper model in this order: plan → cut → assemble. This is a prototype rule, not a description of a real craft or community."
+    },
+    "context": {
+      "place": "Cultural Crossroads (fictional)",
+      "qualifiers": [
+        "Non-cultural fictional prototype"
+      ]
+    },
     "sourceUrls": [],
     "reviewStatus": "draft",
     "fictional": true,
-    "permittedAssetIds": ["garden-pixels"]
+    "permittedAssetIds": [
+      "user-supplied-hub-art",
+      "supplied-biome-decoration-sheets",
+      "new-user-trail-assets"
+    ]
+  },
+  {
+    "id": "demo-rhythm",
+    "communityIds": [],
+    "title": {
+      "vi": "Mẫu nhịp sáng tạo",
+      "en": "Creative rhythm pattern"
+    },
+    "body": {
+      "vi": "Đây là mẫu nhịp sáng tạo: HIT-rest-HIT-HIT-rest-HIT. Trong thực tế, đây là một mô hình giả tưởng không liên quan đến bất kỳ cộng đồng hay nghề thủ công nào.",
+      "en": "This is a creative rhythm pattern: HIT-rest-HIT-HIT-rest-HIT. In reality, this is a fictional model not related to any community or craft."
+    },
+    "context": {
+      "place": "Cultural Crossroads (fictional)"
+    },
+    "sourceUrls": [],
+    "reviewStatus": "draft",
+    "fictional": true,
+    "permittedAssetIds": [
+      "user-supplied-hub-art",
+      "supplied-biome-decoration-sheets",
+      "new-user-trail-assets"
+    ]
+  },
+  {
+    "id": "demo-stories",
+    "communityIds": [],
+    "title": {
+      "vi": "Yêu cầu trưng bày",
+      "en": "Display Requirements"
+    },
+    "body": {
+      "vi": "Trong phòng trưng bày giả tưởng, ba trợ lý có các nhu cầu cá nhân khác nhau: trợ lý yên tĩnh muốn không gian yên tĩnh hơn, trợ lý chú thích muốn chú thích bằng văn bản, và trợ lý lịch trình muốn chọn thời gian trưng bày phù hợp. Những yêu cầu này là cá nhân, không đại diện cho cộng đồng nào.",
+      "en": "In the fictional exhibition room, three helpers have different individual needs: the quiet helper wants a quieter space, the caption helper wants written captions, and the schedule helper wants to choose an appropriate display time. These requirements are personal, not representative of any community."
+    },
+    "context": {
+      "place": "Cultural Crossroads (fictional)"
+    },
+    "sourceUrls": [],
+    "reviewStatus": "draft",
+    "fictional": true,
+    "permittedAssetIds": [
+      "user-supplied-hub-art",
+      "supplied-biome-decoration-sheets",
+      "new-user-trail-assets"
+    ]
   }
 ]

@@ -1,0 +1,114 @@
+.rhythm-beats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.rhythm-beat {
+  padding: 12px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-weight: bold;
+  outline: 3px solid transparent;
+}
+
+.rhythm-beat[aria-current="step"] {
+  outline-color: var(--green);
+}
+
+.rhythm-studio {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+}
+
+.studio-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.studio-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  flex: 1;
+}
+
+.studio-note {
+  padding: 16px;
+  background-color: var(--paper);
+  border-radius: 8px;
+}
+
+.studio-workbench {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rhythm-mode-normal,
+.rhythm-mode-slow,
+.rhythm-mode-untimed {
+  min-width: 44px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.rhythm-mode-normal[aria-pressed="true"],
+.rhythm-mode-slow[aria-pressed="true"],
+.rhythm-mode-untimed[aria-pressed="true"] {
+  background-color: var(--green);
+  color: white;
+}
+
+.rhythm-start,
+.rhythm-tap {
+  min-width: 140px;
+  padding: 12px;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.rhythm-rest {
+  display: none;
+}
+
+.rhythm-feedback {
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.caption {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+@media (max-width: 700px) {
+  .studio-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .rhythm-beats {
+    overflow-x: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rhythm-beat[aria-current="step"] {
+    outline-color: transparent;
+  }
+}

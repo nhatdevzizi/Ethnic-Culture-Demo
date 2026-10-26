@@ -23,6 +23,7 @@ export type MinigameResult = {
   learnedFactIds: string[]; attempts: number;
 };
 export type SessionState = {
+  hubLayoutVersion: number;
   schemaVersion: number; contentVersion: string; mode: GameMode; locale: Locale;
   statuses: Record<string, StationStatus>; passportStamps: string[];
   learnedFactIds: string[]; hubReturnPosition: Position;

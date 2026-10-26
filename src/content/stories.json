@@ -1,0 +1,34 @@
+{
+  "requiredEvidence": ["quiet", "captions", "schedule"],
+  "ui": {
+    "intro": {"vi":"Ba người hướng dẫn hư cấu đang chuẩn bị triển lãm. Họ có những mong muốn riêng; không ai đại diện cho một cộng đồng có thật.","en":"Three fictional helpers are preparing an exhibition. Each has an individual request; none represents a real community."},
+    "found": {"vi":"Đã ghi lại","en":"Recorded"},
+    "missing": {"vi":"Chưa ghi lại","en":"Not recorded"},
+    "notebook": {"vi":"Sổ ghi chép","en":"Evidence notebook"},
+    "instructions": {"vi":"Gặp từng người, chọn câu hỏi và đọc phản hồi. Ghi lại ba mong muốn, rồi chọn kế hoạch dựa trên ghi chép. Bạn luôn có thể hỏi lại.","en":"Meet each helper, choose a question, and read the response. Record all three requests, then choose a plan using your notes. You can always revisit a conversation."},
+    "missingFeedback": {"vi":"Hãy hỏi cả ba người và ghi lại mong muốn của họ trước khi chọn kế hoạch.","en":"Ask all three helpers and record their requests before choosing a plan."},
+    "reconsiderFeedback": {"vi":"Kế hoạch đồng loạt chưa đáp ứng các mong muốn đã ghi. Hãy đọc lại sổ và thử kế hoạch có lựa chọn.","en":"One fixed format does not address the recorded requests. Review your notes and try a plan with options."},
+    "complete": {"vi":"Đã hoàn thành câu chuyện","en":"Story complete"},
+    "recap": {"vi":"Linh muốn có lựa chọn yên tĩnh hơn; Bảo muốn chú thích bằng chữ; An muốn chọn giờ tham quan. Kế hoạch của bạn dựa trên ba mong muốn cá nhân trong câu chuyện hư cấu này.","en":"Linh wants a quieter option, Bảo wants written captions, and An wants to choose a visiting time. Your plan uses these three individual requests from this fictional story."},
+    "restartNote": {"vi":"Làm lại sẽ xóa ghi chép trong lượt này. Những dấu hộ chiếu đã nhận vẫn được giữ.","en":"Restart clears the notes in this attempt. Passport stamps already earned stay saved."},
+    "returnNote": {"vi":"Rời câu chuyện sẽ xóa ghi chép trong lượt này. Những dấu hộ chiếu đã nhận vẫn được giữ.","en":"Leaving resets the notes in this attempt. Passport stamps already earned stay saved."}
+  },
+  "helpers": [
+    {"id":"quiet","name":{"vi":"Linh","en":"Linh"},"greeting":{"vi":"Mình là Linh, đang giúp sắp xếp khu trưng bày. Bạn muốn hỏi điều gì?","en":"I'm Linh. I'm helping arrange the displays. What would you like to ask?"},"choices":[
+      {"id":"ask","label":{"vi":"Bạn muốn trải nghiệm khu trưng bày thế nào?","en":"How would you like to experience the displays?"},"response":{"vi":"Mình muốn có một lựa chọn yên tĩnh hơn. Bạn hãy ghi lại mong muốn này khi lập kế hoạch nhé.","en":"I'd like a quieter option. Please include that request when you make the plan."},"evidenceId":"quiet"},
+      {"id":"assume","label":{"vi":"Chọn nhạc lớn cho mọi người mà không hỏi","en":"Choose loud music for everyone without asking"},"response":{"vi":"Mình lại muốn một lựa chọn yên tĩnh hơn. Bạn hãy hỏi mình trước khi quyết định; bạn có thể hỏi lại ngay.","en":"I'd prefer a quieter option. Please ask me before deciding; you can ask again now."},"evidenceId":null}
+    ]},
+    {"id":"captions","name":{"vi":"Bảo","en":"Bảo"},"greeting":{"vi":"Mình là Bảo, đang kiểm tra phần giới thiệu. Bạn muốn trao đổi điều gì?","en":"I'm Bảo. I'm checking the exhibit introductions. What would you like to discuss?"},"choices":[
+      {"id":"ask","label":{"vi":"Bạn muốn nhận thông tin bằng cách nào?","en":"How would you like to receive the information?"},"response":{"vi":"Mình muốn có chú thích bằng chữ để đọc khi tham quan. Hãy ghi điều đó vào sổ nhé.","en":"I'd like written captions to read during the visit. Please record that in your notes."},"evidenceId":"captions"},
+      {"id":"assume","label":{"vi":"Bỏ chú thích vì nghĩ ai cũng chỉ cần nghe","en":"Remove captions because you assume everyone only needs audio"},"response":{"vi":"Mình muốn đọc chú thích bằng chữ. Hãy hỏi cách mình muốn nhận thông tin thay vì đoán nhé.","en":"I'd like to read written captions. Please ask how I'd like the information instead of guessing."},"evidenceId":null}
+    ]},
+    {"id":"schedule","name":{"vi":"An","en":"An"},"greeting":{"vi":"Mình là An, đang giúp lên lịch tham quan. Bạn muốn hỏi gì trước khi chốt lịch?","en":"I'm An. I'm helping plan visits. What would you like to ask before we set the schedule?"},"choices":[
+      {"id":"ask","label":{"vi":"Bạn muốn chọn giờ tham quan thế nào?","en":"How would you like to choose a visiting time?"},"response":{"vi":"Mình muốn có vài khung giờ để chọn theo lịch riêng. Hãy ghi lại mong muốn có lựa chọn này.","en":"I'd like several time options so I can choose around my schedule. Please record that request for a choice."},"evidenceId":"schedule"},
+      {"id":"assume","label":{"vi":"Ấn định một giờ bắt buộc mà không hỏi","en":"Set one mandatory time without asking"},"response":{"vi":"Giờ đó có thể không hợp với lịch của mình. Hãy hỏi và cho mình lựa chọn giờ tham quan nhé.","en":"That time may not fit my schedule. Please ask and offer me a choice of visiting times."},"evidenceId":null}
+    ]}
+  ],
+  "planChoices": [
+    {"id":"uniform","label":{"vi":"Dùng một kiểu trưng bày và một giờ bắt buộc","en":"Use one display format and one mandatory time"},"response":{"vi":"Kế hoạch này bỏ qua lựa chọn yên tĩnh, chú thích bằng chữ và lựa chọn giờ. Hãy đọc lại ba ghi chép rồi thử lại.","en":"This plan leaves out a quieter option, written captions, and time options. Review the three notes and try again."},"correct":false},
+    {"id":"choice","label":{"vi":"Đưa ra lựa chọn dựa trên ba ghi chép","en":"Offer options based on the three recorded requests"},"response":{"vi":"Bạn đã dùng cả ba ghi chép: lựa chọn yên tĩnh, chú thích bằng chữ và khung giờ linh hoạt.","en":"You used all three notes: a quieter option, written captions, and visiting-time options."},"correct":true}
+  ]
+}

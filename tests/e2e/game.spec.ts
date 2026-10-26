@@ -1,10 +1,8 @@
 import { test, expect } from '@playwright/test';
-type GameSnapshot = { scene: string; player?: { x: number; y: number }; camera?: { x: number; y: number }; nearby?: string; stamps: string[]; statuses: Record<string, string>; returnPosition: { x: number; y: number }; puzzle?: { slots: (string | null)[] } };
+import { moveHub, walkToStation } from './helpers/hub';
+import hubMap from '../../public/assets/maps/hub.json' with { type: 'json' };
+type GameSnapshot = { scene: string; player?: { x: number; y: number }; camera?: { x: number; y: number; worldView: { x: number; y: number; width: number; height: number } }; nearby?: string; stamps: string[]; statuses: Record<string, string>; returnPosition: { x: number; y: number }; puzzle?: { slots: (string | null)[] } };
 const snapshot = (page: import('@playwright/test').Page): Promise<GameSnapshot> => page.evaluate(() => JSON.parse((window as unknown as { render_game_to_text: () => string }).render_game_to_text()));
-async function move(page: import('@playwright/test').Page, key: string, milliseconds: number) {
-  await page.locator('#game-container').focus(); await page.keyboard.down(key); await page.waitForTimeout(milliseconds); await page.keyboard.up(key);
-  await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
-}
 async function start(page: import('@playwright/test').Page) {
   await page.goto('/?mode=presentation&lang=en&seed=42');
   await page.getByRole('button', { name: 'Start', exact: true }).click();
@@ -32,7 +30,7 @@ test('title to guide to drag puzzle to same portal, replay and pause', async ({ 
   await page.getByRole('button', { name: 'Next', exact: true }).click();
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await page.screenshot({ path: 'output/playtest/hub-1280.png' });
-  await move(page, 'd', 1200);
+  await walkToStation(page, 'M01');
   const portalPosition = (await snapshot(page)).player!;
   await enter(page);
   await page.getByTestId('card-cut').dragTo(page.getByTestId('slot-0'));
@@ -66,18 +64,20 @@ test('title to guide to drag puzzle to same portal, replay and pause', async ({ 
 
 test('movement, collision, camera bounds, skip and resize', async ({ page }) => {
   await start(page);
-  await move(page, 'a', 600);
-  await move(page, 'w', 1800);
+  await walkToStation(page, 'M02');
+  await moveHub(page, 'w', 1000);
   const north = (await snapshot(page)).player!;
-  expect(north.y).toBeGreaterThan(440);
-  expect(north.y).toBeLessThan(600);
-  await move(page, 'a', 6000);
+  expect(north.y).toBeGreaterThan(320);
+  expect(north.y).toBeLessThan(416);
+  await moveHub(page, 's', 2000);
+  await moveHub(page, 'a', 6000);
   const west = await snapshot(page);
-  expect(west.player!.x).toBeGreaterThanOrEqual(32); expect(west.camera!.x).toBe(0);
-  await move(page, 'a', 250);
+  expect(west.player!.x).toBeGreaterThanOrEqual(32); expect(west.camera!.worldView.x).toBeGreaterThanOrEqual(-64);
+  expect(west.camera!.worldView.x + west.camera!.worldView.width).toBeLessThanOrEqual(hubMap.width * hubMap.tileSize);
+  await moveHub(page, 'a', 250);
   expect((await snapshot(page)).player!.x).toBeCloseTo(west.player!.x, 0);
   await page.reload(); await page.getByRole('button', { name: 'Start', exact: true }).click();
-  await move(page, 'd', 1200); await enter(page);
+  await walkToStation(page, 'M01'); await enter(page);
   await page.screenshot({ path: 'output/playtest/m01-1280.png' });
   await page.keyboard.press('r'); await page.getByRole('button', { name: 'Restart this attempt', exact: true }).click();
   await page.getByRole('button', { name: 'Begin', exact: true }).click();
