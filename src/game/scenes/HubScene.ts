@@ -18,6 +18,7 @@ import { ui, element } from '../ui/OverlayController';
 import dialogue from '../../content/dialogues.json';
 export class HubScene extends Phaser.Scene {
   player!: Phaser.Physics.Arcade.Sprite;
+  private facing: 'down' | 'up' | 'left' | 'right' = 'down';
   private controls!: InputManager;
   private objects: Interactable[] = [];
   private routeDirection?: HTMLElement;
@@ -98,8 +99,9 @@ export class HubScene extends Phaser.Scene {
     ]) });
     const position = safeHubPosition(session.state.hubReturnPosition, map, minigameRegistry, this.landscape);
     if (position.x !== session.state.hubReturnPosition.x || position.y !== session.state.hubReturnPosition.y) session.setPosition(position);
-    this.player = this.physics.add.sprite(position.x, position.y, 'instructor-a', 'cutout').setDisplaySize(32, 72).setOrigin(0.5, 51 / 72).setCollideWorldBounds(true);
-    const frame = this.player.frame, bodyWidth = frame.width * 22 / 32, bodyHeight = frame.height * 18 / 72;
+    this.facing = 'down';
+    this.player = this.physics.add.sprite(position.x, position.y, 'player', 0).setDisplaySize(42, 72).setOrigin(0.5, 51 / 72).setCollideWorldBounds(true);
+    const frame = this.player.frame, bodyWidth = frame.width * 22 / 42, bodyHeight = frame.height * 18 / 72;
     this.player.body!.setSize(bodyWidth, bodyHeight).setOffset((frame.width - bodyWidth) / 2, frame.height - bodyHeight);
     this.physics.world.setBounds(32, 32, width - 64, height - 64);
     this.physics.add.collider(this.player, walls);
@@ -178,10 +180,24 @@ export class HubScene extends Phaser.Scene {
     const direction = ui.blocked ? { x: 0, y: 0 } : this.controls.movement();
     this.player.setVelocity(direction.x * 160, direction.y * 160).setDepth(this.player.y + 21);
     if (direction.x || direction.y) {
-      this.player.setAngle(ui.lowMotion ? 0 : Math.sin(this.time.now / 95) * 1.5);
-      if (direction.x) this.player.setFlipX(direction.x < 0);
+      if (Math.abs(direction.x) >= Math.abs(direction.y)) {
+        this.facing = direction.x < 0 ? 'left' : 'right';
+      } else {
+        this.facing = direction.y < 0 ? 'up' : 'down';
+      }
+      this.player.setFlipX(false).setAngle(0);
+      if (ui.lowMotion) {
+        this.player.anims.stop();
+        this.player.setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
+      } else {
+        this.player.anims.play(`player-walk-${this.facing}`, true);
+      }
+
     }
-    else this.player.setAngle(0);
+    else {
+      this.player.anims.stop();
+      this.player.setFlipX(false).setAngle(0).setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
+    }
     this.nearby = ui.blocked ? undefined : nearestInteraction(this.player, this.objects);
     ui.prompt(this.nearby?.label ?? '');
     if (this.routeDirection && this.routeTarget) {

@@ -5,7 +5,8 @@
     "paths": [
       "assets/sprites/instructor-a.png",
       "assets/sprites/instructor-b.png",
-      "assets/sprites/demo-house.png"
+      "assets/sprites/demo-house.png",
+      "assets/sprites/player.png"
     ],
     "creator": "User-supplied Gemini image assets; transparent cutouts prepared with OpenAI ImageGen",
     "license": "User supplied for this local demo; publication permission and cultural review pending",
