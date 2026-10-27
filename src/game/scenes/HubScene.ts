@@ -13,23 +13,23 @@ import world from '../../content/world-trails.json';
 import { InputManager } from '../systems/InputManager';
 import { nearestInteraction } from '../systems/InteractionSystem';
 import type { Interactable } from '../systems/InteractionSystem';
-import type { MinigameDefinition, MinigamePayload } from '../core/types';
+import type { MinigameDefinition } from '../core/types';
 import { ui, element } from '../ui/OverlayController';
 import dialogue from '../../content/dialogues.json';
+import { StationGameModal } from '../ui/StationGameModal';
+import { gameshow } from '../core/GameshowEngine';
 export class HubScene extends Phaser.Scene {
   player!: Phaser.Physics.Arcade.Sprite;
-  private facing: 'down' | 'up' | 'left' | 'right' = 'down';
   private controls!: InputManager;
   private objects: Interactable[] = [];
-  private routeDirection?: HTMLElement;
-  private routeTarget?: { x: number; y: number };
   private stationPlaques: { id: string; bounds: Rect; node: HTMLElement }[] = [];
   private landscape!: HubLandscape;
   private decorationCounts: Record<string, number> = {};
+  private portalCooldown = false;
   nearby?: Interactable;
   constructor() { super('Hub'); }
   create() {
-    this.objects = []; this.nearby = undefined; this.routeDirection = undefined; this.routeTarget = undefined; this.stationPlaques = [];
+    this.objects = []; this.nearby = undefined; this.stationPlaques = [];
     this.decorationCounts = {};
     ui.bind({ interact: () => this.interact(), finish: () => this.finish(), travel: id => this.travel(id) }); ui.hud(ui.t('hub')); ui.toast('');
     document.querySelector<HTMLElement>('#game-container')!.focus();
@@ -76,32 +76,81 @@ export class HubScene extends Phaser.Scene {
       const house = houseId === 'demo-house' ? undefined : decorationFrame(houseId);
       const facade = this.add.image(x, y - 12, house?.atlas ?? 'demo-house', house?.id ?? 'cutout').setOrigin(0.5, 1).setDepth(y - 12);
       facade.setScale(Math.min(192 / facade.width, 128 / facade.height));
+      facade.setInteractive({ useHandCursor: true });
+      facade.on('pointerdown', () => this.portal(station));
       if (!station.enabled) facade.setTint(0xc0c8b0);
       graphics.fillStyle(station.enabled ? 0xffecad : 0xbcc8a2).fillRect(x - 28, y - 12, 56, 24);
+
+      const zone = this.add.zone(x, y - 6, 64, 36).setOrigin(0.5).setInteractive({ useHandCursor: true });
+      zone.on('pointerdown', () => this.portal(station));
+
+      const stationIcons: Record<string, string> = {
+        M01: '🏮',
+        M02: '🎪',
+        M03: '🎵',
+        M04: '🔥',
+      };
+      const icon = stationIcons[station.id] || '⭐';
       const plaque = element('div', 'hub-station-label'); plaque.dataset.station = station.id;
-      plaque.append(element('strong', '', ui.t(station.titleKey)), element('span', '', ui.t(station.enabled ? session.state.statuses[station.id] : 'later')));
+      plaque.append(element('strong', '', `${icon} ${ui.t(station.titleKey)}`), element('span', '', ui.t(station.objectiveKey)));
+      plaque.style.pointerEvents = 'auto';
+      plaque.style.cursor = 'pointer';
+      plaque.onclick = () => this.portal(station);
       ui.screen.append(plaque);
       this.stationPlaques.push({ id: station.id, bounds: { x: x - 160, y: y - 212, width: 320, height: 68 }, node: plaque });
       if (station.enabled) {
         const instructor = { x: x + 104, y: y - 10 };
         this.add.image(instructor.x, instructor.y + 18, station.id === 'M02' ? 'instructor-a' : 'instructor-b', 'cutout').setOrigin(0.5, 1).setDisplaySize(station.id === 'M02' ? 32 : 44, 72).setDepth(instructor.y + 18);
-        this.objects.push({ ...instructor, id: `${station.id}-instructor`, label: `${localize(dialogue.instructorName, session.state.locale)} · ${ui.t(station.titleKey)}`, activate: () => this.portal(station) });
+        this.objects.push({ ...instructor, id: `${station.id}-instructor`, label: `${icon} ${ui.t(station.titleKey)}`, activate: () => this.portal(station) });
       }
-      this.objects.push({ ...station.portal, id: station.id, label: ui.t(station.titleKey), activate: () => this.portal(station) });
+      this.objects.push({ ...station.portal, id: station.id, label: `${icon} ${ui.t(station.titleKey)}`, activate: () => this.portal(station) });
     }
     this.add.image(map.guide.x, map.guide.y + 24, 'instructor-a', 'cutout').setOrigin(0.5, 1).setDisplaySize(32, 72).setDepth(map.guide.y + 24);
     this.add.text(map.guide.x, map.guide.y - 62, 'An', { fontFamily: '"Be Vietnam Pro", Arial, sans-serif', fontSize: '20px', color: '#244e42', backgroundColor: '#fff4d8', padding: { x: 6, y: 3 } }).setResolution(2).setOrigin(0.5).setDepth(10000);
     this.objects.push({ ...map.guide, id: 'guide', label: localize(dialogue.guide.name, session.state.locale), activate: () => ui.dialogue(localize(dialogue.guide.name, session.state.locale), dialogue.guide.pages.map(p => localize(p, session.state.locale))) });
-    this.add.image(map.board.x, map.board.y + 8, 'supplied-biome-1', 'trail-sign').setOrigin(0.5, 1).setDisplaySize(48, 80).setDepth(map.board.y + 8);
+    // Trống Đồng Đông Sơn Hoàng Kim tại quảng trường trung tâm (không có viền/nền đen)
+    const baseAura = this.add.circle(map.board.x, map.board.y - 10, 75, 0xffd700, 0.28).setDepth(map.board.y - 2);
+    const outerAura = this.add.circle(map.board.x, map.board.y - 10, 90, 0xffeb7a, 0.16).setDepth(map.board.y - 1);
+    this.tweens.add({
+      targets: [baseAura, outerAura],
+      scale: 1.25,
+      alpha: 0.06,
+      duration: 1800,
+      yoyo: true,
+      repeat: -1,
+    });
+
+    const drumSprite = this.add.image(map.board.x, map.board.y - 10, 'trong-dong').setOrigin(0.5, 0.5).setDisplaySize(130, 130).setDepth(map.board.y + 8);
+    drumSprite.setInteractive({ useHandCursor: true });
+    this.tweens.add({
+      targets: drumSprite,
+      angle: 360,
+      duration: 48000,
+      repeat: -1,
+      ease: 'Linear',
+    });
+    drumSprite.on('pointerdown', () => this.tryOpenGrandFinale());
+
+    this.add.text(map.board.x, map.board.y - 85, '✨ TRỐNG ĐỒNG ĐÔNG SƠN ✨', {
+      fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
+      fontSize: '13px',
+      fontStyle: 'bold',
+      color: '#4a2f00',
+      backgroundColor: '#ffd700',
+      padding: { x: 8, y: 3 },
+    }).setOrigin(0.5).setDepth(map.board.y + 12);
+
     for (const obstacle of hubObstacles(map, minigameRegistry, this.landscape)) block(obstacle.x + obstacle.width / 2, obstacle.y + obstacle.height / 2, obstacle.width, obstacle.height);
-    this.objects.push({ ...map.board, id: 'board', label: ui.t('board'), activate: () => ui.panel(ui.t('board'), ui.t('boardNote'), [
-      { label: ui.t('reviewJourney'), run: () => { ui.close(); this.finish(); } }, { label: ui.t('close'), run: () => ui.close() },
-    ]) });
+    this.objects.push({
+      ...map.board,
+      id: 'board',
+      label: '🥁 Trống Đồng Đông Sơn (Đại Kết Cục)',
+      activate: () => this.tryOpenGrandFinale(),
+    });
     const position = safeHubPosition(session.state.hubReturnPosition, map, minigameRegistry, this.landscape);
     if (position.x !== session.state.hubReturnPosition.x || position.y !== session.state.hubReturnPosition.y) session.setPosition(position);
-    this.facing = 'down';
-    this.player = this.physics.add.sprite(position.x, position.y, 'player', 0).setDisplaySize(42, 72).setOrigin(0.5, 51 / 72).setCollideWorldBounds(true);
-    const frame = this.player.frame, bodyWidth = frame.width * 22 / 42, bodyHeight = frame.height * 18 / 72;
+    this.player = this.physics.add.sprite(position.x, position.y, 'instructor-a', 'cutout').setDisplaySize(32, 72).setOrigin(0.5, 51 / 72).setCollideWorldBounds(true);
+    const frame = this.player.frame, bodyWidth = frame.width * 22 / 32, bodyHeight = frame.height * 18 / 72;
     this.player.body!.setSize(bodyWidth, bodyHeight).setOffset((frame.width - bodyWidth) / 2, frame.height - bodyHeight);
     this.physics.world.setBounds(32, 32, width - 64, height - 64);
     this.physics.add.collider(this.player, walls);
@@ -156,56 +205,70 @@ export class HubScene extends Phaser.Scene {
       this.game.events.off('postrender', positionLabels);
       for (const plaque of this.stationPlaques) plaque.node.remove();
       miniMap.remove();
+      this.scoreboardNode?.remove();
+      this.scoreboardNode = undefined;
     });
     this.controls = new InputManager(this);
-    const hint = element('div', 'world-hint');
-    if (session.state.mode === 'presentation') {
-      const next = nextPresentationStation(session.state.statuses);
-      hint.dataset.testid = 'route-hint';
-      hint.append(element('span', 'eyebrow', ui.t(next ? 'nextStation' : 'reviewJourney')), element('p', '', next ? ui.t(next.titleKey) : ui.t('routeDone')));
-      if (next) {
-        this.routeTarget = next.portal;
-        this.routeDirection = element('span', 'route-direction'); this.routeDirection.dataset.testid = 'route-direction';
-        hint.append(this.routeDirection, element('small', '', ui.t('followPaths')));
-        graphics.lineStyle(3, 0xffecc2).strokeRect(next.portal.x - 34, next.portal.y - 17, 68, 34);
-      } else hint.append(element('small', '', ui.t('board')));
-    } else hint.append(element('span', 'eyebrow', ui.t('available')), element('p', '', ui.t('allDone')));
-    hint.append(element('small', '', 'WASD / ↑↓←→ · E / Space'));
-    ui.screen.append(hint);
+    this.renderScoreboard();
     ui.tutorial();
     this.events.once('shutdown', () => { this.objects = []; this.nearby = undefined; });
   }
   update() {
     if (!this.player?.body) return;
-    const direction = ui.blocked ? { x: 0, y: 0 } : this.controls.movement();
-    this.player.setVelocity(direction.x * 160, direction.y * 160).setDepth(this.player.y + 21);
+    const isFrozen = ui.blocked || StationGameModal.get().isOpen;
+    if (isFrozen) {
+      this.player.setVelocity(0, 0);
+      this.player.setAngle(0);
+      return;
+    }
+    const direction = this.controls.movement();
+    this.player.setVelocity(direction.x * 280, direction.y * 280).setDepth(this.player.y + 21);
     if (direction.x || direction.y) {
-      if (Math.abs(direction.x) >= Math.abs(direction.y)) {
-        this.facing = direction.x < 0 ? 'left' : 'right';
-      } else {
-        this.facing = direction.y < 0 ? 'up' : 'down';
-      }
-      this.player.setFlipX(false).setAngle(0);
-      if (ui.lowMotion) {
-        this.player.anims.stop();
-        this.player.setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
-      } else {
-        this.player.anims.play(`player-walk-${this.facing}`, true);
-      }
-
+      this.player.setAngle(ui.lowMotion ? 0 : Math.sin(this.time.now / 95) * 1.5);
+      if (direction.x) this.player.setFlipX(direction.x < 0);
     }
-    else {
-      this.player.anims.stop();
-      this.player.setFlipX(false).setAngle(0).setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
-    }
-    this.nearby = ui.blocked ? undefined : nearestInteraction(this.player, this.objects);
+    else this.player.setAngle(0);
+    this.nearby = nearestInteraction(this.player, this.objects, 130);
     ui.prompt(this.nearby?.label ?? '');
-    if (this.routeDirection && this.routeTarget) {
-      const dx = this.routeTarget.x - this.player.x, dy = this.routeTarget.y - this.player.y;
-      const key = Math.hypot(dx, dy) <= 78 ? 'directionNear' : Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'directionLeft' : 'directionRight') : (dy < 0 ? 'directionUp' : 'directionDown');
-      const label = ui.t(key);
-      if (this.routeDirection.textContent !== label) this.routeDirection.textContent = label;
+
+    // Automatic entrance check when stepping on portal pad or approaching board
+    if (!StationGameModal.get().isOpen) {
+      const map = this.cache.json.get('hub-map') as HubMap;
+      if (this.portalCooldown) {
+        const anyNear = minigameRegistry.some(s => Math.hypot(this.player.x - s.portal.x, this.player.y - s.portal.y) <= 100);
+        const boardNear = Math.hypot(this.player.x - map.board.x, this.player.y - map.board.y) <= 100;
+        if (!anyNear && !boardNear) {
+          this.portalCooldown = false;
+        }
+      } else {
+        for (const station of minigameRegistry) {
+          if (Math.hypot(this.player.x - station.portal.x, this.player.y - station.portal.y) <= 80) {
+            this.portalCooldown = true;
+            this.portal(station);
+            break;
+          }
+        }
+        if (!this.portalCooldown && Math.hypot(this.player.x - map.board.x, this.player.y - map.board.y) <= 80) {
+          this.portalCooldown = true;
+          this.tryOpenGrandFinale();
+        }
+      }
     }
+  }
+  private tryOpenGrandFinale() {
+    const keys = gameshow.getCollectedKeysCount();
+    if (keys < 4) {
+      ui.panel(
+        '🔒 TRỐNG ĐỒNG ĐÔNG SƠN ĐANG BỊ PHONG ẤN!',
+        `Hiện tại các đội mới thu thập được ${keys}/4 Chìa Khóa.\n\nHãy hoàn thành cả 4 Lán Trại văn hóa (còn thiếu ${4 - keys} chìa khóa) để giải trừ phong ấn và bước vào ĐẠI KẾT CỤC!`,
+        [{ label: 'TIẾP TỤC KHÁM PHÁ', run: () => ui.close() }]
+      );
+      return;
+    }
+    StationGameModal.get().open('board', () => {
+      this.renderScoreboard();
+      ui.hud(ui.t('hub'));
+    });
   }
   private interact() { if (!ui.blocked) this.nearby?.activate(); }
   private fitCamera(width: number, height: number) {
@@ -242,16 +305,35 @@ export class HubScene extends Phaser.Scene {
     this.scene.restart();
   }
   private portal(station: MinigameDefinition) {
-    if (!station.enabled) { ui.dialogue(ui.t(station.titleKey), [ui.t(station.objectiveKey), ui.t('later')]); return; }
-    ui.panel(ui.t(station.titleKey), ui.t(station.objectiveKey), [
-      { label: ui.t('enter'), run: () => {
-        const returnPosition = { x: this.player.x, y: this.player.y };
-        session.begin(station.id, returnPosition); ui.close();
-        const seed = Number(new URLSearchParams(location.search).get('seed') ?? 42);
-        const payload: MinigamePayload = { minigameId: station.id, mode: session.state.mode, seed: Number.isFinite(seed) ? seed : 42, returnPosition };
-        this.scene.start(station.sceneKey, payload);
-      } }, { label: ui.t('close'), run: () => ui.close() },
-    ]);
+    const stationId = station.id as 'M01' | 'M02' | 'M03' | 'M04';
+    StationGameModal.get().open(stationId, () => {
+      this.renderScoreboard();
+    });
+  }
+  private scoreboardNode?: HTMLElement;
+  private renderScoreboard() {
+    if (!this.scoreboardNode) {
+      this.scoreboardNode = element('div', 'hub-live-scoreboard');
+      this.scoreboardNode.id = 'hub-live-scoreboard';
+      ui.screen.append(this.scoreboardNode);
+    }
+    const keysCount = gameshow.getCollectedKeysCount();
+    this.scoreboardNode.innerHTML = `
+      <div class="hub-gs-title">
+        <span>🥁</span> THANH ÂM ĐẠI NGÀN
+        <span class="hub-keys-pill ${keysCount >= 4 ? 'unlocked' : ''}">🗝️ Chìa Khóa: ${keysCount}/4</span>
+      </div>
+      <div class="hub-teams-row">
+        ${gameshow.teams.map(t => `
+          <div class="hub-team-pill" style="border-color:${t.color}">
+            <span>${t.name}</span>
+            <strong>${t.score}đ</strong>
+            <small style="color:#9ec7b8">⚡${t.cards.steal_points} 🔒${t.cards.block_turn} 🛡️${t.cards.shield}</small>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    ui.hud(ui.t('hub'));
   }
   private finish() { session.setPosition({ x: this.player.x, y: this.player.y }); this.scene.start('Ending'); }
 }

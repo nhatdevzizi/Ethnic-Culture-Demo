@@ -1,0 +1,51 @@
+{
+  "round_name": "VÒNG 4: LỬA THIÊNG ĐẠI NGÀN",
+  "round_description": "Chung kết đỉnh cao: Đòn bẩy Thẻ Đuốc Bạc (x2), Thẻ Đuốc Vàng (x3) và Cơ chế Săn Mồi lật kèo trực tiếp.",
+  "questions": [
+    {
+      "id": 1,
+      "difficulty": "Vừa",
+      "has_card": "shield",
+      "question": "Hệ thống tri thức canh tác độc đáo trên sườn núi cao của đồng bào H'Mông, La Chí, Hà Nhì ở Mù Cang Chải, Hoàng Su Phì đã tạo nên kỳ quan nào?",
+      "options": ["Ruộng bậc thang", "Nương rẫy du canh", "Vườn đồi thoai thoải", "Thung lũng ngập nước"],
+      "correct_index": 0,
+      "explanation": "Ruộng bậc thang là đỉnh cao của tri thức bản địa trong việc điều dẫn nguồn nước và thích ứng với địa hình núi cao hiểm trở, được công nhận là Di tích quốc gia đặc biệt."
+    },
+    {
+      "id": 2,
+      "difficulty": "Khá",
+      "has_card": null,
+      "question": "Tháp Chàm (Tháp Po Klong Garai, Po Nagar...) là công trình kiến trúc tôn giáo bằng gạch nung độc đáo của người Chăm. Chất kết dính bí truyền giữa các viên gạch cổ xưa chủ yếu là gì?",
+      "options": ["Nhựa cây dầu rái (thảo mộc tự nhiên)", "Xi măng vôi cát hiện đại", "Đất sét trộn rơm rạ", "Mật mía trộn tro trấu"],
+      "correct_index": 0,
+      "explanation": "Nghệ nhân Chăm xưa dùng nhựa cây dầu rái và kỹ thuật mài chập các viên gạch sát khít nhau, tạo nên những ngọn tháp ngàn năm trơ gan cùng tuế nguyệt."
+    },
+    {
+      "id": 3,
+      "difficulty": "Khá",
+      "has_card": "block_turn",
+      "question": "Sử thi 'Đẻ đất đẻ nước' (Te tấc te đác) đồ sộ gồm hàng vạn câu thơ, kể về sự hình thành trời đất, con người và muôn loài là kiệt tác của dân tộc nào?",
+      "options": ["Dân tộc Mường", "Dân tộc Thái", "Dân tộc Tày", "Dân tộc Dao"],
+      "correct_index": 0,
+      "explanation": "Sử thi 'Đẻ đất đẻ nước' của người Mường phản ánh thế giới quan sâu sắc, nguồn gốc vũ trụ và tinh thần đấu tranh bất khuất của tổ tiên từ thời nguyên sơ."
+    },
+    {
+      "id": 4,
+      "difficulty": "Khó",
+      "has_card": null,
+      "question": "Theo truyền thuyết nguồn gốc dân tộc Việt Nam, hình tượng mẹ Âu Cơ sinh ra bọc trăm trứng, năm mươi con theo cha xuống biển, năm mươi con theo mẹ lên rừng mang ý nghĩa thiêng liêng gì?",
+      "options": ["Khẳng định 54 dân tộc anh em trên khắp mọi miền đều chung một cội nguồn 'Đồng bào'", "Phân chia địa bàn sinh sống vĩnh viễn", "Phản ánh quá trình giao thương cổ đại", "Mô tả sự phát triển dân số thời nguyên thủy"],
+      "correct_index": 0,
+      "explanation": "Từ 'Đồng bào' (cùng sinh ra từ bọc trăm trứng) là biểu tượng thiêng liêng duy nhất trên thế giới khẳng định sự bình đẳng, đoàn kết gắn bó máu thịt của các dân tộc Việt Nam."
+    },
+    {
+      "id": 5,
+      "difficulty": "Rất Khó",
+      "has_card": null,
+      "question": "Nghệ thuật gốm truyền thống nào của đồng bào Chăm ở làng Bàu Trúc (Ninh Thuận) được UNESCO ghi danh vào Danh sách Di sản văn hóa phi vật thể cần bảo vệ khẩn cấp năm 2022?",
+      "options": ["Nghệ thuật làm gốm thủ công không dùng bàn xoay ('tay quay, người đi giật lùi')", "Gốm men lam cao cấp", "Gốm nung trong lò kín tráng men", "Gốm dát vàng dát bạc"],
+      "correct_index": 0,
+      "explanation": "Gốm Bàu Trúc là một trong những làng gốm cổ xưa nhất Đông Nam Á, nghệ nhân Chăm tạo hình hoàn toàn bằng đôi tay khéo léo và bước chân di chuyển quanh khối đất sét mà không cần bàn xoay."
+    }
+  ]
+}

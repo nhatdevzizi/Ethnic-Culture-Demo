@@ -1,12 +1,12 @@
 import { session } from '../core/SessionStore';
 import { facts, localize, text } from '../core/content';
-import { minigameRegistry } from '../core/MinigameRegistry';
 import { nextPresentationStation, TutorialProgress } from '../core/PresentationRoute';
 import { AccessibilityPreferences } from '../core/AccessibilityPreferences';
 import { audio } from '../systems/AudioManager';
 import assets from '../../content/assets-manifest.json';
 import presentation from '../../content/presentation.json';
 import type { TextKey } from '../core/content';
+import { gameshow } from '../core/GameshowEngine';
 import '../../styles/presentation.css';
 
 export const element = <K extends keyof HTMLElementTagNameMap>(tag: K, className = '', content = '') => {
@@ -35,7 +35,11 @@ class OverlayController {
   onFatalError?: () => void;
   get lowMotion() { return this.accessibility.lowMotion; }
   get hasError() { return this.errorActive; }
-  get blocked() { return this.errorActive || this.modal.open || document.hidden; }
+  get blocked() {
+    const stationModal = document.getElementById('station-game-modal');
+    const isStationOpen = stationModal && stationModal.style.display === 'flex';
+    return this.errorActive || this.modal.open || document.hidden || Boolean(isStationOpen);
+  }
   t(key: TextKey | string) {
     return key in presentation ? presentationText(key as keyof typeof presentation) : text(key, session.state.locale);
   }
@@ -119,7 +123,9 @@ class OverlayController {
     const tools = element('nav', 'tools'); tools.setAttribute('aria-label', this.t('controlsLabel'));
     const help = button('?', () => this.help(), 'icon-button'); help.setAttribute('aria-label', this.t('help'));
     const pause = button('Ⅱ', () => this.pause(), 'icon-button'); pause.setAttribute('aria-label', this.t('pause'));
-    tools.append(button(`${this.t('passport')} ${session.state.passportStamps.length}/${minigameRegistry.filter(station => station.enabled).length}`, () => this.passport()), help, pause);
+    const keysCount = gameshow.getCollectedKeysCount();
+    const keyButton = button(`🗝️ Chìa khóa thu thập: ${keysCount}/4`, () => this.keysPanel(), 'key-tracker-btn');
+    tools.append(keyButton, help, pause);
     if (session.state.mode === 'presentation') tools.append(button(this.t('presenter'), () => this.presenter(), 'presenter-button'));
     hud.replaceChildren(place, tools);
     if (!session.storageAvailable) this.toast(this.t('savedFallback'));
@@ -155,8 +161,24 @@ class OverlayController {
   }
   help() { if (this.actions.help) { this.actions.help(); return; } this.panel(this.t('help'), this.t('controls'), [{ label: this.t('close'), run: () => this.close() }]); }
   passport() {
-    const list = minigameRegistry.map(s => `${this.t(s.titleKey)}: ${s.enabled ? this.t(session.state.statuses[s.id]) : this.t('later')}`).join('\n');
-    this.panel(this.t('progress'), `${list}\n\n${this.t('demoNote')}`, [{ label: this.t('close'), run: () => this.close() }]);
+    this.keysPanel();
+  }
+  keysPanel() {
+    const count = gameshow.getCollectedKeysCount();
+    const r1 = gameshow.isStationCompleted('M01') ? '✅ ĐÃ THU THẬP (Vòng 1: Mảnh ghép thổ cẩm)' : '🔒 CHƯA HOÀN THÀNH (Vòng 1: Mảnh ghép thổ cẩm)';
+    const r2 = gameshow.isStationCompleted('M02') ? '✅ ĐÃ THU THẬP (Vòng 2: Phiên chợ vùng cao)' : '🔒 CHƯA HOÀN THÀNH (Vòng 2: Phiên chợ vùng cao)';
+    const r3 = gameshow.isStationCompleted('M03') ? '✅ ĐÃ THU THẬP (Vòng 3: Tiếng vang đại ngàn)' : '🔒 CHƯA HOÀN THÀNH (Vòng 3: Tiếng vang đại ngàn)';
+    const r4 = gameshow.isStationCompleted('M04') ? '✅ ĐÃ THU THẬP (Vòng 4: Lửa thiêng đại ngàn)' : '🔒 CHƯA HOÀN THÀNH (Vòng 4: Lửa thiêng đại ngàn)';
+
+    const statusMsg = count >= 4
+      ? '✨ XIN CHÚC MỪNG! Bạn đã thu thập đủ 4/4 Chìa Khóa! Phong ấn Trống Đồng Đông Sơn tại quảng trường trung tâm đã được giải trừ. Hãy tiến tới Trống Đồng để bước vào ĐẠI KẾT CỤC!'
+      : `⚡ Bạn đang có ${count}/4 Chìa Khóa. Hãy ghé thăm và hoàn thành cả 4 Lán Trại xung quanh bản đồ để mở khóa Đại Kết Cục!`;
+
+    this.panel(
+      `🗝️ CHÌA KHÓA THU THẬP (${count}/4)`,
+      `${r1}\n${r2}\n${r3}\n${r4}\n\n${statusMsg}`,
+      [{ label: this.t('close'), run: () => this.close() }]
+    );
   }
   credits() {
     this.panel(this.t('sources'), this.t('creditsNote'), [{ label: this.t('close'), run: () => this.close() }]);
