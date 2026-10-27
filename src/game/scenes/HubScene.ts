@@ -132,12 +132,13 @@ export class HubScene extends Phaser.Scene {
       label.setAttribute('text-anchor', 'middle'); label.setAttribute('font-size', '140'); label.setAttribute('font-weight', '800'); label.textContent = route.stationId; svg.append(label);
     }
     const marker = document.createElementNS(svg.namespaceURI, 'circle'); marker.setAttribute('r', '55'); marker.setAttribute('fill', '#c75336'); marker.setAttribute('stroke', '#fff9e9'); marker.setAttribute('stroke-width', '18'); svg.append(marker);
-    miniMap.append(svg); ui.screen.append(miniMap);
-    const biomeLabel = element('span', 'hub-biome-label', ui.t('hub')); miniMap.append(biomeLabel);
+    const biomeLabel = element('span', 'hub-biome-label', ui.t('hub'));
+    miniMap.append(svg, biomeLabel);
+    const hudTools = document.querySelector('#hud .tools');
+    if (hudTools) hudTools.append(miniMap); else ui.screen.append(miniMap);
     const resizeCamera = () => this.fitCamera(width, height);
     resizeCamera();
     const positionLabels = () => {
-      miniMap.style.top = `${(camera.y + 12) / this.scale.height * 100}%`;
       marker.setAttribute('cx', String(this.player.x)); marker.setAttribute('cy', String(this.player.y));
       const region = Math.hypot(this.player.x - map.spawn.x, this.player.y - map.spawn.y) < 250 ? undefined : map.biomes.find(biome => {
         const station = minigameRegistry.find(station => station.id === biome.stationId)!;
@@ -152,31 +153,30 @@ export class HubScene extends Phaser.Scene {
       }
     };
     this.game.events.on('postrender', positionLabels);
-    const hudObserver = new ResizeObserver(resizeCamera); hudObserver.observe(document.querySelector('#hud')!);
     this.scale.on('resize', resizeCamera); window.addEventListener('resize', resizeCamera); document.addEventListener('fullscreenchange', resizeCamera);
     this.events.once('shutdown', () => {
-      hudObserver.disconnect(); this.scale.off('resize', resizeCamera); window.removeEventListener('resize', resizeCamera); document.removeEventListener('fullscreenchange', resizeCamera);
+      this.scale.off('resize', resizeCamera); window.removeEventListener('resize', resizeCamera); document.removeEventListener('fullscreenchange', resizeCamera);
       this.game.events.off('postrender', positionLabels);
       for (const plaque of this.stationPlaques) plaque.node.remove();
-      miniMap.remove();
+      miniMap.remove(); this.objects = []; this.nearby = undefined;
     });
     this.controls = new InputManager(this);
     const hint = element('div', 'world-hint');
     if (session.state.mode === 'presentation') {
       const next = nextPresentationStation(session.state.statuses);
       hint.dataset.testid = 'route-hint';
-      hint.append(element('span', 'eyebrow', ui.t(next ? 'nextStation' : 'reviewJourney')), element('p', '', next ? ui.t(next.titleKey) : ui.t('routeDone')));
+      const title = element('p', '', next ? ui.t(next.titleKey) : ui.t('routeDone'));
       if (next) {
         this.routeTarget = next.portal;
-        this.routeDirection = element('span', 'route-direction'); this.routeDirection.dataset.testid = 'route-direction';
-        hint.append(this.routeDirection, element('small', '', ui.t('followPaths')));
+        this.routeDirection = element('span', 'route-direction');
+        this.routeDirection.dataset.testid = 'route-direction';
+        title.append(' ', this.routeDirection);
         graphics.lineStyle(3, 0xffecc2).strokeRect(next.portal.x - 34, next.portal.y - 17, 68, 34);
-      } else hint.append(element('small', '', ui.t('board')));
+      }
+      hint.append(element('span', 'eyebrow', ui.t(next ? 'nextStation' : 'reviewJourney')), title);
     } else hint.append(element('span', 'eyebrow', ui.t('available')), element('p', '', ui.t('allDone')));
-    hint.append(element('small', '', 'WASD / ↑↓←→ · E / Space'));
     ui.screen.append(hint);
     ui.tutorial();
-    this.events.once('shutdown', () => { this.objects = []; this.nearby = undefined; });
   }
   update() {
     if (!this.player?.body) return;
@@ -212,13 +212,9 @@ export class HubScene extends Phaser.Scene {
   }
   private interact() { if (!ui.blocked) this.nearby?.activate(); }
   private fitCamera(width: number, height: number) {
-    const canvas = this.game.canvas.getBoundingClientRect(), hud = document.querySelector('#hud')!.getBoundingClientRect();
-    const scale = canvas.height / this.scale.height;
-    const reserve = Math.max(96, Math.ceil((hud.bottom - canvas.top) / (scale || 1) + 8));
     const camera = this.cameras.main;
-    camera.setViewport(0, reserve, this.scale.width, Math.max(1, this.scale.height - reserve));
-    // Keep the approached station's label above the player with HUD space reserved.
-    camera.setFollowOffset(0, 64 + (reserve - 96) / (2 * camera.zoom));
+    camera.setViewport(0, 0, this.scale.width, this.scale.height);
+    camera.setFollowOffset(0, 48);
     const padding = Math.max(0, camera.displayWidth - width) / 2;
     camera.setBounds(-padding, 0, width + padding * 2, height);
   }

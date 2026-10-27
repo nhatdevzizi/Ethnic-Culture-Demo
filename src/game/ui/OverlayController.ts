@@ -120,7 +120,6 @@ class OverlayController {
     const help = button('?', () => this.help(), 'icon-button'); help.setAttribute('aria-label', this.t('help'));
     const pause = button('Ⅱ', () => this.pause(), 'icon-button'); pause.setAttribute('aria-label', this.t('pause'));
     tools.append(button(`${this.t('passport')} ${session.state.passportStamps.length}/${minigameRegistry.filter(station => station.enabled).length}`, () => this.passport()), help, pause);
-    if (session.state.mode === 'presentation') tools.append(button(this.t('presenter'), () => this.presenter(), 'presenter-button'));
     hud.replaceChildren(place, tools);
     if (!session.storageAvailable) this.toast(this.t('savedFallback'));
   }
@@ -145,8 +144,7 @@ class OverlayController {
     if (!this.actions.finish || this.modal.open) return;
     const options = [{ label: this.t('resume'), run: () => this.close() },
       { label: this.t('help'), run: () => this.help() },
-      { label: this.t('sources'), run: () => this.credits() },
-      { label: this.t('fullscreen'), run: () => this.fullscreen() }];
+      { label: this.t('sources'), run: () => this.credits() }];
     if (this.actions.restart) options.push({ label: this.t('restart'), run: () => this.actions.restart?.() });
     if (this.actions.back) options.push({ label: this.t('back'), run: () => this.actions.back?.() });
     if (this.actions.skip && session.state.mode === 'presentation') options.push({ label: this.t('skip'), run: () => this.actions.skip?.() });
@@ -199,7 +197,7 @@ class OverlayController {
     if (this.actions.back) options.push({ label: this.t('back'), run: () => { this.close(); this.actions.back?.(); } });
     if (this.actions.skip) options.push({ label: this.t('skip'), run: () => { this.close(); this.actions.skip?.(); } });
     if (this.actions.travel) options.push({ label: this.t('replayTutorial'), run: () => { this.close(); this.tutorial(true); } });
-    options.push({ label: this.t('sources'), run: () => this.credits() }, { label: this.t('fullscreen'), run: () => this.fullscreen() },
+    options.push({ label: this.t('sources'), run: () => this.credits() },
       { label: this.t('finish'), run: () => { this.close(); this.actions.finish?.(); } }, { label: this.t('resume'), run: () => this.close() });
     this.panel(this.t('presenter'), station ? `${this.t('nextStation')}: ${this.t(station.titleKey)}\n${this.t('travelNote')}` : `${this.t('reviewJourney')}\n${this.t('routeDone')}`, options);
     this.audioSettings(); this.motionSettings(); this.pauseOpen = true;

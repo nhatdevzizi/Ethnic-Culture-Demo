@@ -2,8 +2,7 @@
 #screen .first-run-tutorial h2{font-family:var(--font-heading);font-weight:500;font-size:21px;line-height:1.4;margin:0 0 7px}
 #screen .first-run-tutorial p{font-size:13px;line-height:1.6;margin:0 0 9px}
 #screen .first-run-tutorial button{font-size:13px;padding:8px 12px}
-.route-direction{display:block;margin-top:5px;font-weight:600;font-size:13px;color:var(--green)}
-#screen .world-hint small{display:block}
+.route-direction{display:inline-block;margin-left:6px;font-weight:700;font-size:15px;color:var(--green)}
 #screen .journal-ending{width:min(880px,88%);max-height:calc(100% - 95px);overflow:auto;padding:26px 34px}
 #screen .journal-ending h1{font-size:clamp(30px,3.3vw,46px);margin:4px 0 12px}
 .review-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0}
@@ -22,5 +21,5 @@
 #screen .studio.rhythm-studio{height:auto}
 #app:fullscreen{width:100vw;height:100dvh;aspect-ratio:auto}
 @media(min-width:1600px){#screen .first-run-tutorial{width:360px;padding:20px}#screen .first-run-tutorial p{font-size:16px}#screen .journal-ending{padding:36px 42px;width:min(1050px,85%)}.review-card p,.closing-prompt p{font-size:18px}}
-@media(max-width:700px){#screen .first-run-tutorial{right:12px;bottom:20px;max-width:44%;width:260px;padding:12px}#screen .first-run-tutorial h2{font-size:17px}#screen .first-run-tutorial p{font-size:11px}.review-cards{grid-template-columns:1fr;gap:8px}#screen .journal-ending{padding:20px 24px;max-height:calc(100% - 65px)}#hud .tools{gap:4px}#hud .tools button{padding-inline:7px}.tools .presenter-button{font-size:11px}}
+@media(max-width:700px){#screen .first-run-tutorial{right:12px;bottom:20px;max-width:44%;width:260px;padding:12px}#screen .first-run-tutorial h2{font-size:17px}#screen .first-run-tutorial p{font-size:11px}.review-cards{grid-template-columns:1fr;gap:8px}#screen .journal-ending{padding:20px 24px;max-height:calc(100% - 65px)}#hud .tools{gap:4px}#hud .tools button{padding-inline:7px}}
 @media(max-height:650px){#screen .first-run-tutorial{bottom:24px;padding:10px 13px}#screen .first-run-tutorial h2{font-size:18px}#screen .first-run-tutorial p{font-size:11px}#screen .journal-ending{max-height:calc(100% - 60px);padding:20px 28px}}
