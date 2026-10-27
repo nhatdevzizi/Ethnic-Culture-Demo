@@ -39,9 +39,14 @@ export class HubScene extends Phaser.Scene {
     const graphics = this.add.graphics().setDepth(1);
     this.add.tileSprite(-64, -64, width + 128, height + 128, decorations.terrain.ground).setOrigin(0);
     for (const tile of this.landscape.roadTiles) {
-      this.add.image(tile.x, tile.y, 'nature-roads', tile.frameId).setDisplaySize(world.cellSize + 1, world.cellSize + 1).setAngle(tile.angle);
+      this.add.image(tile.x, tile.y, 'nature-roads', tile.frameId).setDisplaySize(world.cellSize + 2, world.cellSize + 2).setAngle(tile.angle).setDepth(1);
     }
-    for (const road of map.roads) this.add.tileSprite(road.x, road.y, road.width, road.height, decorations.terrain.plaza).setOrigin(0).setTilePosition(road.x, road.y);
+    const plazaBorder = this.add.graphics().setDepth(1);
+    for (const road of map.roads) {
+      plazaBorder.fillStyle(0x5c4028, 0.9).fillRoundedRect(road.x - 5, road.y - 5, road.width + 10, road.height + 74, 8);
+      plazaBorder.fillStyle(0xc99a6b, 0.95).fillRoundedRect(road.x - 2, road.y - 2, road.width + 4, road.height + 68, 6);
+      this.add.tileSprite(road.x, road.y, road.width, road.height + 64, decorations.terrain.plaza).setOrigin(0).setTilePosition(road.x, road.y).setDepth(1);
+    }
     const drawPond = (pond: WaterArea) => {
       const water = waterRects(pond);
       for (const rect of water) this.add.tileSprite(rect.x, rect.y, rect.width, rect.height, 'lake-water-tile').setOrigin(0).setDepth(1);
@@ -66,9 +71,7 @@ export class HubScene extends Phaser.Scene {
       const body = this.add.rectangle(x, y, w, h, 0, 0); walls.add(body);
       const physicsBody = body.body as Phaser.Physics.Arcade.StaticBody; physicsBody.setSize(w, h);
     };
-    for (let x = 0; x < map.width; x++) { this.add.image(x * 32, 0, 'stone-tile').setOrigin(0); this.add.image(x * 32, height - 32, 'stone-tile').setOrigin(0); }
-    for (let y = 1; y < map.height - 1; y++) { this.add.image(0, y * 32, 'stone-tile').setOrigin(0); this.add.image(width - 32, y * 32, 'stone-tile').setOrigin(0); }
-    block(width / 2, 16, width, 32); block(width / 2, height - 16, width, 32); block(16, height / 2, 32, height); block(width - 16, height / 2, 32, height);
+    block(width / 2, 40, width, 80); block(width / 2, height - 38, width, 76); block(42, height / 2, 84, height); block(width - 42, height / 2, 84, height);
     for (const bench of map.benches) this.add.image(bench.x, bench.y, 'supplied-biome-1', 'bamboo-bench').setOrigin(0).setDisplaySize(64, 32).setDepth(bench.y + 32);
     for (const station of minigameRegistry) {
       const { x, y } = station.portal;
@@ -103,7 +106,7 @@ export class HubScene extends Phaser.Scene {
     this.player = this.physics.add.sprite(position.x, position.y, 'player', 0).setDisplaySize(42, 72).setOrigin(0.5, 51 / 72).setCollideWorldBounds(true);
     const frame = this.player.frame, bodyWidth = frame.width * 22 / 42, bodyHeight = frame.height * 18 / 72;
     this.player.body!.setSize(bodyWidth, bodyHeight).setOffset((frame.width - bodyWidth) / 2, frame.height - bodyHeight);
-    this.physics.world.setBounds(32, 32, width - 64, height - 64);
+    this.physics.world.setBounds(84, 76, width - 168, height - 152);
     this.physics.add.collider(this.player, walls);
     const camera = this.cameras.main;
     camera.setZoom(1.25).startFollow(this.player, true, 1, 1, 0, 64);
