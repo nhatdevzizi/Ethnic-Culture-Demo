@@ -9,6 +9,7 @@ import type { HubScene } from './game/scenes/HubScene';
 import type { PatternStudioScene } from './game/minigames/PatternStudioScene';
 import './styles/main.css';
 import './styles/fonts.css';
+import './styles/gameshow.css';
 
 let game: Phaser.Game | undefined;
 ui.onFatalError = () => { game?.scene.getScenes(true).forEach(scene => scene.scene.pause()); };
@@ -32,6 +33,7 @@ async function startGame() {
     if (errors.length) throw new Error(errors.join('\n'));
     if (ui.hasError) return;
     const createdGame = new Phaser.Game(gameConfig); game = createdGame;
+    (window as any).__phaserGame = createdGame;
     if (ui.hasError) { ui.onFatalError?.(); return; }
     if (import.meta.env.DEV) {
       const debugWindow = window as unknown as { render_game_to_text: () => string; advanceTime: (ms: number) => void };

@@ -1,0 +1,58 @@
+{
+  "round_name": "VÒNG 3: TIẾNG VANG ĐẠI NGÀN",
+  "round_description": "Bấm chuông phản xạ, nhận diện âm thanh nhạc cụ dân tộc và điền khuyết ca dao tục ngữ.",
+  "questions": [
+    {
+      "id": 1,
+      "type": "audio",
+      "audio_type": "dan_tinh",
+      "has_card": "block_turn",
+      "question": "Lắng nghe thanh âm mộc mạc, tha thiết sau và cho biết đây là tiếng của loại nhạc cụ truyền thống nào?",
+      "options": ["Đàn Tính (Tày, Nùng)", "Đàn Đáy", "Đàn Nhị", "Đàn Tam"],
+      "correct_index": 0,
+      "explanation": "Đàn Tính (Tính tẩu) làm từ bầu quả bầu khô và cần đàn bằng gỗ mềm, là linh hồn trong các làn điệu Hát Then di sản của người Tày, Nùng, Thái."
+    },
+    {
+      "id": 2,
+      "type": "audio",
+      "audio_type": "khen_mong",
+      "has_card": null,
+      "question": "Âm thanh dạt dào, réo rắt ngân vang giữa vách đá tai mèo này là tiếng nhạc cụ nào của chàng trai vùng cao?",
+      "options": ["Khèn Mông", "Sáo Mèo", "Kèn Pí Lè", "Đàn Môi"],
+      "correct_index": 0,
+      "explanation": "Khèn Mông không chỉ là nhạc cụ mà còn là người bạn tâm giao, phương tiện tỏ tình và biểu đạt lòng kiên cường của người Mông trên non cao."
+    },
+    {
+      "id": 3,
+      "type": "audio",
+      "audio_type": "cong_chieng",
+      "has_card": "steal_points",
+      "question": "Thanh âm trầm hùng, linh thiêng, vang vọng khắp núi rừng đại ngàn này là của nhạc cụ nào?",
+      "options": ["Cồng chiêng Tây Nguyên", "Trống Paranưng Chăm", "Trống đồng", "Chuông đồng"],
+      "correct_index": 0,
+      "explanation": "Dàn cồng chiêng gồm chiêng núm và cồng bằng, tạo nên bản giao hưởng đa âm sắc linh thiêng của núi rừng Tây Nguyên."
+    },
+    {
+      "id": 4,
+      "type": "fill_in",
+      "audio_type": null,
+      "has_card": null,
+      "question": "Điền từ còn thiếu vào câu ca dao quen thuộc ca ngợi tinh thần đoàn kết, tương trợ lẫn nhau của các dân tộc: 'Bầu ơi thương lấy bí cùng, tuy rằng khác giống nhưng chung một [...]'?",
+      "correct_answer": "giàn",
+      "options": ["giàn", "nhà", "vườn", "cây"],
+      "correct_index": 0,
+      "explanation": "'Chung một giàn' nhắc nhở các dân tộc anh em trên dải đất Việt Nam dù phong tục, ngôn ngữ khác nhau nhưng đều chung một cội nguồn và vận mệnh đất nước."
+    },
+    {
+      "id": 5,
+      "type": "fill_in",
+      "audio_type": null,
+      "has_card": null,
+      "question": "Điền từ còn thiếu vào câu tục ngữ nhắc nhớ đạo lý ngàn đời của con Rồng cháu Tiên: 'Nhiễu điều phủ lấy giá gương, người trong một [...] phải thương nhau cùng'?",
+      "correct_answer": "nước",
+      "options": ["nước", "nhà", "làng", "buôn"],
+      "correct_index": 0,
+      "explanation": "'Người trong một nước phải thương nhau cùng' khẳng định tình đoàn kết keo sơn, gắn bó keo sơn của 54 dân tộc anh em."
+    }
+  ]
+}

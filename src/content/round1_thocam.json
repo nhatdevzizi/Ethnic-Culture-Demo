@@ -1,0 +1,90 @@
+{
+  "round_name": "VÒNG 1: MẢNH GHÉP THỔ CẨM",
+  "round_description": "Lật mở 9 ô thổ cẩm để tìm hiểu văn hóa và giải mã Bức tranh bí ẩn.",
+  "secret_title": "Không Gian Văn Hóa Cồng Chiêng Tây Nguyên",
+  "secret_description": "Kiệt tác truyền khẩu và Di sản văn hóa phi vật thể của nhân loại (UNESCO công nhận năm 2005). Cồng chiêng là thanh âm thiêng liêng nối kết con người với thần linh, gắn bó mật thiết với vòng đời người và các lễ hội mùa màng của đồng bào các dân tộc Tây Nguyên (Ba Na, Gia Rai, Ê Đê, M'Nông, Cơ Ho...).",
+  "secret_image": "assets/images/cong_chieng_tay_nguyen.svg",
+  "questions": [
+    {
+      "id": 1,
+      "slot_number": 1,
+      "has_card": "steal_points",
+      "question": "Trang phục truyền thống của phụ nữ dân tộc Thái nổi tiếng với chiếc áo ôm sát và hàng khuy bạc tinh xảo có tên gọi là gì?",
+      "options": ["Áo cóm", "Áo chàm", "Áo bà ba", "Áo tơ tằm"],
+      "correct_index": 0,
+      "explanation": "Áo cóm kết hợp với váy đen dài và thắt lưng xanh (xài éo) là nét đẹp duyên dáng đặc trưng của phụ nữ Thái vùng Tây Bắc."
+    },
+    {
+      "id": 2,
+      "slot_number": 2,
+      "has_card": null,
+      "question": "Chiếc khăn đội đầu truyền thống được thêu hoa văn chỉ màu cầu kỳ của phụ nữ dân tộc Thái đen được gọi là gì?",
+      "options": ["Khăn Piêu", "Khăn rằn", "Khăn Mống", "Khăn Vằn"],
+      "correct_index": 0,
+      "explanation": "Khăn Piêu là tác phẩm nghệ thuật thêu thùa thể hiện sự khéo léo, tình cảm và tâm hồn của người con gái Thái."
+    },
+    {
+      "id": 3,
+      "slot_number": 3,
+      "has_card": null,
+      "question": "Lễ hội Lồng Tồng (xuống đồng) là lễ hội cầu mùa màng tươi tốt lớn nhất vào dịp đầu xuân của các dân tộc nào?",
+      "options": ["Tày, Nùng", "Chăm, Raglai", "Ê Đê, Ba Na", "Khmer, Hoa"],
+      "correct_index": 0,
+      "explanation": "Lễ hội Lồng Tồng của người Tày, Nùng mang ý nghĩa tạ ơn thần linh, cầu cho mưa thuận gió hòa, mùa màng bội thu."
+    },
+    {
+      "id": 4,
+      "slot_number": 4,
+      "has_card": "shield",
+      "question": "Chất liệu nhuộm màu chàm truyền thống của đồng bào các dân tộc Tày, Nùng, Dao, H'Mông được chiết xuất từ đâu?",
+      "options": ["Cây chàm tự nhiên", "Củ nghệ rừng", "Vỏ cây sú vẹt", "Quả gấc chín"],
+      "correct_index": 0,
+      "explanation": "Đồng bào ngâm lá cây chàm, hòa với vôi và nước tro bếp để nhuộm vải, tạo nên sắc chàm bền đẹp ngát hương núi rừng."
+    },
+    {
+      "id": 5,
+      "slot_number": 5,
+      "has_card": null,
+      "question": "Kiến trúc nhà ở truyền thống có mái cao vút hình lưỡi rìu, là biểu tượng trung tâm buôn làng Tây Nguyên gọi là gì?",
+      "options": ["Nhà Rông", "Nhà Dài", "Nhà Trình Tường", "Nhà Đất"],
+      "correct_index": 0,
+      "explanation": "Nhà Rông là nơi hội họp, tiếp khách quý, tổ chức các nghi lễ thiêng liêng và lưu giữ những giá trị văn hóa của buôn làng."
+    },
+    {
+      "id": 6,
+      "slot_number": 6,
+      "has_card": null,
+      "question": "Bảo vật văn hóa bằng đồng nào của cư dân Đông Sơn cổ đại phản ánh đời sống tâm linh và nghệ thuật đúc đồng đỉnh cao của người Việt?",
+      "options": ["Trống đồng Đông Sơn", "Thạp đồng", "Dao găm đồng", "Chuông đồng"],
+      "correct_index": 0,
+      "explanation": "Trống đồng Đông Sơn với hình tượng mặt trời ở giữa và đàn chim Lạc bay quanh là biểu tượng rực rỡ của nền văn minh sông Hồng."
+    },
+    {
+      "id": 7,
+      "slot_number": 7,
+      "has_card": null,
+      "question": "Kỹ thuật vẽ sáp ong trên vải lanh (Batik) để tạo hoa văn thổ cẩm độc đáo là di sản thủ công tiêu biểu của dân tộc nào?",
+      "options": ["H'Mông", "Kinh", "Mường", "Chăm"],
+      "correct_index": 0,
+      "explanation": "Phụ nữ H'Mông dùng bút vẽ bằng đồng nhúng sáp ong nóng để vẽ hoa văn hình học tinh tế lên vải lanh trước khi nhuộm chàm."
+    },
+    {
+      "id": 8,
+      "slot_number": 8,
+      "has_card": null,
+      "question": "Điệu múa xòe hoa uyển chuyển, gắn kết cộng đồng quanh đống lửa là di sản văn hóa phi vật thể của dân tộc nào?",
+      "options": ["Dân tộc Thái", "Dân tộc Hoa", "Dân tộc Cơ Tu", "Dân tộc Giáy"],
+      "correct_index": 0,
+      "explanation": "Nghệ thuật Xòe Thái đã được UNESCO ghi danh là Di sản văn hóa phi vật thể đại diện của nhân loại năm 2021."
+    },
+    {
+      "id": 9,
+      "slot_number": 9,
+      "has_card": null,
+      "question": "Bộ sử thi đồ sộ 'Đăm Săn' (Bài ca chàng Đăm Săn) là niềm tự hào văn học dân gian của dân tộc nào ở Tây Nguyên?",
+      "options": ["Ê Đê", "Ba Na", "Gia Rai", "Mnông"],
+      "correct_index": 0,
+      "explanation": "Sử thi Đăm Săn ngợi ca người tù trưởng dũng mãnh, bất khuất, khát khao chinh phục thiên nhiên vì sự hưng thịnh của buôn làng."
+    }
+  ]
+}

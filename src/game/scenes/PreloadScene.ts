@@ -18,7 +18,7 @@ export class PreloadScene extends Phaser.Scene {
       ui.error(ui.t('criticalAssetError'));
     });
     this.load.json('hub-map', `${import.meta.env.BASE_URL}assets/maps/hub.json`);
-    this.load.spritesheet('player', `${import.meta.env.BASE_URL}assets/sprites/player.png`, { frameWidth: 128, frameHeight: 220 });
+    this.load.image('trong-dong', `${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg`);
     for (const key of ['instructor-a', 'instructor-b', 'demo-house']) this.load.image(key, `${import.meta.env.BASE_URL}assets/sprites/${key}.png`);
     for (const atlas of decorations.atlases) this.load.image(atlas.key, `${import.meta.env.BASE_URL}${atlas.path}`);
   }
@@ -28,16 +28,6 @@ export class PreloadScene extends Phaser.Scene {
     this.textures.get('instructor-a').add('cutout', 0, 387, 91, 494, 1126);
     this.textures.get('instructor-b').add('cutout', 0, 312, 117, 630, 1021);
     this.textures.get('demo-house').add('cutout', 0, 16, 51, 1418, 947);
-    for (const [row, dir] of (['down', 'up', 'left', 'right'] as const).entries()) {
-      if (!this.anims.exists(`player-walk-${dir}`)) {
-        this.anims.create({
-          key: `player-walk-${dir}`,
-          frames: this.anims.generateFrameNumbers('player', { start: row * 4, end: row * 4 + 3 }),
-          frameRate: 8,
-          repeat: -1,
-        });
-      }
-    }
     for (const frame of decorations.frames) {
       const texture = this.textures.get(frame.atlas), source = texture.getSourceImage();
       const [x, y, width, height] = frame.bounds;

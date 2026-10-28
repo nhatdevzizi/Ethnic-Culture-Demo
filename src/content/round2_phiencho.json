@@ -1,0 +1,51 @@
+{
+  "round_name": "VÒNG 2: PHIÊN CHỢ VÙNG CAO",
+  "round_description": "Đấu thầu điểm cược theo chủ đề và quản lý rủi ro trên sàn đấu trí.",
+  "questions": [
+    {
+      "id": 1,
+      "theme": "Ẩm Thực Chợ Phiên Vùng Cao",
+      "has_card": "steal_points",
+      "question": "Món ăn truyền thống đặc trưng tại các phiên chợ Sa Pa, Bắc Hà nấu từ thịt và lục phủ ngũ tạng ngựa cùng các loại thảo mộc núi rừng có tên là gì?",
+      "options": ["Thắng cố", "Nậm pịa", "Khâu nhục", "Mèn mén"],
+      "correct_index": 0,
+      "explanation": "Thắng cố là món ăn truyền thống lâu đời của người H'Mông, sau này trở thành món ẩm thực giao lưu độc đáo tại các chợ phiên vùng cao."
+    },
+    {
+      "id": 2,
+      "theme": "Trang Phục Dân Tộc Dao Đỏ",
+      "has_card": null,
+      "question": "Điểm nhận diện nổi bật nhất trên trang phục của phụ nữ Dao Đỏ ở Lào Cai, Yên Bái là gì?",
+      "options": ["Chiếc khăn đội đầu màu đỏ rực rỡ và quả bông len đỏ trước ngực", "Váy xòe xếp nếp nhiều tầng thêu hoa văn", "Chiếc áo dài trắng tinh khôi", "Thắt lưng dệt hoa văn hình voi"],
+      "correct_index": 0,
+      "explanation": "Màu đỏ rực rỡ của khăn trùm đầu và các quả bông len trên ngực tượng trưng cho may mắn, ngọn lửa ấm áp và hạnh phúc của người Dao Đỏ."
+    },
+    {
+      "id": 3,
+      "theme": "Kiến Trúc Nhà Dài Tây Nguyên",
+      "has_card": "shield",
+      "question": "Trong văn hóa của người Ê Đê theo chế độ mẫu hệ, điều gì xảy ra với chiều dài của Nhà Dài khi một người con gái trong gia đình lấy chồng?",
+      "options": ["Nhà được nối dài thêm một gian mới", "Gia đình phải chuyển sang xây một nhà mới", "Nhà thu hẹp bớt lại", "Chiều dài luôn giữ nguyên 30 mét"],
+      "correct_index": 0,
+      "explanation": "Cứ mỗi khi người con gái trong gia đình lấy chồng, ngôi nhà lại được nối dài thêm; có những ngôi nhà dài đến hơn 100m thể hiện sự hưng thịnh của đại gia đình."
+    },
+    {
+      "id": 4,
+      "theme": "Nghi Lễ Dân Tộc: Lễ Cấp Sắc",
+      "has_card": null,
+      "question": "Lễ Cấp Sắc (đặt tên âm, công nhận người đàn ông trưởng thành và có đạo đức) là phong tục truyền thống quan trọng bậc nhất của dân tộc nào?",
+      "options": ["Dân tộc Dao", "Dân tộc Thái", "Dân tộc Tày", "Dân tộc Khơ mú"],
+      "correct_index": 0,
+      "explanation": "Người đàn ông Dao chỉ khi trải qua Lễ Cấp Sắc mới được cộng đồng công nhận là người trưởng thành, có tiếng nói và được tham gia việc làng."
+    },
+    {
+      "id": 5,
+      "theme": "Lễ Hội Văn Hóa Nam Bộ: Đua Bò Bảy Núi",
+      "has_card": null,
+      "question": "Hội đua bò Bảy Núi sôi động và độc đáo ở An Giang là hoạt động văn hóa truyền thống nhân dịp lễ Sen Dolta của đồng bào dân tộc nào?",
+      "options": ["Khmer Nam Bộ", "Chăm Ninh Thuận", "Hoa Chợ Lớn", "Mnông"],
+      "correct_index": 0,
+      "explanation": "Hội đua bò Bảy Núi gắn liền với Lễ Sen Dolta (lễ cúng ông bà, báo hiếu tổ tiên) mang đậm nét đẹp văn hóa nông nghiệp của đồng bào Khmer."
+    }
+  ]
+}

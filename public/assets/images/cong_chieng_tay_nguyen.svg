@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" width="100%" height="100%">
+  <defs>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a2a3a"/>
+      <stop offset="50%" stop-color="#2c3e50"/>
+      <stop offset="100%" stop-color="#e67e22"/>
+    </linearGradient>
+    <radialGradient id="fireGlow" cx="50%" cy="80%" r="60%">
+      <stop offset="0%" stop-color="#f39c12" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#d35400" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#1a2a3a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f1c40f"/>
+      <stop offset="40%" stop-color="#b7950b"/>
+      <stop offset="70%" stop-color="#7d6608"/>
+      <stop offset="100%" stop-color="#d4ac0d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Sky & Mountain Silhouette -->
+  <rect width="960" height="640" fill="url(#skyGrad)"/>
+  
+  <!-- Distant Mountains -->
+  <polygon points="0,480 180,320 380,450 620,290 820,410 960,350 960,640 0,640" fill="#1b2631" opacity="0.85"/>
+  <polygon points="0,520 260,390 520,500 780,370 960,460 960,640 0,640" fill="#17202a"/>
+
+  <!-- Ground / Central Plaza -->
+  <ellipse cx="480" cy="560" rx="520" ry="140" fill="#2c3e50"/>
+  <ellipse cx="480" cy="560" rx="460" ry="110" fill="url(#fireGlow)"/>
+
+  <!-- Nha Rong in Background Center -->
+  <g transform="translate(380, 150)">
+    <!-- Roof with sharp horn curve -->
+    <path d="M 100,0 Q 20,120 0,220 L 200,220 Q 180,120 100,0 Z" fill="#784212" stroke="#d35400" stroke-width="4"/>
+    <!-- Roof pattern lines -->
+    <line x1="100" y1="10" x2="100" y2="220" stroke="#b9770e" stroke-width="3" stroke-dasharray="6,6"/>
+    <line x1="60" y1="70" x2="140" y2="70" stroke="#b9770e" stroke-width="2"/>
+    <line x1="40" y1="130" x2="160" y2="130" stroke="#b9770e" stroke-width="2"/>
+    <line x1="20" y1="180" x2="180" y2="180" stroke="#b9770e" stroke-width="2"/>
+    <!-- House base stilts -->
+    <rect x="25" y="220" width="150" height="40" fill="#641e16"/>
+    <line x1="40" y1="260" x2="40" y2="340" stroke="#4a235a" stroke-width="8"/>
+    <line x1="80" y1="260" x2="80" y2="340" stroke="#4a235a" stroke-width="8"/>
+    <line x1="120" y1="260" x2="120" y2="340" stroke="#4a235a" stroke-width="8"/>
+    <line x1="160" y1="260" x2="160" y2="340" stroke="#4a235a" stroke-width="8"/>
+    <!-- Horn crest ornament -->
+    <path d="M 90,0 Q 60,-30 40,-25 Q 70,-10 95,5" fill="#f39c12"/>
+    <path d="M 110,0 Q 140,-30 160,-25 Q 130,-10 105,5" fill="#f39c12"/>
+  </g>
+
+  <!-- Big Bonfire in center -->
+  <g transform="translate(480, 520)">
+    <!-- Logs -->
+    <line x1="-50" y1="15" x2="50" y2="-15" stroke="#421b06" stroke-width="12" stroke-linecap="round"/>
+    <line x1="-50" y1="-15" x2="50" y2="15" stroke="#331404" stroke-width="12" stroke-linecap="round"/>
+    <!-- Flames -->
+    <path d="M 0,20 Q -40,-30 -20,-70 Q 0,-120 0,-140 Q 20,-100 35,-60 Q 45,-20 0,20 Z" fill="#e74c3c" opacity="0.9"/>
+    <path d="M 0,15 Q -25,-20 -10,-55 Q 0,-90 0,-110 Q 15,-80 22,-45 Q 30,-15 0,15 Z" fill="#f39c12" opacity="0.95"/>
+    <path d="M 0,10 Q -12,-15 0,-40 Q 12,-15 0,10 Z" fill="#fff" opacity="0.9"/>
+  </g>
+
+  <!-- Cong Chieng Performers Around Fire (Silhouettes & Bronze Gongs) -->
+  <!-- Performer 1 (Left Far) -->
+  <g transform="translate(180, 470)">
+    <circle cx="0" cy="-60" r="14" fill="#1b2631"/>
+    <!-- Head feather -->
+    <path d="M -2,-74 Q 5,-90 12,-95 Q 6,-80 2,-74" fill="#e74c3c"/>
+    <path d="M -15,-45 L 15,-45 L 20,40 L -18,40 Z" fill="#17202a"/>
+    <!-- Gong -->
+    <circle cx="28" cy="-10" r="26" fill="url(#bronzeGrad)" stroke="#7d6608" stroke-width="3"/>
+    <circle cx="28" cy="-10" r="6" fill="#421b06"/>
+  </g>
+
+  <!-- Performer 2 (Left Mid) -->
+  <g transform="translate(300, 490)">
+    <circle cx="0" cy="-65" r="15" fill="#1b2631"/>
+    <path d="M -2,-80 Q 8,-100 16,-105 Q 10,-86 2,-80" fill="#f39c12"/>
+    <path d="M -18,-50 L 18,-50 L 22,45 L -20,45 Z" fill="#17202a"/>
+    <!-- Big Chieng -->
+    <circle cx="32" cy="-5" r="34" fill="url(#bronzeGrad)" stroke="#5d4037" stroke-width="4"/>
+    <circle cx="32" cy="-5" r="8" fill="#d35400"/>
+  </g>
+
+  <!-- Performer 3 (Right Mid) -->
+  <g transform="translate(660, 490)">
+    <circle cx="0" cy="-65" r="15" fill="#1b2631"/>
+    <path d="M 2,-80 Q -8,-100 -16,-105 Q -10,-86 -2,-80" fill="#e74c3c"/>
+    <path d="M -18,-50 L 18,-50 L 20,45 L -22,45 Z" fill="#17202a"/>
+    <!-- Chieng -->
+    <circle cx="-32" cy="-5" r="32" fill="url(#bronzeGrad)" stroke="#5d4037" stroke-width="4"/>
+    <circle cx="-32" cy="-5" r="8" fill="#d35400"/>
+  </g>
+
+  <!-- Performer 4 (Right Far) -->
+  <g transform="translate(780, 470)">
+    <circle cx="0" cy="-60" r="14" fill="#1b2631"/>
+    <path d="M 2,-74 Q -5,-90 -12,-95 Q -6,-80 -2,-74" fill="#f39c12"/>
+    <path d="M -15,-45 L 15,-45 L 18,40 L -20,40 Z" fill="#17202a"/>
+    <!-- Small Chieng -->
+    <circle cx="-28" cy="-10" r="24" fill="url(#bronzeGrad)" stroke="#7d6608" stroke-width="3"/>
+    <circle cx="-28" cy="-10" r="5" fill="#421b06"/>
+  </g>
+
+  <!-- Sparks and Atmosphere -->
+  <g fill="#f1c40f" opacity="0.8">
+    <circle cx="470" cy="420" r="3"/>
+    <circle cx="495" cy="380" r="2.5"/>
+    <circle cx="460" cy="350" r="2"/>
+    <circle cx="510" cy="310" r="2.5"/>
+    <circle cx="485" cy="260" r="2"/>
+    <circle cx="465" cy="220" r="1.5"/>
+    <circle cx="505" cy="180" r="2"/>
+  </g>
+
+  <!-- Decorative Ethnic Brocade Border at bottom -->
+  <g transform="translate(0, 615)">
+    <rect width="960" height="25" fill="#78281f"/>
+    <!-- Diamond pattern -->
+    <path d="M 0,12.5 L 15,0 L 30,12.5 L 15,25 Z M 30,12.5 L 45,0 L 60,12.5 L 45,25 Z M 60,12.5 L 75,0 L 90,12.5 L 75,25 Z M 90,12.5 L 105,0 L 120,12.5 L 105,25 Z M 120,12.5 L 135,0 L 150,12.5 L 135,25 Z M 150,12.5 L 165,0 L 180,12.5 L 165,25 Z M 180,12.5 L 195,0 L 210,12.5 L 195,25 Z M 210,12.5 L 225,0 L 240,12.5 L 225,25 Z M 240,12.5 L 255,0 L 270,12.5 L 255,25 Z M 270,12.5 L 285,0 L 300,12.5 L 285,25 Z M 300,12.5 L 315,0 L 330,12.5 L 315,25 Z M 330,12.5 L 345,0 L 360,12.5 L 345,25 Z M 360,12.5 L 375,0 L 390,12.5 L 375,25 Z M 390,12.5 L 405,0 L 420,12.5 L 405,25 Z M 420,12.5 L 435,0 L 450,12.5 L 435,25 Z M 450,12.5 L 465,0 L 480,12.5 L 465,25 Z M 480,12.5 L 495,0 L 510,12.5 L 495,25 Z M 510,12.5 L 525,0 L 540,12.5 L 525,25 Z M 540,12.5 L 555,0 L 570,12.5 L 555,25 Z M 570,12.5 L 585,0 L 600,12.5 L 585,25 Z M 600,12.5 L 615,0 L 630,12.5 L 615,25 Z M 630,12.5 L 645,0 L 660,12.5 L 645,25 Z M 660,12.5 L 675,0 L 690,12.5 L 675,25 Z M 690,12.5 L 705,0 L 720,12.5 L 705,25 Z M 720,12.5 L 735,0 L 750,12.5 L 735,25 Z M 750,12.5 L 765,0 L 780,12.5 L 765,25 Z M 780,12.5 L 795,0 L 810,12.5 L 795,25 Z M 810,12.5 L 825,0 L 840,12.5 L 825,25 Z M 840,12.5 L 855,0 L 870,12.5 L 855,25 Z M 870,12.5 L 885,0 L 900,12.5 L 885,25 Z M 900,12.5 L 915,0 L 930,12.5 L 915,25 Z M 930,12.5 L 945,0 L 960,12.5 L 945,25 Z" fill="#f1c40f"/>
+  </g>
+
+  <!-- Title Badge overlay -->
+  <g transform="translate(480, 50)">
+    <rect x="-240" y="-25" width="480" height="50" rx="25" fill="#14211de8" stroke="#f1c40f" stroke-width="2"/>
+    <text x="0" y="8" fill="#f7dc6f" font-family="'Be Vietnam Pro', sans-serif" font-size="20" font-weight="bold" text-anchor="middle" letter-spacing="2">
+      KHÔNG GIAN VĂN HÓA CỒNG CHIÊNG TÂY NGUYÊN
+    </text>
+  </g>
+</svg>
