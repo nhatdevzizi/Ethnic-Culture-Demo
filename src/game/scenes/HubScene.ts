@@ -21,6 +21,7 @@ import { gameshow } from '../core/GameshowEngine';
 
 export class HubScene extends Phaser.Scene {
   player!: Phaser.Physics.Arcade.Sprite;
+  private facing: 'down' | 'up' | 'left' | 'right' = 'down';
   private controls!: InputManager;
   private objects: Interactable[] = [];
   private stationPlaques: { id: string; bounds: Rect; node: HTMLElement }[] = [];
@@ -209,20 +210,44 @@ export class HubScene extends Phaser.Scene {
 
       if (station.enabled) {
         const instructor = { x: x + 104, y: y - 10 };
-        this.add
+        const npcConfig: Record<string, { key: string; name: string; title: string }> = {
+          M01: { key: 'npc_dao', name: 'Chị Mây (Dao Đỏ)', title: 'Chị Mây - Nghệ nhân thêu Thổ Cẩm Dao Đỏ' },
+          M02: { key: 'npc_hmong', name: 'A Páo (H\'Mông)', title: 'A Páo - Nghệ nhân khèn H\'Mông' },
+          M03: { key: 'npc_ede', name: 'Y Ban (Ê Đê)', title: 'Y Ban - Nghệ nhân Cồng Chiêng Tây Nguyên' },
+          M04: { key: 'npc_thai', name: 'Nàng Ban (Thái)', title: 'Nàng Ban - Cô gái Thái bên Lửa Thiêng' },
+        };
+        const npc = npcConfig[station.id];
+        const npcImg = this.add
           .image(
             instructor.x,
             instructor.y + 18,
-            station.id === 'M02' ? 'instructor-a' : 'instructor-b',
-            'cutout'
+            npc ? npc.key : (station.id === 'M02' ? 'instructor-a' : 'instructor-b'),
+            npc ? undefined : 'cutout'
           )
           .setOrigin(0.5, 1)
-          .setDisplaySize(station.id === 'M02' ? 32 : 44, 72)
+          .setDisplaySize(npc ? 46 : (station.id === 'M02' ? 32 : 44), 74)
           .setDepth(instructor.y + 18);
+        npcImg.setInteractive({ useHandCursor: true });
+        npcImg.on('pointerdown', () => this.portal(station));
+
+        if (npc) {
+          this.add
+            .text(instructor.x, instructor.y - 60, npc.name, {
+              fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
+              fontSize: '11px',
+              fontStyle: 'bold',
+              color: '#213e31',
+              backgroundColor: '#fff7e0',
+              padding: { x: 5, y: 2 },
+            })
+            .setOrigin(0.5)
+            .setDepth(instructor.y + 20);
+        }
+
         this.objects.push({
           ...instructor,
           id: `${station.id}-instructor`,
-          label: `${icon} ${ui.t(station.titleKey)}`,
+          label: `${icon} ${npc ? npc.title : ui.t(station.titleKey)}`,
           activate: () => this.portal(station),
         });
       }
@@ -321,6 +346,187 @@ export class HubScene extends Phaser.Scene {
       activate: () => this.tryOpenGrandFinale(),
     });
 
+    // === KHU LỄ HỘI VĂN HÓA ĐA SẮC MÀU CÁC DÂN TỘC VIỆT NAM ===
+    interface FestivalItem {
+      id: string;
+      key: string;
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      label: string;
+      badge: string;
+      dialogueTitle: string;
+      dialoguePages: string[];
+      block: boolean;
+      blockW?: number;
+      blockH?: number;
+    }
+
+    const festivalAttractions: FestivalItem[] = [
+      {
+        id: 'fest-thuyen-ngo',
+        key: 'fest_thuyen_ngo',
+        x: 1350,
+        y: 350,
+        width: 190,
+        height: 124,
+        label: '🚣 Lễ Hội Đua Ghe Ngo (Đồng bào Khmer)',
+        badge: 'Đua Ghe Ngo',
+        dialogueTitle: 'Lễ Hội Đua Ghe Ngo - Đồng bào Khmer Nam Bộ',
+        dialoguePages: [
+          'Ghe Ngo (Chầm Ngo) là báu vật thiêng liêng của đồng bào Khmer Nam Bộ, xuất hiện rực rỡ trong lễ hội Ok Om Bok rằm tháng 10 âm lịch.',
+          'Mỗi chiếc ghe Ngo chạm khắc hình rồng hoặc rắn Naga uy nghi dài tới 30m, chở 50-60 tay bơi cùng hòa nhịp mái chèo thần tốc trong tiếng trống rộn rã, thể hiện tình đoàn kết và khát vọng chinh phục sông nước.'
+        ],
+        block: false
+      },
+      {
+        id: 'fest-con-nuoc',
+        key: 'fest_con_nuoc',
+        x: 1040,
+        y: 380,
+        width: 140,
+        height: 108,
+        label: '🌾 Cọn Nước Vùng Cao (Thái - Tày)',
+        badge: 'Cọn Nước Bờ Suối',
+        dialogueTitle: 'Cọn Nước - Trí Tuệ Thủy Lợi Vùng Cao',
+        dialoguePages: [
+          'Cọn nước (guồng nước) là kỳ quan kỹ thuật thủy lợi dân gian độc đáo của đồng bào Thái, Tày miền núi phía Bắc.',
+          'Lợi dụng sức nước tự nhiên, cọn nước làm hoàn toàn bằng tre nứa quay đều quanh năm suốt tháng, đưa dòng nước mát lành vượt dốc lên tưới tiêu cho những thửa ruộng bậc thang kỳ vĩ.'
+        ],
+        block: true,
+        blockW: 80,
+        blockH: 40
+      },
+      {
+        id: 'fest-mua-sap',
+        key: 'fest_mua_sap',
+        x: 1120,
+        y: 740,
+        width: 170,
+        height: 116,
+        label: '🎋 Điệu Múa Sạp Ngày Hội (Thái - Mường)',
+        badge: 'Múa Sạp Tây Bắc',
+        dialogueTitle: 'Điệu Múa Sạp Ngày Hội - Dân tộc Thái, Mường',
+        dialoguePages: [
+          'Múa sạp là điệu múa dân gian rộn ràng không thể thiếu trong các ngày hội xuân và mừng cơm mới của người Thái, Mường.',
+          'Hai hàng người gõ nhịp sạp tre giòn giã đón bước chân khéo léo, uyển chuyển của các chàng trai cô gái, thể hiện tinh thần đoàn kết, lạc quan yêu đời và tình yêu đôi lứa.'
+        ],
+        block: true,
+        blockW: 100,
+        blockH: 50
+      },
+      {
+        id: 'fest-nem-con',
+        key: 'fest_nem_con',
+        x: 1440,
+        y: 740,
+        width: 100,
+        height: 118,
+        label: '🎯 Trò Chơi Ném Còn (Tày - Nùng - Thái)',
+        badge: 'Cây Còn Ngày Hội',
+        dialogueTitle: 'Lễ Hội Ném Còn - Dân tộc Tày, Thái, Nùng',
+        dialoguePages: [
+          'Cột còn cao vút giữa bãi hội tượng trưng cho trục vũ trụ nối đất với trời. Quả còn ngũ sắc khâu từ vải thổ cẩm nhồi hạt thóc mang ước vọng phồn thực.',
+          'Người nào ném quả còn lọt qua hồng tâm trên đỉnh cột sẽ mang lại phúc lộc dồi dào, mưa thuận gió hòa và mùa màng bội thu cho khắp thôn bản!'
+        ],
+        block: true,
+        blockW: 60,
+        blockH: 30
+      },
+      {
+        id: 'fest-ruou-can',
+        key: 'fest_ruou_can',
+        x: 1060,
+        y: 1330,
+        width: 170,
+        height: 144,
+        label: '🏺 Uống Rượu Cần & Lễ Cầu Mùa (Tây Nguyên)',
+        badge: 'Văn Hóa Rượu Cần',
+        dialogueTitle: 'Văn Hóa Rượu Cần - Tây Nguyên Hùng Vĩ',
+        dialoguePages: [
+          'Rượu cần là nét văn hóa cố kết cộng đồng thiêng liêng của các dân tộc Ê Đê, Ba Na, Gia Rai quanh ngọn lửa nhà rông.',
+          'Mọi người cùng vít cần thưởng thức hương men say của lá rừng, cùng lắng nghe già làng kể khan và tiếng cồng chiêng trầm hùng ngân vang giữa đại ngàn.'
+        ],
+        block: true,
+        blockW: 90,
+        blockH: 50
+      },
+      {
+        id: 'fest-cay-da',
+        key: 'fest_cay_da',
+        x: 1520,
+        y: 1330,
+        width: 180,
+        height: 112,
+        label: '🌳 Cây Đa Làng Quê & Cội Nguồn Đoàn Kết',
+        badge: 'Cây Đa Quê Hương',
+        dialogueTitle: 'Cây Đa Làng Quê - Cội Nguồn 54 Dân Tộc',
+        dialoguePages: [
+          'Cây đa cổ thụ tỏa bóng mát là biểu tượng bền vững của làng bản Việt Nam, gắn liền với ký ức bao thế hệ cha ông.',
+          'Dưới bóng đa xanh tươi, đại gia đình 54 dân tộc anh em cùng chung cội nguồn, đoàn kết một lòng xây đắp non sông Việt Nam giàu đẹp và đa dạng bản sắc.'
+        ],
+        block: true,
+        blockW: 90,
+        blockH: 50
+      },
+      {
+        id: 'fest-bep-lua',
+        key: 'fest_bep_lua',
+        x: 1280,
+        y: 1360,
+        width: 90,
+        height: 64,
+        label: '🔥 Bếp Lửa Thiêng Đoàn Kết',
+        badge: 'Bếp Lửa Thiêng',
+        dialogueTitle: 'Ngọn Lửa Thiêng Đoàn Kết',
+        dialoguePages: [
+          'Ngọn lửa sưởi ấm tâm hồn, thắp sáng tình đoàn kết bền chặt giữa các cộng đồng dân tộc Việt Nam từ miền núi đến đồng bằng, từ biên cương đến hải đảo.'
+        ],
+        block: true,
+        blockW: 50,
+        blockH: 30
+      }
+    ];
+
+    for (const attr of festivalAttractions) {
+      const sprite = this.add
+        .image(attr.x, attr.y, attr.key)
+        .setOrigin(0.5, 1)
+        .setDisplaySize(attr.width, attr.height)
+        .setDepth(attr.y);
+      sprite.setInteractive({ useHandCursor: true });
+      sprite.on('pointerdown', () => {
+        ui.dialogue(attr.dialogueTitle, attr.dialoguePages);
+      });
+
+      this.add
+        .text(attr.x, attr.y - attr.height - 8, attr.badge, {
+          fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
+          fontSize: '11px',
+          fontStyle: 'bold',
+          color: '#ffffff',
+          backgroundColor: '#9e2a2b',
+          padding: { x: 5, y: 2 },
+        })
+        .setOrigin(0.5)
+        .setDepth(attr.y + 1);
+
+      if (attr.block && attr.blockW !== undefined && attr.blockH !== undefined) {
+        block(attr.x, attr.y - attr.blockH / 2, attr.blockW, attr.blockH);
+      }
+
+      this.objects.push({
+        x: attr.x,
+        y: attr.y - 10,
+        id: attr.id,
+        label: attr.label,
+        activate: () => {
+          ui.dialogue(attr.dialogueTitle, attr.dialoguePages);
+        },
+      });
+    }
+
     const position = safeHubPosition(
       session.state.hubReturnPosition,
       map,
@@ -334,19 +540,14 @@ export class HubScene extends Phaser.Scene {
       session.setPosition(position);
     }
 
+    this.facing = 'down';
     this.player = this.physics.add
-      .sprite(position.x, position.y, 'instructor-a', 'cutout')
-      .setDisplaySize(32, 72)
+      .sprite(position.x, position.y, 'player', 0)
+      .setDisplaySize(42, 72)
       .setOrigin(0.5, 51 / 72)
       .setCollideWorldBounds(true);
 
-    const frame = this.player.frame;
-    const bodyWidth = (frame.width * 22) / 32;
-    const bodyHeight = (frame.height * 18) / 72;
-    this.player.body!.setSize(bodyWidth, bodyHeight).setOffset(
-      (frame.width - bodyWidth) / 2,
-      frame.height - bodyHeight
-    );
+    this.player.body!.setSize(60, 55).setOffset(34, 165);
     this.physics.world.setBounds(84, 76, width - 168, height - 152);
     this.physics.add.collider(this.player, walls);
 
@@ -473,7 +674,8 @@ export class HubScene extends Phaser.Scene {
     const isFrozen = ui.blocked || StationGameModal.get().isOpen;
     if (isFrozen) {
       this.player.setVelocity(0, 0);
-      this.player.setAngle(0);
+      this.player.anims.stop();
+      this.player.setAngle(0).setFlipX(false).setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
       return;
     }
 
@@ -481,10 +683,21 @@ export class HubScene extends Phaser.Scene {
     this.player.setVelocity(direction.x * 280, direction.y * 280).setDepth(this.player.y + 21);
 
     if (direction.x || direction.y) {
-      this.player.setAngle(ui.lowMotion ? 0 : Math.sin(this.time.now / 95) * 1.5);
-      if (direction.x) this.player.setFlipX(direction.x < 0);
+      if (Math.abs(direction.x) >= Math.abs(direction.y)) {
+        this.facing = direction.x < 0 ? 'left' : 'right';
+      } else {
+        this.facing = direction.y < 0 ? 'up' : 'down';
+      }
+      this.player.setAngle(0).setFlipX(false);
+      if (ui.lowMotion) {
+        this.player.anims.stop();
+        this.player.setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
+      } else {
+        this.player.anims.play(`player-walk-${this.facing}`, true);
+      }
     } else {
-      this.player.setAngle(0);
+      this.player.anims.stop();
+      this.player.setAngle(0).setFlipX(false).setFrame({ down: 0, up: 4, left: 8, right: 12 }[this.facing]);
     }
 
     this.nearby = nearestInteraction(this.player, this.objects, 130);

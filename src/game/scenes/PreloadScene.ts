@@ -19,11 +19,39 @@ export class PreloadScene extends Phaser.Scene {
     });
     this.load.json('hub-map', `${import.meta.env.BASE_URL}assets/maps/hub.json`);
     this.load.image('trong-dong', `${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg`);
+    this.load.spritesheet('player', `${import.meta.env.BASE_URL}assets/sprites/player.png`, {
+      frameWidth: 128,
+      frameHeight: 220,
+    });
+    for (const npc of ['npc_dao', 'npc_thai', 'npc_hmong', 'npc_ede']) {
+      this.load.image(npc, `${import.meta.env.BASE_URL}assets/sprites/${npc}.png`);
+    }
+    for (const fest of [
+      'fest_mua_sap',
+      'fest_nem_con',
+      'fest_ruou_can',
+      'fest_thuyen_ngo',
+      'fest_con_nuoc',
+      'fest_bep_lua',
+      'fest_cay_da',
+    ]) {
+      this.load.image(fest, `${import.meta.env.BASE_URL}assets/sprites/${fest}.png`);
+    }
     for (const key of ['instructor-a', 'instructor-b', 'demo-house']) this.load.image(key, `${import.meta.env.BASE_URL}assets/sprites/${key}.png`);
     for (const atlas of decorations.atlases) this.load.image(atlas.key, `${import.meta.env.BASE_URL}${atlas.path}`);
   }
   create() {
     if (this.failed) return;
+    for (const [row, dir] of (['down', 'up', 'left', 'right'] as const).entries()) {
+      if (!this.anims.exists(`player-walk-${dir}`)) {
+        this.anims.create({
+          key: `player-walk-${dir}`,
+          frames: this.anims.generateFrameNumbers('player', { start: row * 4, end: row * 4 + 3 }),
+          frameRate: 8,
+          repeat: -1,
+        });
+      }
+    }
     // Transparent margins stay in the source PNGs; frames keep feet and house bounds aligned.
     this.textures.get('instructor-a').add('cutout', 0, 387, 91, 494, 1126);
     this.textures.get('instructor-b').add('cutout', 0, 312, 117, 630, 1021);
