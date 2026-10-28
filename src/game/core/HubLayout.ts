@@ -28,16 +28,16 @@ export function hubObstacles(map: HubMap, stations: readonly MinigameDefinition[
     ...waterRects(map.pond),
     ...map.trees.map(([x, y]) => ({ x: x - 14, y: y + 14, width: 28, height: 24 })),
     ...map.benches.map(bench => ({ x: bench.x + 4, y: bench.y + 8, width: 56, height: 24 })),
-    ...stations.map(station => ({ x: station.portal.x - 68, y: station.portal.y - 144, width: 136, height: 88 })),
-    ...stations.filter(station => station.enabled).map(station => ({ x: station.portal.x + 92, y: station.portal.y - 8, width: 24, height: 16 })),
+    ...stations.map(station => ({ x: station.portal.x - 88, y: station.portal.y - 140, width: 176, height: 104 })),
+    ...stations.filter(station => station.enabled).map(station => ({ x: station.portal.x + 90, y: station.portal.y - 18, width: 28, height: 26 })),
     { x: map.guide.x - 15, y: map.guide.y, width: 30, height: 24 },
     { x: map.board.x - 32, y: map.board.y - 32, width: 64, height: 40 },
   ];
 }
 
 export function isHubPositionWalkable(position: Position, map: HubMap, stations: readonly MinigameDefinition[] = minigameRegistry, landscape?: HubLandscape) {
-  if (!Number.isFinite(position.x) || !Number.isFinite(position.y) || position.x < 48 || position.y < 48 ||
-    position.x > map.width * map.tileSize - 48 || position.y > map.height * map.tileSize - 48) return false;
+  if (!Number.isFinite(position.x) || !Number.isFinite(position.y) || position.x < 88 || position.y < 80 ||
+    position.x > map.width * map.tileSize - 88 || position.y > map.height * map.tileSize - 88) return false;
   // The avatar's Arcade body is at its feet, below its sprite origin.
   return !hubObstacles(map, stations, landscape).some(rect => position.x + 11 > rect.x && position.x - 11 < rect.x + rect.width &&
     position.y + 21 > rect.y && position.y + 3 < rect.y + rect.height);

@@ -27,6 +27,23 @@ export function hubSeed(value: string | null): number {
 const intersects = (a: Rect, b: Rect) => a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 const expand = (rect: Rect, margin: number): Rect => ({ x: rect.x - margin, y: rect.y - margin, width: rect.width + margin * 2, height: rect.height + margin * 2 });
 
+const plantObstacle = (frameId: string, x: number, y: number): Rect => {
+  const sizes: Record<string, [number, number]> = {
+    'mossy-rocks': [84, 42],
+    'flower-planter': [80, 40],
+    'flower-bed': [60, 34],
+    'banyan-tree': [80, 42],
+    'bamboo-clump': [64, 38],
+    'fruit-tree': [56, 36],
+    'banana-tree': [56, 36],
+    'coconut-tree': [52, 36],
+    'slender-palms': [48, 36],
+    'grass-clump': [52, 30],
+  };
+  const [w, h] = sizes[frameId] ?? [52, 34];
+  return { x: x - w / 2, y: y - h - 2, width: w, height: h };
+};
+
 export function createHubLandscape(map: HubMap, stations: readonly MinigameDefinition[], seed = 42): HubLandscape {
   let state = seed >>> 0;
   const random = () => {
@@ -104,7 +121,7 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
     for (const side of [-1, 1]) {
       const x = station.portal.x + side * 64, y = station.portal.y;
       landscape.scenery.push({ x, y, theme, kind: 'plant', frameId: 'flower-planter', flip: false, width: 48, height: 40 });
-      landscape.obstacles.push({ x: x - 12, y: y - 12, width: 24, height: 12 });
+      landscape.obstacles.push({ x: x - 22, y: y - 32, width: 44, height: 30 });
     }
   }
   const reserved = [
@@ -121,13 +138,18 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
     }),
   ];
   const occupied: Rect[] = [];
+  const borderReserved = [
+    ...[...landscape.routes, ...landscape.links].flatMap(route => route.roads.map(road => expand(road, 8))),
+    ...stations.map(station => ({ x: station.portal.x - 128, y: station.portal.y - 160, width: 256, height: 224 })),
+    ...landscape.clearings.map(rect => expand(rect, 24)),
+  ];
   for (let side = 0; side < 4; side++) {
     const length = side % 2 ? height : width;
     for (let along = 64; along < length - 32; along += 64) {
       const x = side % 2 ? side === 1 ? width - 64 : 64 : along;
       const y = side % 2 ? along : side === 0 ? 64 : height - 64;
-      const foot = { x: x - 18, y: y - 12, width: 36, height: 28 };
-      if (reserved.some(rect => intersects(foot, rect))) continue;
+      const foot = { x: x - 32, y: y - 40, width: 64, height: 38 };
+      if (borderReserved.some(rect => intersects(foot, rect))) continue;
       const theme: BiomeTheme = x < map.spawn.x ? 'woodland' : 'meadow';
       landscape.scenery.push({ x, y, theme, kind: 'plant', frameId: theme === 'woodland' ? 'banyan-tree' : 'fruit-tree', flip: false, width: 128, height: 136 });
       landscape.obstacles.push(foot); occupied.push(foot);
@@ -145,11 +167,13 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
         const clustered = random() < 0.7;
         const x = clustered ? grove[0] + tileRandom(-192, 13) : tileRandom(left ? 112 : map.spawn.x + 160, 32);
         const y = clustered ? grove[1] + tileRandom(-128, 9) : tileRandom(north ? 128 : map.spawn.y + 176, north ? 21 : 19);
-        const foot: Rect = { x: x - 18, y: y - 12, width: 36, height: 28 };
-        if (x < 112 || y < 112 || x > width - 112 || y > height - 112 || reserved.some(rect => intersects(foot, rect)) ||
-          occupied.some(rect => intersects(expand(foot, 12), rect))) continue;
+        const clearance: Rect = { x: x - 42, y: y - 46, width: 84, height: 62 };
+        if (x < 112 || y < 112 || x > width - 112 || y > height - 112 || reserved.some(rect => intersects(clearance, rect)) ||
+          occupied.some(rect => intersects(expand(clearance, 10), rect))) continue;
         const pool = decorations.biomes[route.theme].plant;
-        landscape.scenery.push({ x, y, theme: route.theme, kind, frameId: pool[Math.floor(random() * pool.length)], flip: random() > 0.5 });
+        const frameId = pool[Math.floor(random() * pool.length)];
+        const foot = plantObstacle(frameId, x, y);
+        landscape.scenery.push({ x, y, theme: route.theme, kind, frameId, flip: random() > 0.5 });
         landscape.obstacles.push(foot);
         occupied.push(foot);
         placed++;
