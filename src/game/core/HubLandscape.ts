@@ -75,7 +75,7 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
   landscape.links.push({ stationId: 'north-loop', theme: 'wetland', points: loopPoints, roads: routeRoads(loopPoints) });
   const cells = new Map<string, { x: number; y: number; style: keyof typeof decorations.roadVariants }>();
   for (const route of [...landscape.routes, ...landscape.links]) {
-    const style = (route.stationId === 'north-loop' ? 'stepping' : world.roadStyles[route.theme]) as keyof typeof decorations.roadVariants;
+    const style = (route.stationId === 'north-loop' ? 'brick' : world.roadStyles[route.theme]) as keyof typeof decorations.roadVariants;
     for (let i = 1; i < route.points.length; i++) {
       const a = route.points[i - 1], b = route.points[i], distance = Math.hypot(b.x - a.x, b.y - a.y);
       if (distance % world.cellSize !== 0) throw new Error('Trail endpoints must align with supplied road tiles');
@@ -124,7 +124,12 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
       landscape.obstacles.push({ x: x - 22, y: y - 32, width: 44, height: 30 });
     }
   }
+  const festivalZones: Rect[] = [
+    [1350, 350, 190, 124], [1120, 740, 170, 116], [1440, 740, 100, 118],
+    [1060, 1330, 170, 99], [1520, 1330, 180, 154], [1280, 1360, 90, 64],
+  ].map(([x, y, w, h]) => ({ x: x - w / 2 - 40, y: y - h - 40, width: w + 80, height: h + 60 }));
   const reserved = [
+    ...festivalZones,
     ...[...landscape.routes, ...landscape.links].flatMap(route => route.roads.map(road => expand(road, 44))),
     ...map.roads.map(road => expand(road, 32)),
     ...stations.map(station => ({ x: station.portal.x - 184, y: station.portal.y - 264, width: 368, height: 368 })),
@@ -139,13 +144,17 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
   ];
   const occupied: Rect[] = [];
   const borderReserved = [
+    ...festivalZones,
     ...[...landscape.routes, ...landscape.links].flatMap(route => route.roads.map(road => expand(road, 8))),
     ...stations.map(station => ({ x: station.portal.x - 128, y: station.portal.y - 160, width: 256, height: 224 })),
     ...landscape.clearings.map(rect => expand(rect, 24)),
   ];
   for (let side = 0; side < 4; side++) {
     const length = side % 2 ? height : width;
-    for (let along = 64; along < length - 32; along += 64) {
+    // Evenly spaced border: equal gaps, no overlap between 128px-wide trees.
+    const slots = Math.max(1, Math.round((length - 192) / 144)), gap = (length - 192) / slots;
+    for (let slot = 0; slot <= slots; slot++) {
+      const along = 96 + slot * gap;
       const x = side % 2 ? side === 1 ? width - 64 : 64 : along;
       const y = side % 2 ? along : side === 0 ? 64 : height - 64;
       const foot = { x: x - 32, y: y - 40, width: 64, height: 38 };
@@ -160,16 +169,25 @@ export function createHubLandscape(map: HubMap, stations: readonly MinigameDefin
     const left = station.portal.x < map.spawn.x;
     const north = station.portal.y < map.spawn.y;
     for (const kind of ['plant'] as const) {
-      const count = 44;
+      const count = 14;
       let placed = 0;
+      const minX = left ? 112 : map.spawn.x + 160, maxX = left ? map.spawn.x + 128 : width - 112;
+      const minY = north ? 128 : map.spawn.y + 176, maxY = north ? map.spawn.y + 128 : height - 112;
+      const nearest = (x: number, y: number) => occupied.reduce((best, rect) =>
+        Math.min(best, Math.hypot(rect.x + rect.width / 2 - x, rect.y + rect.height / 2 - y)), Infinity);
       for (let attempt = 0; attempt < count * 40 && placed < count; attempt++) {
-        const groves = world.groves[route.theme], grove = groves[Math.floor(random() * groves.length)];
-        const clustered = random() < 0.7;
-        const x = clustered ? grove[0] + tileRandom(-192, 13) : tileRandom(left ? 112 : map.spawn.x + 160, 32);
-        const y = clustered ? grove[1] + tileRandom(-128, 9) : tileRandom(north ? 128 : map.spawn.y + 176, north ? 21 : 19);
-        const clearance: Rect = { x: x - 42, y: y - 46, width: 84, height: 62 };
-        if (x < 112 || y < 112 || x > width - 112 || y > height - 112 || reserved.some(rect => intersects(clearance, rect)) ||
-          occupied.some(rect => intersects(expand(clearance, 10), rect))) continue;
+        // Best-candidate sampling: spread trees evenly instead of clustering them in groves.
+        let x = 0, y = 0, bestDistance = -1;
+        for (let candidate = 0; candidate < 14; candidate++) {
+          const cx = tileRandom(minX, Math.max(1, Math.floor((maxX - minX) / 32))), cy = tileRandom(minY, Math.max(1, Math.floor((maxY - minY) / 32)));
+          const clear: Rect = { x: cx - 64, y: cy - 84, width: 128, height: 100 };
+          if (cx < 160 || cy < 200 || cx > width - 160 || cy > height - 160 || reserved.some(rect => intersects(clear, rect)) ||
+            occupied.some(rect => intersects(expand(clear, 20), rect))) continue;
+          const distance = nearest(cx, cy);
+          if (distance < 150) continue;
+          if (distance > bestDistance) { bestDistance = distance; x = cx; y = cy; }
+        }
+        if (bestDistance < 0) continue;
         const pool = decorations.biomes[route.theme].plant;
         const frameId = pool[Math.floor(random() * pool.length)];
         const foot = plantObstacle(frameId, x, y);

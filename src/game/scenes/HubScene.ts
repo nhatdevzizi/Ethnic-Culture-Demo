@@ -52,6 +52,10 @@ export class HubScene extends Phaser.Scene {
 
     this.map = this.cache.json.get('hub-map') as HubMap;
     const map = this.map;
+    // Render every label at high resolution so text stays sharp under camera zoom.
+    const addText = this.add.text.bind(this.add) as (...args: unknown[]) => Phaser.GameObjects.Text;
+    (this.add as unknown as { text: typeof addText }).text = (...args) => addText(...args).setResolution(3);
+
     this.landscape = createHubLandscape(
       map,
       minigameRegistry,
@@ -381,24 +385,6 @@ export class HubScene extends Phaser.Scene {
         block: false
       },
       {
-        id: 'fest-con-nuoc',
-        key: 'fest_con_nuoc',
-        x: 1040,
-        y: 380,
-        width: 140,
-        height: 108,
-        label: '🌾 Cọn Nước Vùng Cao (Thái - Tày)',
-        badge: 'Cọn Nước Bờ Suối',
-        dialogueTitle: 'Cọn Nước - Trí Tuệ Thủy Lợi Vùng Cao',
-        dialoguePages: [
-          'Cọn nước (guồng nước) là kỳ quan kỹ thuật thủy lợi dân gian độc đáo của đồng bào Thái, Tày miền núi phía Bắc.',
-          'Lợi dụng sức nước tự nhiên, cọn nước làm hoàn toàn bằng tre nứa quay đều quanh năm suốt tháng, đưa dòng nước mát lành vượt dốc lên tưới tiêu cho những thửa ruộng bậc thang kỳ vĩ.'
-        ],
-        block: true,
-        blockW: 80,
-        blockH: 40
-      },
-      {
         id: 'fest-mua-sap',
         key: 'fest_mua_sap',
         x: 1120,
@@ -440,7 +426,7 @@ export class HubScene extends Phaser.Scene {
         x: 1060,
         y: 1330,
         width: 170,
-        height: 144,
+        height: 99,
         label: '🏺 Uống Rượu Cần & Lễ Cầu Mùa (Tây Nguyên)',
         badge: 'Văn Hóa Rượu Cần',
         dialogueTitle: 'Văn Hóa Rượu Cần - Tây Nguyên Hùng Vĩ',
@@ -458,7 +444,7 @@ export class HubScene extends Phaser.Scene {
         x: 1520,
         y: 1330,
         width: 180,
-        height: 112,
+        height: 154,
         label: '🌳 Cây Đa Làng Quê & Cội Nguồn Đoàn Kết',
         badge: 'Cây Đa Quê Hương',
         dialogueTitle: 'Cây Đa Làng Quê - Cội Nguồn 54 Dân Tộc',
@@ -475,8 +461,8 @@ export class HubScene extends Phaser.Scene {
         key: 'fest_bep_lua',
         x: 1280,
         y: 1360,
-        width: 90,
-        height: 64,
+        width: 100,
+        height: 76,
         label: '🔥 Bếp Lửa Thiêng Đoàn Kết',
         badge: 'Bếp Lửa Thiêng',
         dialogueTitle: 'Ngọn Lửa Thiêng Đoàn Kết',

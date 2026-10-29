@@ -145,13 +145,6 @@
     },
     {
       "anchor": "M04",
-      "frameId": "stone-steps",
-      "dx": 288,
-      "dy": -24,
-      "collides": false
-    },
-    {
-      "anchor": "M04",
       "frameId": "mossy-rocks",
       "dx": 352,
       "dy": -96

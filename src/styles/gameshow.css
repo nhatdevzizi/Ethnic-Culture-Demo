@@ -1129,7 +1129,7 @@
 }
 
 .title-ethnic-h1 {
-  font-family: 'Lora', 'Be Vietnam Pro', serif;
+  font-family: 'Be Vietnam Pro', Arial, sans-serif;
   font-size: clamp(28px, 4vw, 44px);
   font-weight: 800;
   color: var(--gs-gold);

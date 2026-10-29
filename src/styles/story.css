@@ -66,7 +66,7 @@
 }
 
 .story-studio .story-notebook h2 {
-  font-family: serif;
+  font-family: var(--font-body);
   font-size: 22px;
   margin: 0 0 16px 0;
 }
@@ -93,7 +93,7 @@
 }
 
 .story-studio .recap h2 {
-  font-family: serif;
+  font-family: var(--font-body);
   font-size: 24px;
   margin: 0 0 8px 0;
 }
