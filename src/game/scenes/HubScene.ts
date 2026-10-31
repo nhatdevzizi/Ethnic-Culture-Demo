@@ -236,15 +236,8 @@ export class HubScene extends Phaser.Scene {
 
         if (npc) {
           this.add
-            .text(instructor.x, instructor.y - 60, npc.name, {
-              fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
-              fontSize: '11px',
-              fontStyle: 'bold',
-              color: '#213e31',
-              stroke: '#ffffff',
-              strokeThickness: 3,
-            })
-            .setOrigin(0.5)
+            .dom(instructor.x, instructor.y - 60, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:12px;font-weight:bold;color:#1a3d2e;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;white-space:nowrap;pointer-events:none;user-select:none', npc.name)
+            .setOrigin(0.5, 0.5)
             .setDepth(instructor.y + 20);
         }
 
@@ -270,15 +263,8 @@ export class HubScene extends Phaser.Scene {
       .setDisplaySize(32, 72)
       .setDepth(map.guide.y + 24);
     this.add
-      .text(map.guide.x, map.guide.y - 62, 'An', {
-        fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
-        fontSize: '20px',
-        color: '#244e42',
-        stroke: '#ffffff',
-        strokeThickness: 4,
-      })
-      .setResolution(2)
-      .setOrigin(0.5)
+      .dom(map.guide.x, map.guide.y - 62, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:16px;font-weight:bold;color:#1a3d2e;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;white-space:nowrap;pointer-events:none;user-select:none', 'An')
+      .setOrigin(0.5, 0.5)
       .setDepth(10000);
     this.objects.push({
       ...map.guide,
@@ -323,15 +309,8 @@ export class HubScene extends Phaser.Scene {
     drumSprite.on('pointerdown', () => this.tryOpenGrandFinale());
 
     this.add
-      .text(map.board.x, map.board.y - 85, '✨ TRỐNG ĐỒNG ĐÔNG SƠN ✨', {
-        fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
-        fontSize: '13px',
-        fontStyle: 'bold',
-        color: '#4a2f00',
-        stroke: '#ffe680',
-        strokeThickness: 3,
-      })
-      .setOrigin(0.5)
+      .dom(map.board.x, map.board.y - 85, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:13px;font-weight:bold;color:#4a2f00;text-shadow:-1px -1px 0 #ffe680,1px -1px 0 #ffe680,-1px 1px 0 #ffe680,1px 1px 0 #ffe680;white-space:nowrap;pointer-events:none;user-select:none', '✨ TRỐNG ĐỒNG ĐÔNG SƠN ✨')
+      .setOrigin(0.5, 0.5)
       .setDepth(map.board.y + 12);
 
     for (const obstacle of hubObstacles(map, minigameRegistry, this.landscape)) {
@@ -487,15 +466,8 @@ export class HubScene extends Phaser.Scene {
       });
 
       this.add
-        .text(attr.x, attr.y - attr.height - 8, attr.badge, {
-          fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
-          fontSize: '11px',
-          fontStyle: 'bold',
-          color: '#7a1a1a',
-          stroke: '#ffffff',
-          strokeThickness: 3,
-        })
-        .setOrigin(0.5)
+        .dom(attr.x, attr.y - attr.height - 8, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:11px;font-weight:bold;color:#7a1a1a;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;white-space:nowrap;pointer-events:none;user-select:none', attr.badge)
+        .setOrigin(0.5, 0.5)
         .setDepth(attr.y + 1);
 
       if (attr.block && attr.blockW !== undefined && attr.blockH !== undefined) {
