@@ -64,7 +64,6 @@ export class HubScene extends Phaser.Scene {
 
     const width = map.width * map.tileSize;
     const height = map.height * map.tileSize;
-    const graphics = this.add.graphics().setDepth(1);
 
     this.add
       .tileSprite(-64, -64, width + 128, height + 128, decorations.terrain.ground)
@@ -179,9 +178,6 @@ export class HubScene extends Phaser.Scene {
       facade.setInteractive({ useHandCursor: true });
       facade.on('pointerdown', () => this.portal(station));
       if (!station.enabled) facade.setTint(0xc0c8b0);
-      graphics
-        .fillStyle(station.enabled ? 0xffecad : 0xbcc8a2)
-        .fillRect(x - 28, y - 12, 56, 24);
 
       const zone = this.add
         .zone(x, y - 6, 64, 36)
@@ -309,7 +305,7 @@ export class HubScene extends Phaser.Scene {
     drumSprite.on('pointerdown', () => this.tryOpenGrandFinale());
 
     this.add
-      .dom(map.board.x, map.board.y - 85, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:13px;font-weight:bold;color:#4a2f00;text-shadow:-1px -1px 0 #ffe680,1px -1px 0 #ffe680,-1px 1px 0 #ffe680,1px 1px 0 #ffe680;white-space:nowrap;pointer-events:none;user-select:none', '✨ TRỐNG ĐỒNG ĐÔNG SƠN ✨')
+      .dom(map.board.x, map.board.y - 85, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:13px;font-weight:bold;color:#4a2f00;text-shadow:-1px -1px 0 #ffe680,1px -1px 0 #ffe680,-1px 1px 0 #ffe680,1px 1px 0 #ffe680;white-space:nowrap;pointer-events:none;user-select:none', 'TRỐNG ĐỒNG ĐÔNG SƠN')
       .setOrigin(0.5, 0.5)
       .setDepth(map.board.y + 12);
 

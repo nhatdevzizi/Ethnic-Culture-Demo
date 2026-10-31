@@ -14,3 +14,5 @@ dialog{width:min(630px,90%);max-height:85%;padding:30px 34px;border:2px solid va
 .hub-station-label span{font-size:clamp(13px,1.094cqw,23px);font-weight:600;color:#3c5844}
 .hub-minimap{position:relative;width:clamp(125px,12cqw,165px);padding:8px 10px;background:#fff9e9;border:1.5px solid #bda06d;border-radius:4px;color:#183b38;pointer-events:none;box-shadow:0 4px 0 #183b3833}
 .hub-minimap strong{font-size:11px;font-weight:800;display:block;letter-spacing:.6px;text-align:center;color:#214c3c;margin-bottom:3px}.hub-minimap svg{display:block;width:100%;aspect-ratio:4/3;background:#dce8be;border:1px solid #bfcb9f;border-radius:2px;margin-block:4px}.hub-biome-label{display:block;font-size:11px;font-weight:800;line-height:1.3;text-align:center;color:#16362e;background:#ecdcb5;border-radius:3px;padding:3px 6px;margin-top:4px}
+/* Phaser DOM game object: reset background trắng mặc định của wrapper div Phaser tạo */
+#game-container>div>span{background:transparent!important}
