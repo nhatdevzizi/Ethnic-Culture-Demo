@@ -25,6 +25,7 @@ export class HubScene extends Phaser.Scene {
   private controls!: InputManager;
   private objects: Interactable[] = [];
   private stationPlaques: { id: string; bounds: Rect; node: HTMLElement }[] = [];
+  private worldLabels: Phaser.GameObjects.DOMElement[] = [];
   private landscape!: HubLandscape;
   private decorationCounts: Record<string, number> = {};
   private portalCooldown = false;
@@ -39,6 +40,7 @@ export class HubScene extends Phaser.Scene {
     this.objects = [];
     this.nearby = undefined;
     this.stationPlaques = [];
+    this.worldLabels = [];
     this.decorationCounts = {};
 
     ui.bind({
@@ -239,6 +241,8 @@ export class HubScene extends Phaser.Scene {
           el.className = 'hub-world-label hub-world-label-npc';
           el.dataset.npc = npc.name;
           el.textContent = npc.name;
+          dom.updateSize();
+          this.worldLabels.push(dom);
         }
 
         this.objects.push({
@@ -270,6 +274,8 @@ export class HubScene extends Phaser.Scene {
     guideEl.className = 'hub-world-label hub-world-label-guide';
     guideEl.dataset.guide = 'An';
     guideEl.textContent = 'An';
+    guideDom.updateSize();
+    this.worldLabels.push(guideDom);
     this.objects.push({
       ...map.guide,
       id: 'guide',
@@ -320,6 +326,8 @@ export class HubScene extends Phaser.Scene {
     drumEl.className = 'hub-world-label hub-world-label-drum';
     drumEl.dataset.attraction = 'trong-dong';
     drumEl.textContent = 'TRỐNG ĐỒNG ĐÔNG SƠN';
+    drumDom.updateSize();
+    this.worldLabels.push(drumDom);
 
     for (const obstacle of hubObstacles(map, minigameRegistry, this.landscape)) {
       block(
@@ -481,6 +489,8 @@ export class HubScene extends Phaser.Scene {
       festEl.className = 'hub-world-label hub-world-label-festival';
       festEl.dataset.festival = attr.id;
       festEl.textContent = attr.badge;
+      festDom.updateSize();
+      this.worldLabels.push(festDom);
 
       if (attr.block && attr.blockW !== undefined && attr.blockH !== undefined) {
         block(attr.x, attr.y - attr.blockH / 2, attr.blockW, attr.blockH);
