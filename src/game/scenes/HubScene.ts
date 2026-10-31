@@ -806,31 +806,8 @@ export class HubScene extends Phaser.Scene {
   private scoreboardNode?: HTMLElement;
 
   private renderScoreboard() {
-    if (!this.scoreboardNode) {
-      this.scoreboardNode = element('div', 'hub-live-scoreboard');
-      this.scoreboardNode.id = 'hub-live-scoreboard';
-      ui.screen.append(this.scoreboardNode);
-    }
-    const keysCount = gameshow.getCollectedKeysCount();
-    this.scoreboardNode.innerHTML = `
-      <div class="hub-gs-title">
-        <span>🥁</span> THANH ÂM ĐẠI NGÀN
-        <span class="hub-keys-pill ${keysCount >= 4 ? 'unlocked' : ''}">🗝️ Chìa Khóa: ${keysCount}/4</span>
-      </div>
-      <div class="hub-teams-row">
-        ${gameshow.teams
-          .map(
-            (t) => `
-          <div class="hub-team-pill" style="border-color:${t.color}">
-            <span>${t.name}</span>
-            <strong>${t.score}đ</strong>
-            <small style="color:#9ec7b8">⚡${t.cards.steal_points} 🔒${t.cards.block_turn} 🛡️${t.cards.shield}</small>
-          </div>
-        `
-          )
-          .join('')}
-      </div>
-    `;
+    this.scoreboardNode?.remove();
+    this.scoreboardNode = undefined;
     ui.updateKeyTracker();
   }
 

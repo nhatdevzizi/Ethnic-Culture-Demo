@@ -148,7 +148,7 @@ class OverlayController {
     this.screen.replaceChildren();
     audio.setPaused(this.blocked);
     this.prompt('');
-    document.querySelector('#demo-badge')!.textContent = this.t('demo');
+    const demoBadge = document.querySelector<HTMLElement>('#demo-badge'); if (demoBadge) demoBadge.textContent = this.t('demo');
     document.documentElement.lang = session.state.locale;
     document.querySelector('#app')!.setAttribute('aria-label', this.t('appLabel'));
     document.querySelector('#game-container')!.setAttribute('aria-label', this.t('worldLabel'));
