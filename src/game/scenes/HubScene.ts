@@ -231,10 +231,14 @@ export class HubScene extends Phaser.Scene {
         npcImg.on('pointerdown', () => this.portal(station));
 
         if (npc) {
-          this.add
-            .dom(instructor.x, instructor.y - 60, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:12px;font-weight:bold;color:#1a3d2e;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;white-space:nowrap;pointer-events:none;user-select:none', npc.name)
+          const dom = this.add
+            .dom(instructor.x, instructor.y - 60, 'span')
             .setOrigin(0.5, 0.5)
             .setDepth(instructor.y + 20);
+          const el = dom.node as HTMLElement;
+          el.className = 'hub-world-label hub-world-label-npc';
+          el.dataset.npc = npc.name;
+          el.textContent = npc.name;
         }
 
         this.objects.push({
@@ -258,10 +262,14 @@ export class HubScene extends Phaser.Scene {
       .setOrigin(0.5, 1)
       .setDisplaySize(32, 72)
       .setDepth(map.guide.y + 24);
-    this.add
-      .dom(map.guide.x, map.guide.y - 62, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:16px;font-weight:bold;color:#1a3d2e;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;white-space:nowrap;pointer-events:none;user-select:none', 'An')
+    const guideDom = this.add
+      .dom(map.guide.x, map.guide.y - 62, 'span')
       .setOrigin(0.5, 0.5)
       .setDepth(10000);
+    const guideEl = guideDom.node as HTMLElement;
+    guideEl.className = 'hub-world-label hub-world-label-guide';
+    guideEl.dataset.guide = 'An';
+    guideEl.textContent = 'An';
     this.objects.push({
       ...map.guide,
       id: 'guide',
@@ -304,10 +312,14 @@ export class HubScene extends Phaser.Scene {
     });
     drumSprite.on('pointerdown', () => this.tryOpenGrandFinale());
 
-    this.add
-      .dom(map.board.x, map.board.y - 85, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:13px;font-weight:bold;color:#4a2f00;text-shadow:-1px -1px 0 #ffe680,1px -1px 0 #ffe680,-1px 1px 0 #ffe680,1px 1px 0 #ffe680;white-space:nowrap;pointer-events:none;user-select:none', 'TRỐNG ĐỒNG ĐÔNG SƠN')
+    const drumDom = this.add
+      .dom(map.board.x, map.board.y - 85, 'span')
       .setOrigin(0.5, 0.5)
       .setDepth(map.board.y + 12);
+    const drumEl = drumDom.node as HTMLElement;
+    drumEl.className = 'hub-world-label hub-world-label-drum';
+    drumEl.dataset.attraction = 'trong-dong';
+    drumEl.textContent = 'TRỐNG ĐỒNG ĐÔNG SƠN';
 
     for (const obstacle of hubObstacles(map, minigameRegistry, this.landscape)) {
       block(
@@ -461,10 +473,14 @@ export class HubScene extends Phaser.Scene {
         ui.dialogue(attr.dialogueTitle, attr.dialoguePages);
       });
 
-      this.add
-        .dom(attr.x, attr.y - attr.height - 8, 'span', 'font-family:\"Be Vietnam Pro\",Arial,sans-serif;font-size:11px;font-weight:bold;color:#7a1a1a;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff;white-space:nowrap;pointer-events:none;user-select:none', attr.badge)
+      const festDom = this.add
+        .dom(attr.x, attr.y - attr.height - 8, 'span')
         .setOrigin(0.5, 0.5)
         .setDepth(attr.y + 1);
+      const festEl = festDom.node as HTMLElement;
+      festEl.className = 'hub-world-label hub-world-label-festival';
+      festEl.dataset.festival = attr.id;
+      festEl.textContent = attr.badge;
 
       if (attr.block && attr.blockW !== undefined && attr.blockH !== undefined) {
         block(attr.x, attr.y - attr.blockH / 2, attr.blockW, attr.blockH);
