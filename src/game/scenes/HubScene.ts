@@ -233,16 +233,15 @@ export class HubScene extends Phaser.Scene {
         npcImg.on('pointerdown', () => this.portal(station));
 
         if (npc) {
-          const dom = this.add
-            .dom(instructor.x, instructor.y - 60, 'span')
-            .setOrigin(0.5, 0.5)
-            .setDepth(instructor.y + 20);
-          const el = dom.node as HTMLElement;
-          el.className = 'hub-world-label hub-world-label-npc';
-          el.dataset.npc = npc.name;
-          el.textContent = npc.name;
-          dom.updateSize();
-          this.worldLabels.push(dom);
+          this.addWorldLabel(
+            instructor.x,
+            instructor.y - 60,
+            npc.name,
+            'hub-world-label-npc',
+            'npc',
+            npc.name,
+            instructor.y + 20
+          );
         }
 
         this.objects.push({
@@ -266,16 +265,15 @@ export class HubScene extends Phaser.Scene {
       .setOrigin(0.5, 1)
       .setDisplaySize(32, 72)
       .setDepth(map.guide.y + 24);
-    const guideDom = this.add
-      .dom(map.guide.x, map.guide.y - 62, 'span')
-      .setOrigin(0.5, 0.5)
-      .setDepth(10000);
-    const guideEl = guideDom.node as HTMLElement;
-    guideEl.className = 'hub-world-label hub-world-label-guide';
-    guideEl.dataset.guide = 'An';
-    guideEl.textContent = 'An';
-    guideDom.updateSize();
-    this.worldLabels.push(guideDom);
+    this.addWorldLabel(
+      map.guide.x,
+      map.guide.y - 62,
+      'An',
+      'hub-world-label-guide',
+      'guide',
+      'An',
+      10000
+    );
     this.objects.push({
       ...map.guide,
       id: 'guide',
@@ -318,16 +316,15 @@ export class HubScene extends Phaser.Scene {
     });
     drumSprite.on('pointerdown', () => this.tryOpenGrandFinale());
 
-    const drumDom = this.add
-      .dom(map.board.x, map.board.y - 85, 'span')
-      .setOrigin(0.5, 0.5)
-      .setDepth(map.board.y + 12);
-    const drumEl = drumDom.node as HTMLElement;
-    drumEl.className = 'hub-world-label hub-world-label-drum';
-    drumEl.dataset.attraction = 'trong-dong';
-    drumEl.textContent = 'TRỐNG ĐỒNG ĐÔNG SƠN';
-    drumDom.updateSize();
-    this.worldLabels.push(drumDom);
+    this.addWorldLabel(
+      map.board.x,
+      map.board.y - 85,
+      'TRỐNG ĐỒNG ĐÔNG SƠN',
+      'hub-world-label-drum',
+      'attraction',
+      'trong-dong',
+      map.board.y + 12
+    );
 
     for (const obstacle of hubObstacles(map, minigameRegistry, this.landscape)) {
       block(
@@ -481,16 +478,15 @@ export class HubScene extends Phaser.Scene {
         ui.dialogue(attr.dialogueTitle, attr.dialoguePages);
       });
 
-      const festDom = this.add
-        .dom(attr.x, attr.y - attr.height - 8, 'span')
-        .setOrigin(0.5, 0.5)
-        .setDepth(attr.y + 1);
-      const festEl = festDom.node as HTMLElement;
-      festEl.className = 'hub-world-label hub-world-label-festival';
-      festEl.dataset.festival = attr.id;
-      festEl.textContent = attr.badge;
-      festDom.updateSize();
-      this.worldLabels.push(festDom);
+      this.addWorldLabel(
+        attr.x,
+        attr.y - attr.height - 8,
+        attr.badge,
+        'hub-world-label-festival',
+        'festival',
+        attr.id,
+        attr.y + 1
+      );
 
       if (attr.block && attr.blockW !== undefined && attr.blockH !== undefined) {
         block(attr.x, attr.y - attr.blockH / 2, attr.blockW, attr.blockH);
@@ -533,6 +529,15 @@ export class HubScene extends Phaser.Scene {
 
     const camera = this.cameras.main;
     camera.setZoom(1.25).startFollow(this.player, true, 1, 1, 0, 64);
+    const alignLabels = () => {
+      this.worldLabels.forEach((dom) => {
+        const baseX = Number((dom.node as HTMLElement).dataset.baseX || dom.x);
+        dom.updateSize();
+        dom.x = baseX + dom.width * 0.1;
+      });
+    };
+    this.time.delayedCall(100, alignLabels);
+    this.time.delayedCall(500, alignLabels);
 
     const miniMap = element('div', 'hub-minimap');
     miniMap.dataset.testid = 'trail-map';
@@ -827,6 +832,28 @@ export class HubScene extends Phaser.Scene {
     ui.updateKeyTracker();
   }
 
+  private addWorldLabel(
+    x: number,
+    y: number,
+    text: string,
+    className: string,
+    datasetKey: string,
+    datasetVal: string,
+    depth: number
+  ) {
+    const dom = this.add.dom(x, y, 'span');
+    const el = dom.node as HTMLElement;
+    el.className = `hub-world-label ${className}`;
+    el.dataset[datasetKey] = datasetVal;
+    el.dataset.baseX = String(x);
+    el.textContent = text;
+    dom.updateSize();
+    dom.setOrigin(0.5, 0.5);
+    dom.setDepth(depth);
+    dom.x = x + dom.width * 0.1;
+    this.worldLabels.push(dom);
+    return dom;
+  }
   private finish() {
     session.setPosition({ x: this.player.x, y: this.player.y });
     this.scene.start('Ending');
