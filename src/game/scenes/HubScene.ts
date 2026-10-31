@@ -357,6 +357,7 @@ export class HubScene extends Phaser.Scene {
       block: boolean;
       blockW?: number;
       blockH?: number;
+      labelOffsetY?: number;
     }
 
     const festivalAttractions: FestivalItem[] = [
@@ -369,6 +370,7 @@ export class HubScene extends Phaser.Scene {
         height: 124,
         label: '🚣 Lễ Hội Đua Ghe Ngo (Đồng bào Khmer)',
         badge: 'Đua Ghe Ngo',
+        labelOffsetY: 28,
         dialogueTitle: 'Lễ Hội Đua Ghe Ngo - Đồng bào Khmer Nam Bộ',
         dialoguePages: [
           'Ghe Ngo (Chầm Ngo) là báu vật thiêng liêng của đồng bào Khmer Nam Bộ, xuất hiện rực rỡ trong lễ hội Ok Om Bok rằm tháng 10 âm lịch.',
@@ -480,7 +482,7 @@ export class HubScene extends Phaser.Scene {
 
       this.addWorldLabel(
         attr.x,
-        attr.y - attr.height - 8,
+        attr.y - attr.height - 8 + (attr.labelOffsetY ?? 0),
         attr.badge,
         'hub-world-label-festival',
         'festival',
