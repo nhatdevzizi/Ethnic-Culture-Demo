@@ -241,8 +241,8 @@ export class HubScene extends Phaser.Scene {
               fontSize: '11px',
               fontStyle: 'bold',
               color: '#213e31',
-              backgroundColor: '#fff7e0',
-              padding: { x: 5, y: 2 },
+              stroke: '#ffffff',
+              strokeThickness: 3,
             })
             .setOrigin(0.5)
             .setDepth(instructor.y + 20);
@@ -274,8 +274,8 @@ export class HubScene extends Phaser.Scene {
         fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
         fontSize: '20px',
         color: '#244e42',
-        backgroundColor: '#fff4d8',
-        padding: { x: 6, y: 3 },
+        stroke: '#ffffff',
+        strokeThickness: 4,
       })
       .setResolution(2)
       .setOrigin(0.5)
@@ -328,8 +328,8 @@ export class HubScene extends Phaser.Scene {
         fontSize: '13px',
         fontStyle: 'bold',
         color: '#4a2f00',
-        backgroundColor: '#ffd700',
-        padding: { x: 8, y: 3 },
+        stroke: '#ffe680',
+        strokeThickness: 3,
       })
       .setOrigin(0.5)
       .setDepth(map.board.y + 12);
@@ -491,9 +491,9 @@ export class HubScene extends Phaser.Scene {
           fontFamily: '"Be Vietnam Pro", Arial, sans-serif',
           fontSize: '11px',
           fontStyle: 'bold',
-          color: '#ffffff',
-          backgroundColor: '#9e2a2b',
-          padding: { x: 5, y: 2 },
+          color: '#7a1a1a',
+          stroke: '#ffffff',
+          strokeThickness: 3,
         })
         .setOrigin(0.5)
         .setDepth(attr.y + 1);
