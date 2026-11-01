@@ -31,11 +31,10 @@ export class HubScene extends Phaser.Scene {
   private portalCooldown = false;
   private map!: HubMap;
   private drumSprite?: Phaser.GameObjects.Image;
-  private drumSpinTween?: Phaser.Tweens.Tween;
   private drumBaseAura?: Phaser.GameObjects.Arc;
   private drumOuterAura?: Phaser.GameObjects.Arc;
   private drumAuraTween?: Phaser.Tweens.Tween;
-  private drumSealOverlay?: Phaser.GameObjects.DOMElement;
+  private drumBlackBox?: Phaser.GameObjects.Rectangle;
   private drumWorldLabel?: Phaser.GameObjects.DOMElement;
   nearby?: Interactable;
 
@@ -309,19 +308,20 @@ export class HubScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setDisplaySize(130, 130)
       .setDepth(map.board.y + 8);
-    this.drumSpinTween = this.tweens.add({
-      targets: this.drumSprite,
+
+    // Khối vuông đen xoay che trống đồng khi chưa đủ 4 chìa khóa
+    this.drumBlackBox = this.add
+      .rectangle(map.board.x, map.board.y - 10, 130, 130, 0x000000, 1)
+      .setOrigin(0.5, 0.5)
+      .setDepth(map.board.y + 9);
+
+    this.tweens.add({
+      targets: [this.drumSprite, this.drumBlackBox],
       angle: 360,
       duration: 48000,
       repeat: -1,
       ease: 'Linear',
     });
-
-    // Vòng phong ấn ổ khóa khi chưa đủ 4/4 Chìa Khóa
-    this.drumSealOverlay = this.add.dom(map.board.x, map.board.y - 10, 'div');
-    const sealEl = this.drumSealOverlay.node as HTMLElement;
-    sealEl.className = 'hub-drum-seal-badge';
-    this.drumSealOverlay.setOrigin(0.5, 0.5).setDepth(map.board.y + 11);
 
     this.drumWorldLabel = this.addWorldLabel(
       map.board.x,
@@ -826,13 +826,14 @@ export class HubScene extends Phaser.Scene {
     const keys = gameshow.getCollectedKeysCount();
     const unlocked = keys >= 4;
 
+    if (this.drumBlackBox) {
+      this.drumBlackBox.setVisible(!unlocked);
+    }
+
     if (this.drumSprite) {
+      this.drumSprite.setVisible(unlocked);
       if (unlocked) {
         this.drumSprite.clearTint().setAlpha(1);
-        this.drumSpinTween?.resume();
-      } else {
-        this.drumSprite.setTint(0x4b5853).setAlpha(0.5);
-        this.drumSpinTween?.pause();
       }
     }
 
@@ -843,22 +844,9 @@ export class HubScene extends Phaser.Scene {
       else this.drumAuraTween?.pause();
     }
 
-    if (this.drumSealOverlay) {
-      const sealEl = this.drumSealOverlay.node as HTMLElement;
-      if (unlocked) {
-        this.drumSealOverlay.setVisible(false);
-      } else {
-        this.drumSealOverlay.setVisible(true);
-        sealEl.innerHTML = `<span class="seal-lock-icon">🔒</span><span class="seal-key-count">${keys}/4 🗝️</span>`;
-        this.drumSealOverlay.updateSize();
-      }
-    }
-
     if (this.drumWorldLabel) {
       const labelEl = this.drumWorldLabel.node as HTMLElement;
-      labelEl.textContent = unlocked
-        ? '✨ TRỐNG ĐỒNG ĐÔNG SƠN (ĐÃ MỞ KHÓA)'
-        : `🔒 TRỐNG ĐỒNG ĐÔNG SƠN (${keys}/4 CHÌA KHÓA)`;
+      labelEl.textContent = 'TRỐNG ĐỒNG ĐÔNG SƠN';
       const baseX = Number(labelEl.dataset.baseX || this.drumWorldLabel.x);
       this.drumWorldLabel.updateSize();
       this.drumWorldLabel.x = baseX + this.drumWorldLabel.width * 0.1;
