@@ -1833,3 +1833,324 @@
   filter: grayscale(0.8);
   cursor: not-allowed;
 }
+
+
+/* ==========================================================================
+   GRAND VICTORY CELEBRATION AREA (Khu vực Chúc Mừng Hoàn Thành Cuộc Chơi)
+   ========================================================================== */
+.gs-victory-hall {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  height: 100%;
+  padding: 18px 28px;
+  background: radial-gradient(circle at 50% 25%, rgba(44, 96, 82, 0.96), rgba(10, 26, 22, 0.98));
+  border: 2.5px solid var(--gs-gold);
+  border-radius: 16px;
+  box-shadow: 0 12px 45px rgba(0, 0, 0, 0.65), inset 0 0 35px rgba(244, 196, 48, 0.18);
+  text-align: center;
+  animation: gsFadeIn 0.4s ease-out;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.gs-victory-banner {
+  max-width: 860px;
+}
+
+.gs-victory-crown {
+  font-size: 36px;
+  letter-spacing: 8px;
+  margin-bottom: 6px;
+  animation: gsBounce 1.2s infinite alternate;
+}
+
+.gs-victory-title {
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 900;
+  color: var(--gs-gold);
+  margin: 0 0 6px;
+  letter-spacing: 1.5px;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.85);
+}
+
+.gs-victory-subtitle {
+  font-size: clamp(15px, 1.8vw, 20px);
+  font-weight: 800;
+  color: #dff9fb;
+  margin: 0 0 12px;
+}
+
+.gs-victory-desc {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: #d1ebe3;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(244, 196, 48, 0.45);
+  border-radius: 10px;
+  padding: 10px 18px;
+  margin: 0 auto 12px;
+}
+
+.gs-victory-champion-spotlight {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(90deg, rgba(244, 196, 48, 0.25), rgba(230, 126, 34, 0.3), rgba(244, 196, 48, 0.25));
+  border: 2px solid var(--gs-gold);
+  border-radius: 30px;
+  padding: 8px 24px;
+  box-shadow: 0 0 20px rgba(244, 196, 48, 0.35);
+}
+
+.gs-victory-podium-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  gap: 14px;
+  width: 100%;
+  max-width: 960px;
+}
+
+.gs-victory-rank-card {
+  background: rgba(14, 35, 30, 0.92);
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+
+.gs-victory-rank-card.champion {
+  background: linear-gradient(180deg, rgba(64, 54, 18, 0.92), rgba(22, 46, 39, 0.96));
+  border-width: 3px;
+  box-shadow: 0 0 25px rgba(244, 196, 48, 0.45);
+  transform: scale(1.04);
+}
+
+.gs-victory-rank-medal {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--gs-gold);
+  letter-spacing: 0.8px;
+}
+
+.gs-victory-rank-name {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.gs-victory-rank-score {
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.gs-victory-rank-score span {
+  font-size: 12px;
+  color: #a8e6cf;
+  font-weight: 700;
+}
+
+.gs-victory-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.gs-victory-btn {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.gs-victory-btn.primary {
+  background: linear-gradient(90deg, #f4c430, #e67e22);
+  color: #0e241f;
+  border-color: #fff;
+  box-shadow: 0 4px 18px rgba(244, 196, 48, 0.5);
+}
+
+.gs-victory-btn.primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+.gs-victory-btn.secondary {
+  background: #1b433a;
+  color: var(--gs-gold);
+  border-color: var(--gs-gold);
+}
+
+.gs-victory-btn.secondary:hover {
+  background: #25584c;
+}
+
+.gs-victory-btn.hub {
+  background: #234d43;
+  color: #fff;
+  border-color: #538d7d;
+}
+
+.gs-victory-btn.hub:hover {
+  background: #2d6155;
+}
+
+.gs-ending-podium {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 14px 0 18px;
+}
+
+.gs-ending-podium-item {
+  background: #1b3d35;
+  color: #fff;
+  border: 2px solid;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  text-align: center;
+  font-size: 13px;
+}
+
+.gs-ending-podium-item.champion {
+  background: #2c4a2e;
+  box-shadow: 0 0 14px rgba(244, 196, 48, 0.45);
+}
+
+/* ==========================================================================
+   PHONG ẤN & MỞ KHÓA TRỐNG ĐỒNG ĐÔNG SƠN (4/4 CHÌA KHÓA)
+   ========================================================================== */
+
+.hub-drum-seal-badge {
+  display: inline-block;
+  font-family: 'Be Vietnam Pro', sans-serif;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 16px;
+  text-align: center;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.65);
+  transition: all 0.35s ease;
+}
+
+.hub-drum-seal-badge.locked {
+  background: rgba(20, 26, 28, 0.92);
+  color: #bdc3c7;
+  border: 1.5px dashed #7f8c8d;
+}
+
+.hub-drum-seal-badge.unlocked {
+  background: linear-gradient(90deg, rgba(44, 34, 8, 0.95), rgba(78, 56, 10, 0.95));
+  color: #f4c430;
+  border: 2px solid #f4c430;
+  box-shadow: 0 0 18px rgba(244, 196, 48, 0.65);
+  animation: gsPulse 1.8s infinite;
+}
+
+.gs-keys-drum-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11.5px;
+  font-weight: 800;
+  transition: all 0.3s ease;
+}
+
+.gs-keys-drum-preview.locked {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  color: #95a5a6;
+}
+
+.gs-keys-drum-preview.locked .gs-keys-drum-img {
+  width: 24px;
+  height: 24px;
+  filter: grayscale(1) brightness(0.45);
+  opacity: 0.6;
+}
+
+.gs-keys-drum-preview.unlocked {
+  background: linear-gradient(90deg, rgba(244, 196, 48, 0.22), rgba(230, 126, 34, 0.28));
+  border: 1.5px solid var(--gs-gold);
+  color: var(--gs-gold);
+  box-shadow: 0 0 14px rgba(244, 196, 48, 0.4);
+}
+
+.gs-keys-drum-preview.unlocked .gs-keys-drum-img {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(0 0 6px rgba(244, 196, 48, 0.85));
+  animation: gsRotateSlow 14s linear infinite;
+}
+
+.gs-drum-unlock-toast {
+  max-width: 620px !important;
+  padding: 28px 32px !important;
+  border: 3px solid var(--gs-gold) !important;
+  background: radial-gradient(circle at center, rgba(44, 72, 58, 0.98) 0%, rgba(12, 28, 23, 0.99) 100%) !important;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.85), 0 0 40px rgba(244, 196, 48, 0.45) !important;
+}
+
+.gs-drum-unlock-badge {
+  display: inline-block;
+  background: rgba(244, 196, 48, 0.2);
+  color: var(--gs-gold);
+  border: 1.5px solid var(--gs-gold);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+}
+
+.gs-drum-unlock-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px auto 16px;
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 196, 48, 0.35) 0%, rgba(244, 196, 48, 0.05) 65%, transparent 100%);
+  box-shadow: 0 0 35px rgba(244, 196, 48, 0.5);
+}
+
+.gs-drum-unlock-img {
+  width: 145px;
+  height: 145px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 16px rgba(244, 196, 48, 0.85));
+  animation: gsRotateSlow 20s linear infinite;
+}
+
+.gs-drum-unlock-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+

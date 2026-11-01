@@ -83,5 +83,10 @@ describe('GameshowEngine', () => {
     engine.markStationCompleted('M04');
     expect(engine.getCollectedKeysCount()).toBe(4);
     expect(engine.hasAllKeys()).toBe(true);
+
+    // Completing the Grand Finale board does not increase keys beyond 4/4
+    engine.markStationCompleted('board');
+    expect(engine.isStationCompleted('board')).toBe(true);
+    expect(engine.getCollectedKeysCount()).toBe(4);
   });
 });

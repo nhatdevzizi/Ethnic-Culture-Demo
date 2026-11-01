@@ -3,13 +3,30 @@ import { session } from '../core/SessionStore';
 import { minigameRegistry } from '../core/MinigameRegistry';
 import { facts, localize } from '../core/content';
 import { ui, element, button } from '../ui/OverlayController';
+import { gameshow } from '../core/GameshowEngine';
 
 export class EndingScene extends Phaser.Scene {
   constructor() { super('Ending'); }
   create() {
     ui.bind({}); ui.hideHud(); ui.toast(''); this.cameras.main.setBackgroundColor('#264e44');
     const panel = element('section', 'title-journal ending journal-ending');
-    panel.append(element('span', 'eyebrow', ui.t('journey')), element('h1', '', ui.t('summary')), element('p', '', ui.t('reviewNote')));
+    panel.append(element('span', 'eyebrow', ui.t('journey')), element('h1', '', '🏆 CHÚC MỪNG HOÀN THÀNH CUỘC CHƠI — ĐẠI ĐOÀN KẾT 54 DÂN TỘC 🏆'), element('p', '', ui.t('reviewNote')));
+
+    const rankedTeams = [...gameshow.teams].sort((a, b) => b.score - a.score);
+    const podiumBox = element('div', 'gs-ending-podium');
+    const medals = ['🥇 QUÁN QUÂN', '🥈 Á QUÂN', '🥉 HẠNG BA', '🏅 KHUYẾN KHÍCH'];
+    podiumBox.innerHTML = rankedTeams
+      .map(
+        (team, idx) => `
+        <div class="gs-ending-podium-item ${idx === 0 ? 'champion' : ''}" style="border-color:${team.color}">
+          <strong>${medals[idx] || `HẠNG ${idx + 1}`}</strong>
+          <span style="color:${team.color}; font-weight:800;">${team.name}</span>
+          <b style="color:#f4c430">${team.score} điểm</b>
+        </div>
+      `
+      )
+      .join('');
+    panel.append(podiumBox);
     const cards = element('div', 'review-cards');
     for (const station of minigameRegistry.filter(s => s.enabled && s.requiredInPresentation)) {
       const status = session.state.statuses[station.id];

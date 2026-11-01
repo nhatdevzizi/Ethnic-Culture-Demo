@@ -65,10 +65,13 @@ class OverlayController {
   get hasError() {
     return this.errorActive;
   }
-  get blocked() {
+  private isStationModalOpen() {
     const stationModal = document.getElementById('station-game-modal');
-    const isStationOpen = stationModal && stationModal.style.display === 'flex';
-    return this.errorActive || this.modal.open || document.hidden || Boolean(isStationOpen);
+    return Boolean(stationModal && stationModal.style.display === 'flex');
+  }
+
+  get blocked() {
+    return this.errorActive || this.modal.open || document.hidden || this.isStationModalOpen();
   }
 
   t(key: TextKey | string) {
@@ -85,11 +88,11 @@ class OverlayController {
       this.close();
     });
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden && !this.modal.open && this.actions.finish) this.pause();
+      if (document.hidden && !this.modal.open && !this.isStationModalOpen() && this.actions.finish) this.pause();
       audio.setPaused(this.blocked);
     });
     window.addEventListener('blur', () => {
-      if (!this.modal.open && this.actions.finish) this.pause();
+      if (!this.modal.open && !this.isStationModalOpen() && this.actions.finish) this.pause();
       audio.setPaused(true);
     });
     document.addEventListener('keydown', (event) => {
@@ -102,6 +105,7 @@ class OverlayController {
         void this.toggleSound();
         return;
       }
+      if (this.isStationModalOpen() && !this.modal.open) return;
       if (event.code === 'Escape') {
         event.preventDefault();
         if (this.modal.open) this.close();
@@ -284,7 +288,7 @@ class OverlayController {
   }
 
   pause() {
-    if (!this.actions.finish || this.modal.open) return;
+    if (!this.actions.finish || this.modal.open || this.isStationModalOpen()) return;
     const options = [
       { label: this.t('resume'), run: () => this.close() },
       { label: this.t('help'), run: () => this.help() },
@@ -346,6 +350,21 @@ class OverlayController {
       `${r1}\n${r2}\n${r3}\n${r4}\n\n${statusMsg}`,
       [{ label: this.t('close'), run: () => this.close() }]
     );
+
+    const previewBox = element('div', 'gs-keys-drum-preview');
+    const isUnlocked = count >= 4;
+    previewBox.innerHTML = `
+      <div class="gs-keys-drum-img-wrap ${isUnlocked ? 'unlocked' : 'locked'}">
+        <img src="${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg" alt="Trống Đồng Đông Sơn" />
+        ${!isUnlocked ? `<div class="gs-keys-drum-lock-badge">🔒 ĐANG PHONG ẤN (${count}/4 🗝️)</div>` : ''}
+      </div>
+      <strong class="gs-keys-drum-caption ${isUnlocked ? 'unlocked' : 'locked'}">
+        ${isUnlocked ? '✨ HÌNH ẢNH TRỐNG ĐỒNG ĐÔNG SƠN HOÀNG KIM ĐÃ ĐƯỢC MỞ KHÓA! ✨' : '🔒 Thu thập đủ 4/4 Chìa Khóa để mở khóa Hình ảnh Trống Đồng Đông Sơn'}
+      </strong>
+    `;
+    const btnRow = this.modal.querySelector('.button-row');
+    if (btnRow) this.modal.insertBefore(previewBox, btnRow);
+    else this.modal.append(previewBox);
   }
 
   credits() {

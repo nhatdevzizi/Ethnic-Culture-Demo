@@ -35,15 +35,18 @@ export class GameshowEngine {
   currentQuestionIndex = 0;
   preyPot = 0; // Quỹ Săn Mồi trong Vòng 4
 
-  // Vòng 1: Trạng thái 9 ô
+  // Vòng 1: Trạng thái 9 ô & trạng thái đã lộ từ khóa bức tranh tổng thể
   r1OpenedTiles: boolean[] = Array(9).fill(false);
   r1AnsweredCount = 0;
+  r1SecretRevealed = false;
 
   // Lịch sử biến động điểm gần nhất để kích hoạt hiệu ứng 4-5s
   lastScoreDeltas: ScoreDeltaEvent[] = [];
 
   // Quản lý 4 Chìa Khóa mở phong ấn Trống Đồng Đông Sơn
   completedStations: Set<string> = new Set();
+
+  private static readonly KEY_STATIONS = ['M01', 'M02', 'M03', 'M04'] as const;
 
   markStationCompleted(stationId: string): boolean {
     const isNew = !this.completedStations.has(stationId);
@@ -52,7 +55,7 @@ export class GameshowEngine {
   }
 
   getCollectedKeysCount(): number {
-    return this.completedStations.size;
+    return GameshowEngine.KEY_STATIONS.filter((id) => this.completedStations.has(id)).length;
   }
 
   isStationCompleted(stationId: string): boolean {
@@ -60,7 +63,7 @@ export class GameshowEngine {
   }
 
   hasAllKeys(): boolean {
-    return this.completedStations.size >= 4;
+    return this.getCollectedKeysCount() >= 4;
   }
 
   constructor(teamNames?: string[]) {
