@@ -448,7 +448,7 @@ export class HubScene extends Phaser.Scene {
         width: 180,
         height: 154,
         label: '🌳 Cây Đa Làng Quê & Cội Nguồn Đoàn Kết',
-        badge: 'Cây Đa Quê Hương',
+        badge: '',
         dialogueTitle: 'Cây Đa Làng Quê - Cội Nguồn 54 Dân Tộc',
         dialoguePages: [
           'Cây đa cổ thụ tỏa bóng mát là biểu tượng bền vững của làng bản Việt Nam, gắn liền với ký ức bao thế hệ cha ông.',
@@ -466,7 +466,7 @@ export class HubScene extends Phaser.Scene {
         width: 100,
         height: 76,
         label: '🔥 Bếp Lửa Thiêng Đoàn Kết',
-        badge: 'Bếp Lửa Thiêng',
+        badge: '',
         dialogueTitle: 'Ngọn Lửa Thiêng Đoàn Kết',
         dialoguePages: [
           'Ngọn lửa sưởi ấm tâm hồn, thắp sáng tình đoàn kết bền chặt giữa các cộng đồng dân tộc Việt Nam từ miền núi đến đồng bằng, từ biên cương đến hải đảo.'
@@ -484,15 +484,17 @@ export class HubScene extends Phaser.Scene {
         .setDisplaySize(attr.width, attr.height)
         .setDepth(attr.y);
 
-      this.addWorldLabel(
-        attr.x,
-        attr.y - attr.height - 8 + (attr.labelOffsetY ?? 0),
-        attr.badge,
-        'hub-world-label-festival',
-        'festival',
-        attr.id,
-        attr.y + 1
-      );
+      if (attr.badge) {
+        this.addWorldLabel(
+          attr.x,
+          attr.y - attr.height - 8 + (attr.labelOffsetY ?? 0),
+          attr.badge,
+          'hub-world-label-festival',
+          'festival',
+          attr.id,
+          attr.y + 1
+        );
+      }
 
       if (attr.block && attr.blockW !== undefined && attr.blockH !== undefined) {
         block(attr.x, attr.y - attr.blockH / 2, attr.blockW, attr.blockH);
