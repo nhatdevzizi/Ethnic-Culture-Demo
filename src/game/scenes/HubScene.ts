@@ -370,77 +370,6 @@ export class HubScene extends Phaser.Scene {
 
     const festivalAttractions: FestivalItem[] = [
       {
-        id: 'fest-thuyen-ngo',
-        key: 'fest_thuyen_ngo',
-        x: 1350,
-        y: 350,
-        width: 190,
-        height: 124,
-        label: '🚣 Lễ Hội Đua Ghe Ngo (Đồng bào Khmer)',
-        badge: 'Đua Ghe Ngo',
-        labelOffsetY: 28,
-        dialogueTitle: 'Lễ Hội Đua Ghe Ngo - Đồng bào Khmer Nam Bộ',
-        dialoguePages: [
-          'Ghe Ngo (Chầm Ngo) là báu vật thiêng liêng của đồng bào Khmer Nam Bộ, xuất hiện rực rỡ trong lễ hội Ok Om Bok rằm tháng 10 âm lịch.',
-          'Mỗi chiếc ghe Ngo chạm khắc hình rồng hoặc rắn Naga uy nghi dài tới 30m, chở 50-60 tay bơi cùng hòa nhịp mái chèo thần tốc trong tiếng trống rộn rã, thể hiện tình đoàn kết và khát vọng chinh phục sông nước.'
-        ],
-        block: false
-      },
-      {
-        id: 'fest-mua-sap',
-        key: 'fest_mua_sap',
-        x: 1120,
-        y: 740,
-        width: 170,
-        height: 116,
-        label: '🎋 Điệu Múa Sạp Ngày Hội (Thái - Mường)',
-        badge: 'Múa Sạp Tây Bắc',
-        dialogueTitle: 'Điệu Múa Sạp Ngày Hội - Dân tộc Thái, Mường',
-        dialoguePages: [
-          'Múa sạp là điệu múa dân gian rộn ràng không thể thiếu trong các ngày hội xuân và mừng cơm mới của người Thái, Mường.',
-          'Hai hàng người gõ nhịp sạp tre giòn giã đón bước chân khéo léo, uyển chuyển của các chàng trai cô gái, thể hiện tinh thần đoàn kết, lạc quan yêu đời và tình yêu đôi lứa.'
-        ],
-        block: true,
-        blockW: 100,
-        blockH: 50
-      },
-      {
-        id: 'fest-nem-con',
-        key: 'fest_nem_con',
-        x: 1440,
-        y: 740,
-        width: 100,
-        height: 118,
-        label: '🎯 Trò Chơi Ném Còn (Tày - Nùng - Thái)',
-        badge: 'Cây Còn Ngày Hội',
-        dialogueTitle: 'Lễ Hội Ném Còn - Dân tộc Tày, Thái, Nùng',
-        dialoguePages: [
-          'Cột còn cao vút giữa bãi hội tượng trưng cho trục vũ trụ nối đất với trời. Quả còn ngũ sắc khâu từ vải thổ cẩm nhồi hạt thóc mang ước vọng phồn thực.',
-          'Người nào ném quả còn lọt qua hồng tâm trên đỉnh cột sẽ mang lại phúc lộc dồi dào, mưa thuận gió hòa và mùa màng bội thu cho khắp thôn bản!'
-        ],
-        block: true,
-        blockW: 60,
-        blockH: 30
-      },
-      {
-        id: 'fest-ruou-can',
-        key: 'fest_ruou_can',
-        x: 1060,
-        y: 1330,
-        width: 170,
-        height: 99,
-        label: '🏺 Uống Rượu Cần & Lễ Cầu Mùa (Tây Nguyên)',
-        badge: 'Văn Hóa Rượu Cần',
-        dialogueTitle: 'Văn Hóa Rượu Cần - Tây Nguyên Hùng Vĩ',
-        dialoguePages: [
-          'Rượu cần là nét văn hóa cố kết cộng đồng thiêng liêng của các dân tộc Ê Đê, Ba Na, Gia Rai quanh ngọn lửa nhà rông.',
-          'Mọi người cùng vít cần thưởng thức hương men say của lá rừng, cùng lắng nghe già làng kể khan và tiếng cồng chiêng trầm hùng ngân vang giữa đại ngàn.'
-        ],
-        block: true,
-        blockW: 90,
-        blockH: 50
-      },
-      {
         id: 'fest-cay-da',
         key: 'fest_cay_da',
         x: 1520,
@@ -659,7 +588,7 @@ export class HubScene extends Phaser.Scene {
 
     this.controls = new InputManager(this);
     this.renderScoreboard();
-    ui.tutorial();
+    // ui.tutorial(); // An huong dan ban dau
   }
 
   update() {
