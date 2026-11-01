@@ -214,18 +214,12 @@ class OverlayController {
     show();
   }
 
-  hud(location: string) {
+  hud(_location: string) {
     if (this.errorActive) return;
     const hud = document.querySelector<HTMLElement>('#hud')!;
     hud.hidden = false;
-    const place = element('div', 'location');
-    place.append(element('span', 'eyebrow', this.t('journey')), element('strong', '', location));
     const tools = element('nav', 'tools');
     tools.setAttribute('aria-label', this.t('controlsLabel'));
-    const help = button('?', () => this.help(), 'icon-button');
-    help.setAttribute('aria-label', this.t('help'));
-    const pause = button('Ⅱ', () => this.pause(), 'icon-button');
-    pause.setAttribute('aria-label', this.t('pause'));
 
     const keysCount = gameshow.getCollectedKeysCount();
     const keyButton = button(
@@ -233,12 +227,9 @@ class OverlayController {
       () => this.keysPanel(),
       'key-tracker-btn'
     );
-    tools.append(keyButton, help, pause);
-    if (session.state.mode === 'presentation') {
-      tools.append(button(this.t('presenter'), () => this.presenter(), 'presenter-button'));
-    }
+    tools.append(keyButton);
 
-    hud.replaceChildren(place, tools);
+    hud.replaceChildren(tools);
     if (!session.storageAvailable) this.toast(this.t('savedFallback'));
   }
 
