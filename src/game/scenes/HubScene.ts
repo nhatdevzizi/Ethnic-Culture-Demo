@@ -15,7 +15,7 @@ import { nearestInteraction } from '../systems/InteractionSystem';
 import type { Interactable } from '../systems/InteractionSystem';
 import type { MinigameDefinition } from '../core/types';
 import { ui, element } from '../ui/OverlayController';
-import dialogue from '../../content/dialogues.json';
+
 import { StationGameModal } from '../ui/StationGameModal';
 import { gameshow } from '../core/GameshowEngine';
 
@@ -214,42 +214,42 @@ export class HubScene extends Phaser.Scene {
         node: plaque,
       });
 
-      if (station.enabled) {
-        const instructor = { x: x + 104, y: y - 10 };
-        const npcConfig: Record<string, { key: string; name: string; title: string }> = {
-          M01: { key: 'npc_dao', name: 'Chị Mây (Dao Đỏ)', title: 'Chị Mây - Nghệ nhân thêu Thổ Cẩm Dao Đỏ' },
-          M02: { key: 'npc_hmong', name: 'A Páo (H\'Mông)', title: 'A Páo - Nghệ nhân khèn H\'Mông' },
-          M03: { key: 'npc_ede', name: 'Y Ban (Ê Đê)', title: 'Y Ban - Nghệ nhân Cồng Chiêng Tây Nguyên' },
-          M04: { key: 'npc_thai', name: 'Nàng Ban (Thái)', title: 'Nàng Ban - Cô gái Thái bên Lửa Thiêng' },
-        };
-        const npc = npcConfig[station.id];
+      const instructor = { x: x + 104, y: y - 10 };
+      const npcConfig: Record<string, { key: string; frame?: string; name: string; title: string }> = {
+        M01: { key: 'npc_dao', name: 'Chị Mây (Dao Đỏ)', title: 'Chị Mây - Nghệ nhân thêu Thổ Cẩm Dao Đỏ' },
+        M02: { key: 'npc_hmong', name: 'A Páo (H\'Mông)', title: 'A Páo - Nghệ nhân khèn H\'Mông' },
+        M03: { key: 'npc_ede', name: 'Y Ban (Ê Đê)', title: 'Y Ban - Nghệ nhân Cồng Chiêng Tây Nguyên' },
+        M04: { key: 'instructor-a', frame: 'cutout', name: 'Lò Văn (Thái)', title: 'Lò Văn - Người giữ Lửa Thiêng Tây Bắc' },
+      };
+      const npc = npcConfig[station.id];
+
+      if (npc) {
+        const isInstructorA = npc.key === 'instructor-a';
         this.add
           .image(
             instructor.x,
             instructor.y + 18,
-            npc ? npc.key : (station.id === 'M02' ? 'instructor-a' : 'instructor-b'),
-            npc ? undefined : 'cutout'
+            npc.key,
+            npc.frame
           )
           .setOrigin(0.5, 1)
-          .setDisplaySize(npc ? 46 : (station.id === 'M02' ? 32 : 44), 74)
+          .setDisplaySize(isInstructorA ? 34 : 46, 74)
           .setDepth(instructor.y + 18);
 
-        if (npc) {
-          this.addWorldLabel(
-            instructor.x,
-            instructor.y - 60,
-            npc.name,
-            'hub-world-label-npc',
-            'npc',
-            npc.name,
-            instructor.y + 20
-          );
-        }
+        this.addWorldLabel(
+          instructor.x,
+          instructor.y - 60,
+          npc.name,
+          'hub-world-label-npc',
+          'npc',
+          npc.name,
+          instructor.y + 20
+        );
 
         this.objects.push({
           ...instructor,
           id: `${station.id}-instructor`,
-          label: `${icon} ${npc ? npc.title : ui.t(station.titleKey)}`,
+          label: `${icon} ${npc.title}`,
           activate: () => this.portal(station),
         });
       }
@@ -261,31 +261,6 @@ export class HubScene extends Phaser.Scene {
         activate: () => this.portal(station),
       });
     }
-
-    this.add
-      .image(map.guide.x, map.guide.y + 24, 'instructor-a', 'cutout')
-      .setOrigin(0.5, 1)
-      .setDisplaySize(32, 72)
-      .setDepth(map.guide.y + 24);
-    this.addWorldLabel(
-      map.guide.x,
-      map.guide.y - 62,
-      'An',
-      'hub-world-label-guide',
-      'guide',
-      'An',
-      10000
-    );
-    this.objects.push({
-      ...map.guide,
-      id: 'guide',
-      label: localize(dialogue.guide.name, session.state.locale),
-      activate: () =>
-        ui.dialogue(
-          localize(dialogue.guide.name, session.state.locale),
-          dialogue.guide.pages.map((p) => localize(p, session.state.locale))
-        ),
-    });
 
     // Trống Đồng Đông Sơn Hoàng Kim tại quảng trường trung tâm
     this.drumBaseAura = this.add
