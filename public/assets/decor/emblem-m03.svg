@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!-- Cồng chiêng treo trên giá, kèm dùi -->
+  <path d="M10 10 H86" stroke="#3b2a1e" stroke-width="5" stroke-linecap="round"/>
+  <path d="M30 10 L38 32 M66 10 L58 32" stroke="#6b4423" stroke-width="2.5" fill="none"/>
+  <circle cx="48" cy="56" r="34" fill="#c08a2e" stroke="#3b2a1e" stroke-width="3"/>
+  <circle cx="48" cy="56" r="27" fill="none" stroke="#8a5a1c" stroke-width="2"/>
+  <circle cx="48" cy="56" r="19" fill="none" stroke="#8a5a1c" stroke-width="2" stroke-dasharray="2 4"/>
+  <circle cx="48" cy="56" r="11" fill="#e2b54f" stroke="#8a5a1c" stroke-width="2.5"/>
+  <circle cx="48" cy="56" r="4.5" fill="#8a5a1c"/>
+  <circle cx="48" cy="28" r="3" fill="#3b2a1e"/>
+  <g transform="rotate(35 80 80)">
+    <rect x="76" y="62" width="5" height="30" rx="2.5" fill="#6b4423"/>
+    <circle cx="78.5" cy="62" r="6" fill="#a63d2f" stroke="#3b2a1e" stroke-width="1.5"/>
+  </g>
+</svg>

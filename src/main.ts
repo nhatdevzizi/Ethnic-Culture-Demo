@@ -10,6 +10,7 @@ import type { PatternStudioScene } from './game/minigames/PatternStudioScene';
 import './styles/main.css';
 import './styles/fonts.css';
 import './styles/gameshow.css';
+import './styles/gameshow-theme.css';
 
 let game: Phaser.Game | undefined;
 ui.onFatalError = () => { game?.scene.getScenes(true).forEach(scene => scene.scene.pause()); };

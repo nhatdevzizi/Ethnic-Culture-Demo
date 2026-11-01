@@ -1,0 +1,905 @@
+/* ==========================================================================
+   GIAO DIỆN MINI GAME — PHONG CÁCH GIẤY DÓ & VẢI THỔ CẨM
+   File này nạp SAU gameshow.css và ghi đè phần màu sắc / trang trí.
+   Bảng màu: kem giấy dó · nâu mực · đỏ gạch · xanh lá trầm · chàm · vàng đất
+   ========================================================================== */
+
+.gs-station-dialog {
+  --gs-ink: #2b1d14;
+  --gs-ink-soft: #5c4634;
+  --gs-paper: #f1e6cc;
+  --gs-paper-light: #fbf6ea;
+  --gs-paper-deep: #e9dcbc;
+  --gs-line: #cdb98f;
+  --gs-line-strong: #8a6a3a;
+  --gs-brown: #3b2a1e;
+  --gs-brick: #a63d2f;
+  --gs-leaf: #4f6b3a;
+  --gs-leaf-ok: #4f7a3a;
+  --gs-indigo: #2f4a6b;
+  --gs-ochre: #c08a2e;
+  --gs-accent: #a63d2f;
+  --gs-accent-deep: #7e2c21;
+
+  /* Ghi đè biến cũ để các chỗ dùng var() tự đổi theo */
+  --gs-gold: var(--gs-accent-deep);
+  --gs-gold-glow: transparent;
+  --gs-text-main: var(--gs-ink);
+  --gs-text-sub: var(--gs-ink-soft);
+  --gs-panel-bg: var(--gs-paper-light);
+  --gs-border-ethnic: var(--gs-brown);
+  --gs-green-light: var(--gs-leaf-ok);
+
+  background-color: var(--gs-paper);
+  background-image:
+    url('/assets/decor/drum-watermark.svg'),
+    url('/assets/decor/paper-weave.svg');
+  background-repeat: no-repeat, repeat;
+  background-position: right -90px bottom -90px, 0 0;
+  background-size: 460px 460px, 14px 14px;
+}
+
+/* Màu nhấn riêng cho từng mini game */
+.gs-theme-M01 { --gs-accent: #a63d2f; --gs-accent-deep: #7e2c21; }
+.gs-theme-M02 { --gs-accent: #4f6b3a; --gs-accent-deep: #38502a; }
+.gs-theme-M03 { --gs-accent: #2f4a6b; --gs-accent-deep: #223750; }
+.gs-theme-M04 { --gs-accent: #b5562a; --gs-accent-deep: #8a3f1c; }
+.gs-theme-board { --gs-accent: #c08a2e; --gs-accent-deep: #8a5f14; }
+
+/* Màn Đại Kết Cục: nền nâu sẫm, chữ kem để các phần thưởng/bục vinh danh vẫn dễ đọc */
+.gs-station-dialog.gs-theme-board {
+  background-color: #2b1d14;
+  color: #f6ecd2;
+  --gs-gold: #e2b54f;
+  --gs-text-main: #f6ecd2;
+  --gs-text-sub: #dccaa0;
+}
+
+/* ---------- THANH TIÊU ĐỀ ---------- */
+.gs-station-dialog .gs-station-topbar {
+  position: relative;
+  background: var(--gs-brown);
+  border-bottom: none;
+  padding: 14px 28px 22px;
+}
+.gs-station-dialog .gs-station-topbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  background: url('/assets/decor/brocade-strip.svg') repeat-x left center / auto 12px;
+}
+
+.gs-station-dialog .gs-station-title-box {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  column-gap: 14px;
+  align-items: center;
+}
+.gs-station-dialog .gs-station-title-box::before {
+  content: '';
+  grid-row: 1 / span 2;
+  width: 56px;
+  height: 56px;
+  background: url('/assets/decor/emblem-board.svg') center / contain no-repeat;
+}
+.gs-theme-M01 .gs-station-title-box::before { background-image: url('/assets/decor/emblem-m01.svg'); }
+.gs-theme-M02 .gs-station-title-box::before { background-image: url('/assets/decor/emblem-m02.svg'); }
+.gs-theme-M03 .gs-station-title-box::before { background-image: url('/assets/decor/emblem-m03.svg'); }
+.gs-theme-M04 .gs-station-title-box::before { background-image: url('/assets/decor/emblem-m04.svg'); }
+
+.gs-station-dialog .gs-station-title-box h2 {
+  color: #f6e7bd;
+  font-size: 24px;
+  letter-spacing: 1.2px;
+  text-shadow: none;
+}
+.gs-station-dialog .gs-station-title-box span {
+  color: #d9c59a;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.gs-station-dialog .gs-key-pill {
+  background: transparent;
+  border: 1.5px solid var(--gs-ochre);
+  color: #f6e7bd;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-key-pill strong { color: #f0c96a; }
+.gs-station-dialog .gs-key-pill.all-collected {
+  background: var(--gs-ochre);
+  color: var(--gs-ink);
+  box-shadow: none;
+}
+.gs-station-dialog .gs-key-pill.all-collected strong { color: var(--gs-ink); }
+
+.gs-station-dialog .gs-header-key-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gs-station-dialog .gs-station-status-pill {
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 4px;
+  letter-spacing: 0.4px;
+}
+.gs-station-dialog .gs-station-status-pill.done {
+  background: var(--gs-leaf);
+  border: 1.5px solid #8fb36f;
+  color: #f6ecd2;
+}
+.gs-station-dialog .gs-station-status-pill.pending {
+  background: transparent;
+  border: 1.5px dashed #d9c59a;
+  color: #d9c59a;
+}
+
+.gs-station-dialog .gs-btn-back-hub {
+  background: transparent;
+  color: #f6e7bd;
+  border: 2px solid #f6e7bd;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-btn-back-hub:hover {
+  background: #f6e7bd;
+  color: var(--gs-brown);
+  transform: none;
+}
+
+/* ---------- THANH CHỌN ĐỘI ---------- */
+.gs-station-dialog .gs-team-selector-bar {
+  background: var(--gs-paper-deep);
+  border-bottom: 1.5px solid var(--gs-line);
+}
+.gs-station-dialog .gs-selector-label {
+  color: var(--gs-brown);
+  font-size: 15px;
+}
+.gs-station-dialog .gs-selector-team-btn {
+  background: var(--gs-paper-light);
+  border-width: 2px;
+  border-radius: 4px;
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-selector-team-btn.selected {
+  background: #f6e2b0;
+  border-color: var(--gs-brown) !important;
+  box-shadow: 3px 3px 0 var(--gs-accent);
+  transform: none;
+}
+.gs-station-dialog .gs-st-score { color: var(--gs-accent-deep); }
+.gs-station-dialog .gs-st-cards { color: var(--gs-ink-soft); }
+.gs-station-dialog .gs-st-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  border: 2px solid var(--gs-brown);
+  border-radius: 50%;
+  vertical-align: -1px;
+  background: transparent;
+}
+.gs-station-dialog .gs-st-dot.on { background: var(--gs-accent); }
+
+.gs-station-dialog .gs-selector-team-btn.failed-turn {
+  background: #ecd0c7 !important;
+  opacity: 0.7;
+}
+.gs-station-dialog .gs-team-turn-badge.blocked-badge {
+  background: var(--gs-indigo);
+  border-color: #8aa3c4;
+}
+
+.gs-station-dialog .gs-card-act-btn { border-radius: 4px; color: #f6ecd2; }
+.gs-station-dialog .gs-card-act-btn.steal { background: #b5562a; border-color: #7a3716; }
+.gs-station-dialog .gs-card-act-btn.block { background: var(--gs-indigo); border-color: #1c2f47; }
+
+.gs-station-dialog .gs-5s-target-picker {
+  background: var(--gs-paper-light);
+  border: 1.5px solid var(--gs-brown);
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-5s-target-title { color: var(--gs-brown); }
+.gs-station-dialog .gs-5s-target-btn {
+  background: var(--gs-paper);
+  color: var(--gs-ink);
+  border: 1.5px solid var(--gs-line-strong);
+  border-radius: 3px;
+}
+.gs-station-dialog .gs-5s-target-btn:hover {
+  background: var(--gs-brown);
+  color: #f6ecd2;
+}
+.gs-station-dialog .gs-5s-target-cancel {
+  color: var(--gs-brick);
+  border-color: var(--gs-brick);
+  border-radius: 3px;
+}
+
+/* ---------- THẺ CÂU HỎI (khung viền thổ cẩm trên & dưới) ---------- */
+.gs-station-dialog .gs-question-panel {
+  position: relative;
+  background: var(--gs-paper-light);
+  color: var(--gs-ink);
+  border-style: solid;
+  border-color: var(--gs-brown);
+  border-width: 12px 0 12px 0;
+  border-image: url('/assets/decor/brocade-strip.svg') 20 0 20 0 / 12px 0 12px 0 round;
+  border-radius: 0;
+  box-shadow:
+    inset 2px 0 0 var(--gs-brown),
+    inset -2px 0 0 var(--gs-brown),
+    5px 5px 0 rgba(59, 42, 30, 0.2);
+  padding: 26px 34px !important;
+}
+
+.gs-station-dialog .gs-q-theme {
+  color: var(--gs-accent-deep);
+  letter-spacing: 1px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--gs-line);
+}
+.gs-station-dialog .gs-q-text {
+  color: var(--gs-ink);
+}
+
+/* Trắc nghiệm */
+.gs-station-dialog .gs-option-btn {
+  background: var(--gs-paper);
+  border: 2px solid var(--gs-line-strong);
+  border-radius: 6px !important;
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-option-btn:hover:not(:disabled) {
+  border-color: var(--gs-accent);
+  background: #f3e2b9;
+}
+.gs-station-dialog .gs-option-btn:disabled { opacity: 1; cursor: default; }
+.gs-station-dialog .gs-option-btn.correct {
+  background: #dfeccb !important;
+  border-color: var(--gs-leaf-ok) !important;
+  box-shadow: none;
+}
+.gs-station-dialog .gs-option-btn.incorrect {
+  background: #f1d2ca !important;
+  border-color: var(--gs-brick) !important;
+}
+
+/* Tick đúng / sai */
+.gs-station-dialog .gs-tf-row,
+.gs-station-dialog .gs-order-row,
+.gs-station-dialog .gs-match-card {
+  background: var(--gs-paper);
+  border: 2px solid var(--gs-line);
+  border-radius: 6px;
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-tf-statement,
+.gs-station-dialog .gs-order-item-text,
+.gs-station-dialog .gs-match-card-text {
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-tf-row.correct,
+.gs-station-dialog .gs-order-row.correct,
+.gs-station-dialog .gs-match-card.correct {
+  background: #e1eccd !important;
+  border-color: var(--gs-leaf-ok) !important;
+}
+.gs-station-dialog .gs-tf-row.incorrect,
+.gs-station-dialog .gs-order-row.incorrect,
+.gs-station-dialog .gs-match-card.incorrect {
+  background: #f4d9d2 !important;
+  border-color: var(--gs-brick) !important;
+}
+
+.gs-station-dialog .gs-tf-index {
+  background: var(--gs-accent);
+  border: none;
+  color: #f6ecd2;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-tf-btn {
+  background: var(--gs-paper-light);
+  border: 2px solid var(--gs-line-strong);
+  color: var(--gs-ink);
+  border-radius: 6px;
+}
+.gs-station-dialog .gs-tf-btn:hover:not(:disabled) {
+  border-color: var(--gs-brown);
+  color: var(--gs-ink);
+  transform: none;
+  background: #f3e2b9;
+}
+.gs-station-dialog .gs-tf-btn.true-btn.active {
+  background: var(--gs-leaf-ok);
+  border-color: #2f5a28;
+  color: #f6ecd2;
+  box-shadow: none;
+}
+.gs-station-dialog .gs-tf-btn.false-btn.active {
+  background: var(--gs-brick);
+  border-color: var(--gs-accent-deep);
+  color: #f6ecd2;
+  box-shadow: none;
+}
+.gs-station-dialog .gs-tf-btn:disabled { cursor: default; }
+.gs-station-dialog .gs-tf-ans-tag.is-true {
+  background: #e1eccd;
+  color: #2f5a28;
+  border: 2px solid var(--gs-leaf-ok);
+}
+.gs-station-dialog .gs-tf-ans-tag.is-false {
+  background: #f6d9d2;
+  color: #8a2f22;
+  border: 2px solid var(--gs-brick);
+}
+
+/* Sắp xếp */
+.gs-station-dialog .gs-order-row.swap-selected {
+  background: #f6e2b0;
+  border-color: var(--gs-accent);
+  box-shadow: 3px 3px 0 var(--gs-accent);
+}
+.gs-station-dialog .gs-order-step-badge {
+  background: var(--gs-accent);
+  color: #f6ecd2;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-order-move-btn {
+  background: var(--gs-paper-light);
+  border: 2px solid var(--gs-line-strong);
+  color: var(--gs-ink);
+  border-radius: 6px;
+}
+.gs-station-dialog .gs-order-move-btn:hover:not(:disabled) {
+  background: var(--gs-brown);
+  border-color: var(--gs-brown);
+  color: #f6ecd2;
+}
+.gs-station-dialog .gs-order-ans-tag {
+  background: var(--gs-brown);
+  border: none;
+  color: #f6e7bd;
+  border-radius: 4px;
+}
+
+/* Nối 2 vế */
+.gs-station-dialog .gs-matching-col-header {
+  background: var(--gs-brown);
+  border: none;
+  color: #f6e7bd;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-match-card:hover:not(:disabled) {
+  border-color: var(--gs-accent);
+  transform: none;
+}
+.gs-station-dialog .gs-match-card.selected {
+  background: #f6e2b0;
+  border-color: var(--gs-accent) !important;
+  box-shadow: 3px 3px 0 var(--gs-accent);
+}
+.gs-station-dialog .gs-match-card.paired { background: #f3e5c0; }
+.gs-station-dialog .gs-match-pair-pill {
+  color: #f6ecd2;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-match-unpaired-pill { color: var(--gs-ink-soft); }
+.gs-station-dialog .gs-match-correct-key {
+  background: var(--gs-brown);
+  border: none;
+  color: #f6e7bd;
+  border-radius: 4px;
+}
+
+/* Điền khuyết */
+.gs-station-dialog .gs-fillin-input {
+  background: #fffaf0;
+  border: 2px solid var(--gs-line-strong);
+  border-radius: 6px;
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-fillin-input::placeholder { color: #9a8566; }
+.gs-station-dialog .gs-fillin-input:focus {
+  border-color: var(--gs-accent);
+  box-shadow: 0 0 0 3px rgba(166, 61, 47, 0.15);
+}
+.gs-station-dialog .gs-fillin-input.correct {
+  background: #e1eccd;
+  border-color: var(--gs-leaf-ok);
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-fillin-input.incorrect {
+  background: #f4d9d2;
+  border-color: var(--gs-brick);
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-fillin-input:disabled { opacity: 1; }
+
+.gs-station-dialog .gs-fillin-submit-btn {
+  background: var(--gs-accent);
+  color: #f6ecd2;
+  border: 2px solid var(--gs-brown);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-fillin-submit-btn:hover:not(:disabled) {
+  filter: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-fillin-submit-btn:disabled {
+  background: #cdb98f;
+  color: #7a6748;
+  box-shadow: none;
+  cursor: default;
+}
+
+.gs-station-dialog .gs-interactive-warning {
+  background: #f6d9d2;
+  border: 2px solid var(--gs-brick);
+  color: #7a2418;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-interactive-submit-row { border-top: 1.5px dashed var(--gs-line-strong); }
+.gs-station-dialog .gs-interactive-status { color: var(--gs-accent-deep); }
+
+/* Khung đáp án mở */
+.gs-station-dialog .gs-revealed-answer-banner {
+  background: #e7efd6;
+  border: 2px solid var(--gs-leaf-ok);
+  border-left-width: 8px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+.gs-station-dialog .gs-revealed-answer-title { color: #2f5a28; }
+.gs-station-dialog .gs-revealed-answer-title span { color: var(--gs-accent-deep); }
+.gs-station-dialog .gs-revealed-answer-exp { color: var(--gs-ink); }
+
+.gs-station-dialog .gs-r1-back-to-board-btn { border-radius: 6px; }
+.gs-station-dialog .gs-r1-back-to-board-btn.unlocked {
+  background: var(--gs-ochre);
+  color: var(--gs-ink);
+  border: 2px solid var(--gs-brown);
+  box-shadow: 4px 4px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-r1-back-to-board-btn.unlocked:hover {
+  filter: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-r1-back-to-board-btn.secondary {
+  background: var(--gs-paper);
+  color: var(--gs-ink-soft);
+  border: 1.5px dashed var(--gs-line-strong);
+}
+.gs-station-dialog .gs-r1-back-to-board-btn.secondary:hover {
+  background: var(--gs-paper-deep);
+  color: var(--gs-ink);
+  border-color: var(--gs-brown);
+}
+
+.gs-station-dialog .gs-hint-note { font-size: 16px; color: var(--gs-ink-soft); margin-top: 16px; }
+.gs-station-dialog .gs-text-danger { color: var(--gs-brick); }
+
+.gs-station-dialog .gs-5s-notice-box {
+  background: #f6e2b0;
+  border: 1.5px solid var(--gs-ochre);
+  border-left-width: 6px;
+  border-radius: 4px;
+  color: var(--gs-ink);
+  animation: none;
+  box-shadow: none;
+}
+
+/* ---------- THANH ĐIỀU HƯỚNG ---------- */
+.gs-station-dialog .gs-round-nav-bar {
+  background: var(--gs-paper-deep);
+  border: 1.5px solid var(--gs-line);
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-nav-btn {
+  background: var(--gs-paper-light);
+  border: 1.5px solid var(--gs-line-strong);
+  color: var(--gs-ink);
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-nav-btn:hover:not(:disabled) {
+  background: var(--gs-brown);
+  border-color: var(--gs-brown);
+  color: #f6ecd2;
+}
+.gs-station-dialog .gs-nav-indicator { color: var(--gs-accent-deep); }
+.gs-station-dialog .gs-nav-complete-btn {
+  background: var(--gs-leaf);
+  border: 2px solid var(--gs-brown);
+  color: #f6ecd2;
+  border-radius: 4px;
+  box-shadow: 3px 3px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-nav-complete-btn:hover {
+  filter: none;
+  transform: translate(-1px, -1px);
+}
+.gs-station-dialog .gs-nav-complete-btn.done {
+  background: #e1eccd;
+  border: 2px solid var(--gs-leaf-ok);
+  color: #2f5a28;
+  box-shadow: none;
+}
+
+/* ---------- MINI GAME 1: MẢNH GHÉP THỔ CẨM ---------- */
+.gs-station-dialog .gs-mosaic-container {
+  border: 4px solid var(--gs-brown);
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 rgba(59, 42, 30, 0.25);
+  background: var(--gs-brown);
+}
+.gs-station-dialog .gs-mosaic-grid {
+  gap: 3px;
+  background: transparent;
+}
+.gs-station-dialog .gs-mosaic-tile {
+  background-color: #8f2f24;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(246, 231, 189, 0.2) 0 2px, transparent 2px 14px),
+    repeating-linear-gradient(-45deg, rgba(246, 231, 189, 0.2) 0 2px, transparent 2px 14px);
+  border: 1.5px solid var(--gs-ochre);
+}
+.gs-station-dialog .gs-mosaic-tile:hover {
+  filter: brightness(1.12);
+  transform: none;
+}
+.gs-station-dialog .gs-tile-number {
+  color: #f6e7bd;
+  text-shadow: 0 2px 0 rgba(43, 29, 20, 0.55);
+}
+.gs-station-dialog .gs-tile-badge {
+  background: var(--gs-ochre);
+  color: var(--gs-ink);
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+}
+
+.gs-station-dialog .gs-guess-painting-btn {
+  background: var(--gs-accent);
+  color: #f6ecd2;
+  border: 2px solid var(--gs-brown);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0 var(--gs-brown);
+  letter-spacing: 0.6px;
+}
+.gs-station-dialog .gs-guess-painting-btn:hover {
+  filter: none;
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-round-complete-btn {
+  background: var(--gs-leaf);
+  color: #f6ecd2;
+  border: 2px solid var(--gs-brown);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-round-complete-btn:hover { filter: none; transform: translate(-1px, -1px); }
+.gs-station-dialog .gs-round-complete-btn.done {
+  background: #e1eccd;
+  color: #2f5a28;
+  border-color: var(--gs-leaf-ok);
+  box-shadow: none;
+}
+
+/* Chọn đội đoán tranh / từ khóa */
+.gs-station-dialog .gs-guess-team-tick-box {
+  background: var(--gs-paper);
+  border: 1.5px dashed var(--gs-line-strong);
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-guess-team-tick-label { color: var(--gs-brown); }
+.gs-station-dialog .gs-guess-team-tick-btn {
+  background: var(--gs-paper-light);
+  color: var(--gs-ink);
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-guess-team-tick-btn:hover:not(:disabled) { background: #f3e2b9; }
+.gs-station-dialog .gs-guess-team-tick-btn.selected {
+  background: #f6e2b0;
+  box-shadow: 3px 3px 0 var(--gs-accent);
+}
+.gs-station-dialog .gs-guess-team-tick-btn.eliminated {
+  background: #ecd0c7;
+  color: var(--gs-ink-soft);
+}
+
+/* ---------- MINI GAME 2: Ô CHỮ ---------- */
+.gs-station-dialog .gs-cw-board-panel {
+  background: var(--gs-paper-light);
+  border: 2px solid var(--gs-brown);
+  border-radius: 4px;
+  box-shadow: 5px 5px 0 rgba(59, 42, 30, 0.2);
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-cw-board-header { border-bottom: 1.5px solid var(--gs-line); }
+.gs-station-dialog .gs-cw-board-title { color: var(--gs-accent-deep); }
+.gs-station-dialog .gs-cw-board-sub { color: var(--gs-ink-soft); }
+
+.gs-station-dialog .gs-cw-row {
+  background: var(--gs-paper);
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-cw-row:hover {
+  background: #f3e2b9;
+  border-color: var(--gs-line-strong);
+}
+.gs-station-dialog .gs-cw-row.selected {
+  background: #f6e2b0;
+  border-color: var(--gs-accent);
+  box-shadow: none;
+}
+.gs-station-dialog .gs-cw-row.opened {
+  background: #e7efd6;
+  border-color: #9bbf82;
+}
+.gs-station-dialog .gs-cw-row-num-btn {
+  background: var(--gs-accent);
+  color: #f6ecd2;
+  border-radius: 3px;
+}
+.gs-station-dialog .gs-cw-row.opened .gs-cw-row-num-btn {
+  background: var(--gs-leaf-ok);
+  color: #f6ecd2;
+}
+
+.gs-station-dialog .gs-cw-cell { border-radius: 3px; }
+.gs-station-dialog .gs-cw-cell.letter-cell.hidden {
+  background: var(--gs-paper-light);
+  border: 1.5px solid var(--gs-line-strong);
+  color: #b9a075;
+}
+.gs-station-dialog .gs-cw-cell.letter-cell.revealed {
+  background: var(--gs-leaf);
+  border: 1.5px solid var(--gs-brown);
+  color: #f6ecd2;
+  text-shadow: none;
+}
+.gs-station-dialog .gs-cw-cell.letter-cell.vertical-key-cell {
+  border: 2px solid var(--gs-ochre) !important;
+  background: #f3dfa0;
+  color: #7a4f10;
+  box-shadow: none;
+}
+.gs-station-dialog .gs-cw-cell.letter-cell.vertical-key-cell.revealed {
+  background: var(--gs-ochre) !important;
+  color: var(--gs-ink) !important;
+}
+
+.gs-station-dialog .gs-cw-answer-preview {
+  background: var(--gs-paper);
+  border: 2px dashed var(--gs-line-strong);
+  border-radius: 6px;
+}
+.gs-station-dialog .gs-cw-preview-slot {
+  background: var(--gs-paper-light);
+  border: 2px solid var(--gs-line-strong);
+  color: var(--gs-ink);
+  border-radius: 4px;
+  box-shadow: 2px 2px 0 rgba(59, 42, 30, 0.2);
+}
+.gs-station-dialog .gs-cw-preview-slot.vert-highlight {
+  background: #f3dfa0;
+  border-color: var(--gs-ochre);
+  color: #7a4f10;
+}
+.gs-station-dialog .gs-cw-preview-slot.revealed {
+  background: var(--gs-leaf);
+  border-color: var(--gs-brown);
+  color: #f6ecd2;
+}
+.gs-station-dialog .gs-cw-preview-slot.vert-highlight.revealed {
+  background: var(--gs-ochre);
+  border-color: var(--gs-brown);
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-cw-solved-explanation {
+  background: #e7efd6;
+  border: 2px solid var(--gs-leaf-ok);
+  border-left-width: 8px;
+  border-radius: 4px;
+}
+.gs-station-dialog .gs-cw-solved-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #2f5a28;
+  margin-bottom: 8px;
+}
+.gs-station-dialog .gs-cw-solved-text {
+  font-size: 18px;
+  color: var(--gs-ink);
+  line-height: 1.55;
+}
+
+/* ---------- MINI GAME 4: LỬA THIÊNG ---------- */
+.gs-station-dialog .gs-torch-card { border-radius: 4px; }
+.gs-station-dialog .gs-torch-silver {
+  background: #e6e1d4;
+  border-color: #8a8578;
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-torch-silver.active {
+  background: #8a8578;
+  color: #fbf6ea;
+  box-shadow: 3px 3px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-torch-gold {
+  background: #f5e4ae;
+  border-color: var(--gs-ochre);
+  color: #6b450b;
+}
+.gs-station-dialog .gs-torch-gold.active {
+  background: var(--gs-ochre);
+  color: var(--gs-ink);
+  box-shadow: 3px 3px 0 var(--gs-brown);
+}
+.gs-station-dialog .gs-prey-pot {
+  background: var(--gs-brick);
+  border: 2px solid var(--gs-brown);
+  border-radius: 4px;
+  color: #f6ecd2;
+  animation: none;
+}
+.gs-station-dialog .gs-prey-pot strong { color: #f6e7bd; }
+
+/* ---------- MÀN THÔNG BÁO KẾT QUẢ ---------- */
+.gs-score-toast {
+  background: rgba(43, 29, 20, 0.92);
+  backdrop-filter: none;
+}
+.gs-score-toast .gs-floating-score.plus { color: #b4dc8e; text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35); }
+.gs-score-toast .gs-floating-score.minus { color: #f0907f; text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35); }
+.gs-score-toast .gs-floating-score.neutral { color: #f0c96a; text-shadow: 0 3px 0 rgba(0, 0, 0, 0.35); }
+.gs-score-toast .gs-result-team-name { color: #f6e7bd; text-shadow: none; }
+.gs-score-toast .gs-result-explanation { color: #f6ecd2; }
+.gs-score-toast .gs-result-timer { color: #cdb98f; }
+.gs-score-toast .gs-toast-progress-bar { background: rgba(246, 231, 189, 0.2); border-radius: 2px; }
+.gs-score-toast .gs-toast-progress-bar::after { background: var(--gs-ochre, #c08a2e); }
+
+/* Ẩn dòng nhãn phụ (chung kết, độ khó, tick đúng/sai, đa mệnh đề, v.v.) trên thẻ câu hỏi — chỉ giữ câu hỏi và đáp án */
+.gs-station-dialog .gs-question-panel:not(.gs-r1-prompt-panel) .gs-q-theme {
+  display: none !important;
+}
+
+/* ---------- ĐẠI KẾT CỤC: TRỐNG ĐỒNG ĐÔNG SƠN & CÂU HỎI DANH DỰ (XẾP TRÊN - DƯỚI) ---------- */
+.gs-station-dialog.gs-theme-board {
+  background-color: var(--gs-paper);
+  color: var(--gs-ink);
+  --gs-gold: var(--gs-accent-deep);
+  --gs-text-main: var(--gs-ink);
+  --gs-text-sub: var(--gs-ink-soft);
+}
+
+.gs-station-dialog .gs-finale-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: stretch;
+  height: 100%;
+  min-height: 0;
+}
+
+.gs-station-dialog .gs-finale-centerpiece {
+  background: var(--gs-paper-light);
+  border: 2px solid var(--gs-brown);
+  border-radius: 6px;
+  padding: 14px 26px;
+  box-shadow: 4px 4px 0 rgba(59, 42, 30, 0.2);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  flex-shrink: 0;
+}
+
+.gs-station-dialog .gs-finale-drum-frame {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.gs-station-dialog .gs-finale-drum-frame::before {
+  background: radial-gradient(circle, rgba(192, 138, 46, 0.25) 0%, transparent 72%);
+}
+
+.gs-station-dialog .gs-finale-drum-img {
+  filter: drop-shadow(0 3px 8px rgba(59, 42, 30, 0.35));
+}
+
+.gs-station-dialog .gs-finale-banner-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  flex: 1;
+  max-width: 980px;
+}
+
+.gs-station-dialog .gs-finale-drum-badge {
+  background: var(--gs-brown);
+  color: #f6e7bd;
+  font-size: 13.5px;
+  padding: 5px 16px;
+  border-radius: 4px;
+  box-shadow: none;
+  margin-bottom: 0;
+  letter-spacing: 1.5px;
+}
+
+.gs-station-dialog .gs-finale-quote {
+  background: var(--gs-paper);
+  color: var(--gs-ink);
+  border-left: 4px solid var(--gs-ochre);
+  border-radius: 4px;
+  padding: 10px 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 0;
+  width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.gs-station-dialog .gs-finale-quote p {
+  margin: 0;
+  flex: 1;
+  min-width: 280px;
+}
+
+.gs-station-dialog .gs-finale-quote span {
+  color: var(--gs-accent-deep);
+  font-size: 14px;
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+.gs-station-dialog .gs-finale-container .gs-question-panel {
+  flex: 1;
+  min-height: 0;
+  padding: 22px 32px !important;
+  gap: 18px !important;
+  justify-content: space-evenly !important;
+  overflow-y: auto;
+}
+
+.gs-station-dialog .gs-finale-container .gs-q-text {
+  font-size: clamp(22px, 2.2vw, 29px) !important;
+  line-height: 1.45 !important;
+  margin-bottom: 4px !important;
+}
+
+.gs-station-dialog .gs-finale-container .gs-options-grid {
+  grid-template-columns: 1fr 1fr !important;
+  gap: 18px !important;
+  margin-top: 4px !important;
+  flex: 1 !important;
+}
+
+.gs-station-dialog .gs-finale-container .gs-option-btn {
+  padding: 20px 26px !important;
+  font-size: clamp(19px, 1.8vw, 23px) !important;
+  min-height: 92px !important;
+  line-height: 1.45 !important;
+}
+
+

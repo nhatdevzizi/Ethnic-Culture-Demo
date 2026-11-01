@@ -1,19 +1,9 @@
 {
   "round_name": "VÒNG 3: TIẾNG VANG ĐẠI NGÀN",
-  "round_description": "Phần 3.1: Quan điểm của Đảng & Chính sách Chính trị – Kinh tế – Văn hóa dân tộc (Âm thanh di sản, Đúng/Sai, Sắp xếp, Nối cặp, Điền từ).",
+  "round_description": "Phần 3.1: Quan điểm của Đảng & Chính sách Chính trị – Kinh tế – Văn hóa dân tộc (Đúng/Sai, Sắp xếp, Nối cặp, Điền từ).",
   "questions": [
     {
       "id": 1,
-      "type": "audio",
-      "audio_type": "dan_tinh",
-      "has_card": "block_turn",
-      "question": "Lắng nghe thanh âm sau đây. Trong chính sách bảo tồn và phát huy giá trị văn hóa truyền thống của Đảng và Nhà nước, nhạc cụ này gắn liền với di sản 'Thực hành Then của người Tày, Nùng, Thái' được UNESCO ghi danh là Di sản văn hóa phi vật thể của nhân loại. Đó là nhạc cụ nào?",
-      "options": ["Đàn Tính (Tính tẩu)", "Đàn Đáy", "Đàn Nhị", "Đàn Tam"],
-      "correct_index": 0,
-      "explanation": "Đàn Tính (Tính tẩu) là nhạc cụ linh hồn trong Thực hành Then của người Tày, Nùng, Thái — minh chứng tiêu biểu cho chính sách giữ gìn bản sắc văn hóa các tộc người của Đảng và Nhà nước."
-    },
-    {
-      "id": 2,
       "type": "true_false",
       "audio_type": null,
       "has_card": "steal_points",
@@ -39,10 +29,10 @@
       "explanation": "Nhận định 1 & 2 ĐÚNG. Nhận định 3 SAI vì phát triển kinh tế vùng cao luôn phải gắn với giải quyết vấn đề xã hội, giữ gìn bản sắc văn hóa và bảo vệ bền vững môi trường sinh thái. Nhận định 4 SAI vì công tác dân tộc là nhiệm vụ của toàn Đảng, toàn dân, toàn quân và cả hệ thống chính trị."
     },
     {
-      "id": 3,
+      "id": 2,
       "type": "ordering",
       "audio_type": null,
-      "has_card": null,
+      "has_card": "block_turn",
       "question": "Theo quan điểm và chính sách phát triển kinh tế – xã hội vùng dân tộc và miền núi của Đảng, hãy sắp xếp 4 bước triển khai dưới đây theo ĐÚNG TRÌNH TỰ từ xây dựng kết cấu hạ tầng đến nâng cao vị thế hàng hóa bản địa:",
       "items": [
         "Ưu tiên đầu tư kết cấu hạ tầng thiết yếu: Triển khai Chương trình 135, mở các tuyến cao tốc vùng cao (Nội Bài – Lào Cai, Hòa Bình – Mộc Châu, Đồng Đăng – Trà Lĩnh) và đưa điện lưới, sóng 4G/5G về tận thôn bản",
@@ -54,7 +44,7 @@
       "explanation": "Chuỗi chính sách kinh tế vùng cao vận hành đồng bộ: (1) Đầu tư hạ tầng giao thông, điện, viễn thông → (2) Khai thác thế mạnh bản địa & du lịch cộng đồng → (3) Xây dựng thương hiệu OCOP → (4) Thương mại điện tử & livestream nông sản."
     },
     {
-      "id": 4,
+      "id": 3,
       "type": "matching",
       "audio_type": null,
       "has_card": "shield",
@@ -75,17 +65,7 @@
       "explanation": "Đáp án nối đúng: (1 ↔ B) Đại biểu Quốc hội người DTTS chiếm 15,2%; (2 ↔ D) Mô hình Bản làng du lịch cộng đồng Homestay; (3 ↔ A) Kênh VTV5 26 thứ tiếng & xóa bỏ hủ tục; (4 ↔ C) Nghĩa đồng bào trong bão Yagi & dự án Nuôi Em."
     },
     {
-      "id": 5,
-      "type": "audio",
-      "audio_type": "khen_mong",
-      "has_card": null,
-      "question": "Âm thanh réo rắt ngân vang giữa núi đá vùng cao này là của nhạc cụ truyền thống nào — biểu tượng văn hóa đã được các nghệ sĩ trẻ đưa vào những ca khúc đương đại ('Để Mị nói cho mà nghe', 'Người miền núi chất') để lan tỏa bản sắc Việt Nam ra thế giới?",
-      "options": ["Khèn Mông", "Sáo Mèo", "Kèn Pí Lè", "Đàn Môi"],
-      "correct_index": 0,
-      "explanation": "Tiếng Khèn Mông kết hợp trong âm nhạc hiện đại là minh chứng sống động cho việc xây dựng nền văn hóa Việt Nam tiên tiến, đậm đà bản sắc dân tộc và mở rộng giao lưu văn hóa quốc tế."
-    },
-    {
-      "id": 6,
+      "id": 4,
       "type": "fill_in",
       "audio_type": null,
       "has_card": null,

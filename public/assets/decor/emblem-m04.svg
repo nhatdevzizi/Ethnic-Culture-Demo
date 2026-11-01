@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <!-- Đuốc lửa: cán tre, ngọn lửa hai lớp -->
+  <path d="M42 56 L54 56 L58 90 L38 90Z" fill="#6b4423" stroke="#3b2a1e" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M40 66 H56 M39.5 76 H56.5" stroke="#3b2a1e" stroke-width="2"/>
+  <path d="M48 6 C60 22 72 32 68 48 C66 56 58 60 48 60 C38 60 30 56 28 48 C26 38 34 32 38 24 C40 32 44 34 46 32 C48 26 46 14 48 6Z" fill="#b5562a" stroke="#3b2a1e" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M48 26 C55 36 60 42 58 50 C56 55 52 57 48 57 C44 57 40 55 39 50 C38 44 44 40 46 34 C47 36 48 36 49 34Z" fill="#e2b54f"/>
+  <path d="M48 42 C51 46 53 49 52 52 C51 54 49 55 48 55 C46 55 45 54 44 52 C44 49 47 46 48 42Z" fill="#fbf6ea"/>
+</svg>

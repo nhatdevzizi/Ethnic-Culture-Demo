@@ -77,7 +77,7 @@ export class GameshowEngine {
   }
 
   initTeams(names?: string[]) {
-    const defaultColors = ['#e74c3c', '#f39c12', '#27ae60', '#2980b9'];
+    const defaultColors = ['#c0503f', '#cf8a2a', '#5f8a45', '#3f6d9e'];
     const defaultNames = ['Đội Voi Tây Nguyên', 'Đội Chim Lạc', 'Đội Rừng Xanh', 'Đội Sao Vàng'];
 
     const chosenNames = names && names.length >= 2 ? names : defaultNames;

@@ -231,7 +231,7 @@ export class StationGameModal {
     this.ensureValidSelectedTeam();
 
     const dialog = document.createElement('div');
-    dialog.className = 'gs-station-dialog';
+    dialog.className = `gs-station-dialog gs-theme-${this.activeStationId}`;
 
     // 1. Top Header with Back Button and Station Name
     const topBar = document.createElement('div');
@@ -243,21 +243,22 @@ export class StationGameModal {
     let stationTitle = '';
     let stationSubtitle = '';
     if (this.activeStationId === 'M01') {
-      stationTitle = '🏮 LÁN TRẠI 1: MẢNH GHÉP THỔ CẨM (KHÁI NIỆM & ĐẶC TRƯNG DÂN TỘC)';
-      stationSubtitle = 'Phần 1 Chương 6: Bấm chọn ô số 1–9 để mở câu hỏi và giải mã Bức tranh bí ẩn';
+      stationTitle = 'LÁN TRẠI 1: MẢNH GHÉP THỔ CẨM';
+      stationSubtitle = 'Phần 1 Chương 6 · Khái niệm & đặc trưng dân tộc — chọn ô số 1–9 để mở câu hỏi và giải mã bức tranh bí ẩn';
     } else if (this.activeStationId === 'M02') {
-      stationTitle = '🧩 LÁN TRẠI 2: Ô CHỮ ĐẠI NGÀN (ĐẶC ĐIỂM DÂN TỘC VIỆT NAM)';
-      stationSubtitle = 'Phần 2 Chương 6: Chọn Hàng Ngang 1–7 để mở các ô chữ và giải mã Từ khóa Hàng Dọc';
+      stationTitle = 'LÁN TRẠI 2: Ô CHỮ ĐẠI NGÀN';
+      stationSubtitle = 'Phần 2 Chương 6 · Đặc điểm dân tộc Việt Nam — chọn Hàng ngang 1–7 để giải mã từ khóa Hàng dọc';
     } else if (this.activeStationId === 'M03') {
-      stationTitle = '🎵 LÁN TRẠI 3: TIẾNG VANG ĐẠI NGÀN (QUAN ĐIỂM & CHÍNH SÁCH DÂN TỘC)';
-      stationSubtitle = 'Phần 3.1 Chương 6: Quan điểm của Đảng & Chính sách Chính trị, Kinh tế, Văn hóa';
+      stationTitle = 'LÁN TRẠI 3: TIẾNG VANG ĐẠI NGÀN';
+      stationSubtitle = 'Phần 3.1 Chương 6 · Quan điểm của Đảng & chính sách chính trị, kinh tế, văn hóa';
     } else if (this.activeStationId === 'M04') {
-      stationTitle = '🔥 LÁN TRẠI 4: LỬA THIÊNG ĐẠI NGÀN (CHÍNH SÁCH XÃ HỘI, QPAN & THỂ CHẾ MỚI)';
-      stationSubtitle = 'Phần 3.2 Chương 6: Chọn Đội & Đuốc Bạc (x2) / Đuốc Vàng (x3) → Săn Mồi cướp điểm';
+      stationTitle = 'LÁN TRẠI 4: LỬA THIÊNG ĐẠI NGÀN';
+      stationSubtitle = 'Phần 3.2 Chương 6 · Chính sách xã hội, quốc phòng – an ninh & thể chế mới — chọn Đuốc Bạc (x2) / Đuốc Vàng (x3)';
     } else {
-      stationTitle = '🏛️ ĐẠI KẾT CỤC: ĐẠI ĐOÀN KẾT 54 DÂN TỘC VIỆT NAM';
-      stationSubtitle = 'Bức Tranh Đại Đoàn Kết & Thử thách danh dự cuối cùng';
+      stationTitle = 'ĐẠI KẾT CỤC: ĐẠI ĐOÀN KẾT 54 DÂN TỘC VIỆT NAM';
+      stationSubtitle = 'Bức tranh đại đoàn kết & thử thách danh dự cuối cùng';
     }
+
 
     const h2 = document.createElement('h2');
     h2.textContent = stationTitle;
@@ -274,12 +275,12 @@ export class StationGameModal {
     const isThisDone = gameshow.isStationCompleted(this.activeStationId);
     keyStatusBox.innerHTML = `
       <span class="gs-key-pill ${keysCount >= 4 ? 'all-collected' : ''}">
-        🗝️ Chìa Khóa: <strong>${keysCount}/4</strong>
+        Chìa khóa: <strong>${keysCount}/4</strong>
       </span>
       ${
         this.activeStationId !== 'board'
           ? `<span class="gs-station-status-pill ${isThisDone ? 'done' : 'pending'}">
-              ${isThisDone ? '✅ ĐÃ HOÀN THÀNH' : '⏳ CHƯA HOÀN THÀNH'}
+              ${isThisDone ? 'ĐÃ HOÀN THÀNH' : 'CHƯA HOÀN THÀNH'}
             </span>`
           : ''
       }
@@ -288,7 +289,7 @@ export class StationGameModal {
 
     const backBtn = document.createElement('button');
     backBtn.className = 'gs-btn-back-hub';
-    backBtn.innerHTML = '🚶 VỀ BẢN ĐỒ HUB';
+    backBtn.innerHTML = '← VỀ BẢN ĐỒ';
     backBtn.addEventListener('click', () => this.close());
     topBar.appendChild(backBtn);
 
@@ -357,7 +358,7 @@ export class StationGameModal {
       }
 
       btn.innerHTML = `
-        <span class="gs-st-name">${isSelected ? '☑️' : '⬜'} ${team.name}${statusBadge}</span>
+        <span class="gs-st-name"><i class="gs-st-dot ${isSelected ? 'on' : ''}"></i> ${team.name}${statusBadge}</span>
         <span class="gs-st-score">${team.score}đ</span>
         <span class="gs-st-cards">⚡${team.cards.steal_points} 🔒${team.cards.block_turn} 🛡️${team.cards.shield}</span>
       `;
@@ -542,7 +543,7 @@ export class StationGameModal {
       if (!isOpened && q && q.has_card) {
         const badge = document.createElement('span');
         badge.className = 'gs-tile-badge';
-        badge.textContent = '⭐PHIẾU';
+        badge.textContent = 'PHIẾU';
         tile.appendChild(badge);
       }
 
@@ -1003,7 +1004,7 @@ export class StationGameModal {
           <p style="font-size: 20px; color: var(--gs-text-sub); line-height: 1.65;">
             ${r2Data.vertical_explanation}
           </p>
-          <p style="font-size: 16px; color: #a8e6cf; margin-top: 16px;">
+          <p class="gs-hint-note">
             💡 Bạn vẫn có thể bấm vào bất kỳ Hàng Ngang nào (1–7) bên trái để xem hoặc giải tiếp các câu hỏi hàng ngang.
           </p>
         </div>
@@ -1072,10 +1073,10 @@ export class StationGameModal {
       const solvedBox = document.createElement('div');
       solvedBox.className = 'gs-cw-solved-explanation';
       solvedBox.innerHTML = `
-        <div style="font-size:22px; font-weight:900; color:#2ecc71; margin-bottom:8px;">
+        <div class="gs-cw-solved-title">
           ✅ ĐÁP ÁN HÀNG NGANG ${rowIdx + 1}: ${q.word_display} (Chữ cái Hàng Dọc: "${q.vertical_char}")
         </div>
-        <div style="font-size:18px; color:#dfe6e9; line-height:1.55;">
+        <div class="gs-cw-solved-text">
           ${q.explanation}
         </div>
       `;
@@ -1581,7 +1582,7 @@ export class StationGameModal {
         <div class="gs-locked-icon">🔒</div>
         <h2>TRỐNG ĐỒNG ĐÔNG SƠN ĐANG BỊ PHONG ẤN!</h2>
         <p>Hiện tại các đội mới thu thập được <strong style="color:var(--gs-gold)">${keys}/4</strong> Chìa Khóa.</p>
-        <p>Để bước vào ĐẠI KẾT CỤC, bạn cần hoàn thành cả 4 Vòng thi (còn thiếu <strong style="color:#e74c3c">${4 - keys}</strong> chìa khóa).</p>
+        <p>Để bước vào ĐẠI KẾT CỤC, bạn cần hoàn thành cả 4 Vòng thi (còn thiếu <strong class="gs-text-danger">${4 - keys}</strong> chìa khóa).</p>
         <button class="gs-btn-back-hub" style="margin-top:24px; font-size:18px; padding:14px 32px;">🚶 QUAY LẠI BẢN ĐỒ ĐỂ KHÁM PHÁ TIẾP</button>
       `;
       lockedBox.querySelector('button')!.addEventListener('click', () => this.close());
@@ -1608,10 +1609,13 @@ export class StationGameModal {
     drumFrame.appendChild(drumImg);
     leftCol.appendChild(drumFrame);
 
+    const infoCol = document.createElement('div');
+    infoCol.className = 'gs-finale-banner-info';
+
     const drumBadge = document.createElement('div');
     drumBadge.className = 'gs-finale-drum-badge';
     drumBadge.innerHTML = '✨ TRỐNG ĐỒNG ĐÔNG SƠN HOÀNG KIM ✨';
-    leftCol.appendChild(drumBadge);
+    infoCol.appendChild(drumBadge);
 
     const quote = document.createElement('div');
     quote.className = 'gs-finale-quote';
@@ -1619,7 +1623,9 @@ export class StationGameModal {
       <p>“Sông có thể cạn, núi có thể mòn, song chân lý ấy không bao giờ thay đổi: <strong>Nước Việt Nam là một, Dân tộc Việt Nam là một!</strong>”</p>
       <span>— Chủ tịch Hồ Chí Minh —</span>
     `;
-    leftCol.appendChild(quote);
+    infoCol.appendChild(quote);
+
+    leftCol.appendChild(infoCol);
 
     layout.appendChild(leftCol);
 
@@ -2304,7 +2310,7 @@ export class StationGameModal {
     text.textContent = q.question;
     panel.appendChild(text);
 
-    const pairColors = ['#f39c12', '#3498db', '#2ecc71', '#e056fd'];
+    const pairColors = ['#a63d2f', '#2f4a6b', '#4f6b3a', '#b5562a'];
 
     const matchGrid = document.createElement('div');
     matchGrid.className = 'gs-matching-grid';
@@ -2541,9 +2547,6 @@ export class StationGameModal {
 
     const optGrid = document.createElement('div');
     optGrid.className = 'gs-options-grid';
-    if (this.activeStationId === 'board') {
-      optGrid.style.gridTemplateColumns = '1fr';
-    }
 
     const allOptionButtons: HTMLButtonElement[] = [];
 
