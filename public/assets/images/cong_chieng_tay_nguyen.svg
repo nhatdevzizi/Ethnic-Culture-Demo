@@ -30,7 +30,7 @@
   <ellipse cx="480" cy="560" rx="460" ry="110" fill="url(#fireGlow)"/>
 
   <!-- Nha Rong in Background Center -->
-  <g transform="translate(380, 150)">
+  <g transform="translate(380, 120)">
     <!-- Roof with sharp horn curve -->
     <path d="M 100,0 Q 20,120 0,220 L 200,220 Q 180,120 100,0 Z" fill="#784212" stroke="#d35400" stroke-width="4"/>
     <!-- Roof pattern lines -->
@@ -95,7 +95,7 @@
   <!-- Performer 4 (Right Far) -->
   <g transform="translate(780, 470)">
     <circle cx="0" cy="-60" r="14" fill="#1b2631"/>
-    <path d="M 2,-74 Q -5,-90 -12,-95 Q -6,-80 -2,-74" fill="#f39c12"/>
+    <path d="M 2,-74 Q -5,-90 -12,-95 Q -6,-80 -2,-80" fill="#f39c12"/>
     <path d="M -15,-45 L 15,-45 L 18,40 L -20,40 Z" fill="#17202a"/>
     <!-- Small Chieng -->
     <circle cx="-28" cy="-10" r="24" fill="url(#bronzeGrad)" stroke="#7d6608" stroke-width="3"/>
@@ -118,13 +118,5 @@
     <rect width="960" height="25" fill="#78281f"/>
     <!-- Diamond pattern -->
     <path d="M 0,12.5 L 15,0 L 30,12.5 L 15,25 Z M 30,12.5 L 45,0 L 60,12.5 L 45,25 Z M 60,12.5 L 75,0 L 90,12.5 L 75,25 Z M 90,12.5 L 105,0 L 120,12.5 L 105,25 Z M 120,12.5 L 135,0 L 150,12.5 L 135,25 Z M 150,12.5 L 165,0 L 180,12.5 L 165,25 Z M 180,12.5 L 195,0 L 210,12.5 L 195,25 Z M 210,12.5 L 225,0 L 240,12.5 L 225,25 Z M 240,12.5 L 255,0 L 270,12.5 L 255,25 Z M 270,12.5 L 285,0 L 300,12.5 L 285,25 Z M 300,12.5 L 315,0 L 330,12.5 L 315,25 Z M 330,12.5 L 345,0 L 360,12.5 L 345,25 Z M 360,12.5 L 375,0 L 390,12.5 L 375,25 Z M 390,12.5 L 405,0 L 420,12.5 L 405,25 Z M 420,12.5 L 435,0 L 450,12.5 L 435,25 Z M 450,12.5 L 465,0 L 480,12.5 L 465,25 Z M 480,12.5 L 495,0 L 510,12.5 L 495,25 Z M 510,12.5 L 525,0 L 540,12.5 L 525,25 Z M 540,12.5 L 555,0 L 570,12.5 L 555,25 Z M 570,12.5 L 585,0 L 600,12.5 L 585,25 Z M 600,12.5 L 615,0 L 630,12.5 L 615,25 Z M 630,12.5 L 645,0 L 660,12.5 L 645,25 Z M 660,12.5 L 675,0 L 690,12.5 L 675,25 Z M 690,12.5 L 705,0 L 720,12.5 L 705,25 Z M 720,12.5 L 735,0 L 750,12.5 L 735,25 Z M 750,12.5 L 765,0 L 780,12.5 L 765,25 Z M 780,12.5 L 795,0 L 810,12.5 L 795,25 Z M 810,12.5 L 825,0 L 840,12.5 L 825,25 Z M 840,12.5 L 855,0 L 870,12.5 L 855,25 Z M 870,12.5 L 885,0 L 900,12.5 L 885,25 Z M 900,12.5 L 915,0 L 930,12.5 L 915,25 Z M 930,12.5 L 945,0 L 960,12.5 L 945,25 Z" fill="#f1c40f"/>
-  </g>
-
-  <!-- Title Badge overlay -->
-  <g transform="translate(480, 50)">
-    <rect x="-240" y="-25" width="480" height="50" rx="25" fill="#14211de8" stroke="#f1c40f" stroke-width="2"/>
-    <text x="0" y="8" fill="#f7dc6f" font-family="'Be Vietnam Pro', sans-serif" font-size="20" font-weight="bold" text-anchor="middle" letter-spacing="2">
-      KHÔNG GIAN VĂN HÓA CỒNG CHIÊNG TÂY NGUYÊN
-    </text>
   </g>
 </svg>

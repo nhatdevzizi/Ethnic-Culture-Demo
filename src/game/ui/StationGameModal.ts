@@ -15,12 +15,31 @@ import r4Data from '../../content/round4_luathieng.json';
 import finaleData from '../../content/grand_finale.json';
 import '../../styles/gameshow.css';
 
+function normalizeVietnamese(str: string): string {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export class StationGameModal {
   private static instance: StationGameModal | null = null;
   private modalContainer: HTMLElement;
   private activeStationId: 'M01' | 'M02' | 'M03' | 'M04' | 'board' = 'M01';
   private selectedTeamIndex = 0; // Nhóm đang được chọn để trả lời
   private currentQuestionIndex = 0;
+
+  // Round 1 State: Ban đầu chưa hiển thị câu hỏi cho tới khi người chơi bấm chọn ô
+  private r1ActiveTileQuestion = false;
+  private isGuessingSecretPainting = false;
+
+  // Rounds 2-4 State: Ban đầu ẩn câu hỏi để chọn cược / đuốc / chuẩn bị, bấm nút mới mở câu hỏi
+  private isQuestionRevealed = false;
 
   // Round 2 Bids
   private r2Bids: Record<string, number> = {};
@@ -32,10 +51,14 @@ export class StationGameModal {
   // Round 4 Torches
   private r4Torches: Record<string, 'silver' | 'gold' | null> = {};
 
-  // 5s Strategy / Functional Card Phase
-  private is5sPhaseActive = false;
-  private timer5sSecondsLeft = 5;
-  private timer5sInterval: number | null = null;
+  // 20s Question Timer & Lock State
+  private static readonly QUESTION_TIME_LIMIT = 20;
+  private questionSecondsLeft = StationGameModal.QUESTION_TIME_LIMIT;
+  private questionTimerInterval: number | null = null;
+  private isQuestionAnswered = false;
+  private toastTimeout: number | null = null;
+
+  // Functional Card inline picker
   private activeStrategyNotice: string | null = null;
   private cardTargetPicker: { type: 'steal' | 'block'; userTeamId: string } | null = null;
 
@@ -63,21 +86,27 @@ export class StationGameModal {
   }
 
   open(stationId: 'M01' | 'M02' | 'M03' | 'M04' | 'board', onClose?: () => void) {
+    this.clearAllTimers();
     this.activeStationId = stationId;
+    this.isGuessingSecretPainting = false;
+    this.r1ActiveTileQuestion = false;
+    this.isQuestionRevealed = false;
+    this.isQuestionAnswered = false;
+    this.cardTargetPicker = null;
+    this.activeStrategyNotice = null;
+    this.r3BuzzedTeamId = null;
+    this.r3SecondBuzzedTeamId = null;
     this.currentQuestionIndex = 0;
     this.onCloseCallback = onClose;
+
     this.modalContainer.style.display = 'flex';
     sfx.playGong();
-    if (stationId !== 'board') {
-      this.start5sPhase();
-    } else {
-      this.stop5sPhase();
-      this.render();
-    }
+    this.stopQuestionTimer();
+    this.render();
   }
 
   close() {
-    this.stop5sPhase();
+    this.clearAllTimers();
     this.modalContainer.style.display = 'none';
     this.modalContainer.innerHTML = '';
     if (this.onCloseCallback) {
@@ -85,34 +114,119 @@ export class StationGameModal {
     }
   }
 
-  start5sPhase() {
-    this.stop5sPhase();
-    this.is5sPhaseActive = true;
-    this.timer5sSecondsLeft = 5;
-    this.cardTargetPicker = null;
-    this.render();
+  private clearAllTimers() {
+    this.stopQuestionTimer();
+    this.clearActiveToast();
+  }
 
-    this.timer5sInterval = window.setInterval(() => {
-      this.timer5sSecondsLeft--;
-      if (this.timer5sSecondsLeft > 0) {
-        sfx.playTick(this.timer5sSecondsLeft === 1 ? 1200 : 880);
-        const cdElem = this.modalContainer.querySelector('.gs-countdown-number');
-        if (cdElem) cdElem.textContent = String(this.timer5sSecondsLeft);
-      } else {
-        this.stop5sPhase();
-        sfx.playBuzzer();
-        this.render();
+  private clearActiveToast() {
+    if (this.toastTimeout !== null) {
+      clearTimeout(this.toastTimeout);
+      this.toastTimeout = null;
+    }
+    const existing = this.modalContainer.querySelector('.gs-score-toast');
+    if (existing) existing.remove();
+  }
+
+  private startQuestionTimer() {
+    this.stopQuestionTimer();
+    this.isQuestionAnswered = false;
+    this.questionSecondsLeft = StationGameModal.QUESTION_TIME_LIMIT;
+
+    this.questionTimerInterval = window.setInterval(() => {
+      if (this.isQuestionAnswered) {
+        this.stopQuestionTimer();
+        return;
+      }
+      this.questionSecondsLeft = Math.max(0, this.questionSecondsLeft - 1);
+      this.updateTimerDOM();
+
+      if (this.questionSecondsLeft > 0 && this.questionSecondsLeft <= 5) {
+        sfx.playTick(this.questionSecondsLeft === 1 ? 1200 : 880);
+      } else if (this.questionSecondsLeft <= 0) {
+        this.handleQuestionTimeout();
       }
     }, 1000);
   }
 
-  stop5sPhase() {
-    this.is5sPhaseActive = false;
-    this.cardTargetPicker = null;
-    if (this.timer5sInterval !== null) {
-      clearInterval(this.timer5sInterval);
-      this.timer5sInterval = null;
+  private stopQuestionTimer() {
+    if (this.questionTimerInterval !== null) {
+      clearInterval(this.questionTimerInterval);
+      this.questionTimerInterval = null;
     }
+  }
+
+  private updateTimerDOM() {
+    const numEl = this.modalContainer.querySelector('.gs-q-timer-seconds');
+    if (numEl) {
+      numEl.textContent = `${this.questionSecondsLeft}s`;
+    }
+    const badgeEl = this.modalContainer.querySelector('.gs-q-timer-badge');
+    if (badgeEl) {
+      badgeEl.classList.toggle('urgent', this.questionSecondsLeft <= 5);
+    }
+    const fillEl = this.modalContainer.querySelector('.gs-q-timer-bar-fill') as HTMLElement | null;
+    if (fillEl) {
+      const pct = Math.max(0, (this.questionSecondsLeft / StationGameModal.QUESTION_TIME_LIMIT) * 100);
+      fillEl.style.width = `${pct}%`;
+      fillEl.classList.toggle('urgent', this.questionSecondsLeft <= 5);
+    }
+  }
+
+  private handleQuestionTimeout() {
+    if (this.isQuestionAnswered) return;
+    this.isQuestionAnswered = true;
+    this.stopQuestionTimer();
+
+    // Lock all interactive inputs in the question panel
+    this.modalContainer
+      .querySelectorAll<HTMLButtonElement>('.gs-option-btn, .gs-fillin-submit-btn')
+      .forEach((btn) => {
+        btn.disabled = true;
+      });
+    this.modalContainer
+      .querySelectorAll<HTMLInputElement>('.gs-fillin-input')
+      .forEach((inp) => {
+        inp.disabled = true;
+      });
+
+    sfx.playFailure();
+    const currentTeam = gameshow.teams[this.selectedTeamIndex];
+    gameshow.consumeBlockedTurns();
+
+    this.showScoreToast(
+      currentTeam.name,
+      0,
+      '⏰ HẾT THỜI GIAN (20 GIÂY)! Lượt trả lời câu hỏi này đã khép lại.',
+      3000,
+      () => {
+        if (this.activeStationId === 'M01') {
+          this.r1ActiveTileQuestion = false;
+        }
+        this.render();
+      }
+    );
+  }
+
+  private createTimerHeaderWidget(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'gs-q-timer-wrap';
+
+    const pct = Math.max(0, (this.questionSecondsLeft / StationGameModal.QUESTION_TIME_LIMIT) * 100);
+    const isUrgent = this.questionSecondsLeft <= 5;
+
+    wrap.innerHTML = `
+      <div class="gs-q-timer-row">
+        <span class="gs-q-timer-label">⏱️ THỜI GIAN SUY NGHĨ & TRẢ LỜI:</span>
+        <span class="gs-q-timer-badge ${isUrgent ? 'urgent' : ''}">
+          <strong class="gs-q-timer-seconds">${this.questionSecondsLeft}s</strong> / ${StationGameModal.QUESTION_TIME_LIMIT}s
+        </span>
+      </div>
+      <div class="gs-q-timer-bar">
+        <div class="gs-q-timer-bar-fill ${isUrgent ? 'urgent' : ''}" style="width: ${pct}%"></div>
+      </div>
+    `;
+    return wrap;
   }
 
   render() {
@@ -132,16 +246,16 @@ export class StationGameModal {
     let stationSubtitle = '';
     if (this.activeStationId === 'M01') {
       stationTitle = '🏮 LÁN TRẠI 1: MẢNH GHÉP THỔ CẨM';
-      stationSubtitle = 'Lật mở 9 ô hoa văn giải mã Bức tranh bí ẩn';
+      stationSubtitle = 'Bấm chọn ô số 1–9 để mở câu hỏi (20s/câu) và giải mã Bức tranh bí ẩn';
     } else if (this.activeStationId === 'M02') {
       stationTitle = '🎪 LÁN TRẠI 2: PHIÊN CHỢ VÙNG CAO';
-      stationSubtitle = 'Đấu thầu điểm cược 10–30 điểm theo chủ đề';
+      stationSubtitle = 'Xem Chủ đề → Chọn mức cược 10–30 điểm → Bấm Mở câu hỏi (20s)';
     } else if (this.activeStationId === 'M03') {
       stationTitle = '🎵 LÁN TRẠI 3: TIẾNG VANG ĐẠI NGÀN';
-      stationSubtitle = 'Chuông phản xạ, âm thanh nhạc cụ và điền khuyết ca dao';
+      stationSubtitle = 'Chuông phản xạ, nhận diện âm thanh nhạc cụ và điền khuyết ca dao (20s)';
     } else if (this.activeStationId === 'M04') {
       stationTitle = '🔥 LÁN TRẠI 4: LỬA THIÊNG ĐẠI NGÀN';
-      stationSubtitle = 'Đuốc Bạc (x2), Đuốc Vàng (x3) và Cơ chế Săn Mồi';
+      stationSubtitle = 'Xem Độ khó → Chọn Đuốc Bạc (x2) / Đuốc Vàng (x3) → Bấm Mở câu hỏi (20s)';
     } else {
       stationTitle = '🏛️ ĐẠI KẾT CỤC: ĐẠI ĐOÀN KẾT 54 DÂN TỘC';
       stationSubtitle = 'Bức Tranh Đại Đoàn Kết & Thử thách danh dự cá nhân';
@@ -182,7 +296,7 @@ export class StationGameModal {
 
     dialog.appendChild(topBar);
 
-    // 2. Team Selector Bar (Chọn Nhóm trả lời)
+    // 2. Team Selector Bar (Chọn Nhóm trả lời & kích hoạt thẻ chức năng)
     const teamSelectorBar = this.createTeamSelectorBar();
     dialog.appendChild(teamSelectorBar);
 
@@ -207,7 +321,7 @@ export class StationGameModal {
   }
 
   // ==========================================================================
-  // TEAM SELECTOR BAR (Click chọn Nhóm trả lời câu hỏi)
+  // TEAM SELECTOR BAR (Click chọn Nhóm trả lời câu hỏi & dùng thẻ)
   // ==========================================================================
   private createTeamSelectorBar(): HTMLElement {
     const bar = document.createElement('div');
@@ -215,13 +329,18 @@ export class StationGameModal {
 
     const label = document.createElement('div');
     label.className = 'gs-selector-label';
-    label.innerHTML = `CHỌN NHÓM TRẢ LỜI CÂU HỎI:`;
+    label.innerHTML = `CHỌN ĐỘI TRẢ LỜI:`;
     bar.appendChild(label);
 
     const row = document.createElement('div');
     row.className = 'gs-selector-row';
 
     gameshow.teams.forEach((team, idx) => {
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.flexDirection = 'column';
+      wrap.style.gap = '4px';
+
       const btn = document.createElement('button');
       const isSelected = idx === this.selectedTeamIndex;
       const isBlocked = team.isBlockedNextQuestion;
@@ -229,7 +348,7 @@ export class StationGameModal {
       btn.style.borderColor = team.color;
 
       btn.innerHTML = `
-        <span class="gs-st-name">${team.name} ${isBlocked ? '🔒 (CẤM LƯỢT)' : ''}</span>
+        <span class="gs-st-name">${isSelected ? '☑️' : '⬜'} ${team.name} ${isBlocked ? '🔒 (CẤM LƯỢT)' : ''}</span>
         <span class="gs-st-score">${team.score}đ</span>
         <span class="gs-st-cards">⚡${team.cards.steal_points} 🔒${team.cards.block_turn} 🛡️${team.cards.shield}</span>
       `;
@@ -237,7 +356,12 @@ export class StationGameModal {
       btn.addEventListener('click', () => {
         if (isBlocked) {
           sfx.playFailure();
-          alert(`🔒 ${team.name} đang bị CẤM LƯỢT ở câu hỏi này! Không thể chọn để trả lời.`);
+          this.showScoreToast(
+            team.name,
+            0,
+            `🔒 ${team.name} đang bị CẤM LƯỢT ở câu hỏi này! Không thể chọn để trả lời.`,
+            2200
+          );
           return;
         }
         this.selectedTeamIndex = idx;
@@ -245,7 +369,91 @@ export class StationGameModal {
         this.render();
       });
 
-      row.appendChild(btn);
+      wrap.appendChild(btn);
+
+      // Quick card buttons if team has Steal or Block cards
+      if (team.cards.steal_points > 0 || team.cards.block_turn > 0) {
+        const cardActions = document.createElement('div');
+        cardActions.style.display = 'flex';
+        cardActions.style.gap = '4px';
+
+        if (team.cards.steal_points > 0) {
+          const stealBtn = document.createElement('button');
+          stealBtn.className = 'gs-card-act-btn steal';
+          stealBtn.textContent = `⚡ Cướp Điểm (${team.cards.steal_points})`;
+          stealBtn.addEventListener('click', () => {
+            this.cardTargetPicker = { type: 'steal', userTeamId: team.id };
+            this.render();
+          });
+          cardActions.appendChild(stealBtn);
+        }
+
+        if (team.cards.block_turn > 0) {
+          const blockBtn = document.createElement('button');
+          blockBtn.className = 'gs-card-act-btn block';
+          blockBtn.textContent = `🔒 Cấm Lượt (${team.cards.block_turn})`;
+          blockBtn.addEventListener('click', () => {
+            this.cardTargetPicker = { type: 'block', userTeamId: team.id };
+            this.render();
+          });
+          cardActions.appendChild(blockBtn);
+        }
+
+        wrap.appendChild(cardActions);
+      }
+
+      // Inline Target Picker for Steal or Block
+      if (this.cardTargetPicker && this.cardTargetPicker.userTeamId === team.id) {
+        const pickerBox = document.createElement('div');
+        pickerBox.className = 'gs-5s-target-picker';
+
+        const pickerTitle = document.createElement('div');
+        pickerTitle.className = 'gs-5s-target-title';
+        pickerTitle.textContent = this.cardTargetPicker.type === 'steal'
+          ? '🎯 Chọn đội để rút 20đ:'
+          : '🎯 Chọn đội để cấm lượt:';
+        pickerBox.appendChild(pickerTitle);
+
+        const btnsRow = document.createElement('div');
+        btnsRow.className = 'gs-5s-target-btns';
+
+        const targets = gameshow.teams.filter((t) => t.id !== team.id);
+        targets.forEach((tgt) => {
+          const tgtBtn = document.createElement('button');
+          tgtBtn.className = 'gs-5s-target-btn';
+          tgtBtn.textContent = this.cardTargetPicker?.type === 'steal'
+            ? `${tgt.name} (${tgt.score}đ)`
+            : tgt.name;
+          tgtBtn.addEventListener('click', () => {
+            if (this.cardTargetPicker?.type === 'steal') {
+              const res = gameshow.useStealPointsCard(team.id, tgt.id);
+              sfx.playCardActivate();
+              this.activeStrategyNotice = res.shielded ? `🛡️ ${res.message}` : `⚡ ${res.message}`;
+            } else if (this.cardTargetPicker?.type === 'block') {
+              const res = gameshow.useBlockTurnCard(team.id, tgt.id);
+              sfx.playCardActivate();
+              this.activeStrategyNotice = res.shielded ? `🛡️ ${res.message}` : `🔒 ${res.message}`;
+            }
+            this.cardTargetPicker = null;
+            this.render();
+          });
+          btnsRow.appendChild(tgtBtn);
+        });
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'gs-5s-target-cancel';
+        cancelBtn.textContent = '❌ Hủy';
+        cancelBtn.addEventListener('click', () => {
+          this.cardTargetPicker = null;
+          this.render();
+        });
+        btnsRow.appendChild(cancelBtn);
+
+        pickerBox.appendChild(btnsRow);
+        wrap.appendChild(pickerBox);
+      }
+
+      row.appendChild(wrap);
     });
 
     bar.appendChild(row);
@@ -267,7 +475,7 @@ export class StationGameModal {
     const secretImg = document.createElement('img');
     secretImg.className = 'gs-secret-img';
     secretImg.src = r1Data.secret_image;
-    secretImg.alt = r1Data.secret_title;
+    secretImg.alt = 'Bức tranh bí ẩn Vòng 1';
     mosaicBox.appendChild(secretImg);
 
     const grid = document.createElement('div');
@@ -276,7 +484,7 @@ export class StationGameModal {
     for (let i = 0; i < 9; i++) {
       const tile = document.createElement('div');
       const isOpened = gameshow.r1OpenedTiles[i];
-      const isCurrentSelected = i === this.currentQuestionIndex;
+      const isCurrentSelected = !this.isGuessingSecretPainting && this.r1ActiveTileQuestion && i === this.currentQuestionIndex;
       tile.className = `gs-mosaic-tile ${isOpened ? 'opened' : ''} ${isCurrentSelected ? 'selected-tile' : ''}`;
 
       const num = document.createElement('div');
@@ -294,9 +502,13 @@ export class StationGameModal {
 
       tile.addEventListener('click', () => {
         if (!isOpened) {
+          this.clearActiveToast();
+          this.isGuessingSecretPainting = false;
           this.currentQuestionIndex = i;
+          this.r1ActiveTileQuestion = true;
           sfx.playBuzzer();
-          this.start5sPhase();
+          this.startQuestionTimer();
+          this.render();
         }
       });
 
@@ -310,7 +522,15 @@ export class StationGameModal {
     const guessBtn = document.createElement('button');
     guessBtn.className = 'gs-guess-painting-btn';
     guessBtn.textContent = `🔔 ĐOÁN BỨC TRANH TỔNG THỂ (+${guessPoints} ĐIỂM)`;
-    guessBtn.addEventListener('click', () => this.handleGuessSecretPainting());
+    guessBtn.addEventListener('click', () => {
+      this.clearActiveToast();
+      this.stopQuestionTimer();
+      this.isGuessingSecretPainting = true;
+      this.r1ActiveTileQuestion = false;
+      this.isQuestionAnswered = false;
+      sfx.playBuzzer();
+      this.render();
+    });
     leftCol.appendChild(guessBtn);
 
     // Complete round 1 button
@@ -327,27 +547,43 @@ export class StationGameModal {
 
     container.appendChild(leftCol);
 
-    // Right: Question Panel or 5s Strategy Phase
-    const q = r1Data.questions[this.currentQuestionIndex];
+    // Right: Secret Painting Guess Form OR Question Panel
     let rightCol: HTMLElement;
 
-    if (this.is5sPhaseActive) {
-      rightCol = this.render5sPhase(`Mảnh ghép số ${this.currentQuestionIndex + 1}`, () => {
-        this.stop5sPhase();
-        this.render();
-      });
+    if (this.isGuessingSecretPainting) {
+      rightCol = this.renderGuessSecretPaintingCard();
     } else {
+      const q = r1Data.questions[this.currentQuestionIndex];
       const isCurrentOpened = gameshow.r1OpenedTiles[this.currentQuestionIndex];
-      if (isCurrentOpened) {
+      const allOpened = gameshow.r1OpenedTiles.every(Boolean);
+
+      if (allOpened) {
         rightCol = document.createElement('div');
         rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
         rightCol.innerHTML = `
-          <div class="gs-q-theme">🎯 MẢNH GHÉP SỐ ${this.currentQuestionIndex + 1} ĐÃ ĐƯỢC LẬT MỞ!</div>
+          <div class="gs-q-theme">🎉 ĐÃ LẬT MỞ TOÀN BỘ 9 MẢNH GHÉP!</div>
+          <div class="gs-q-text" style="text-align:center; padding: 20px 15px;">
+            <p style="font-size: 22px; color: var(--gs-gold); font-weight:800; margin-bottom: 12px;">
+              Từ khóa bức tranh: ${r1Data.secret_title}
+            </p>
+            <p style="font-size: 16px; color: var(--gs-text-sub); line-height: 1.6;">
+              ${r1Data.secret_description}
+            </p>
+          </div>
+        `;
+      } else if (isCurrentOpened || !this.r1ActiveTileQuestion) {
+        rightCol = document.createElement('div');
+        rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
+        rightCol.innerHTML = `
+          <div class="gs-q-theme">🎯 CHƯA MỞ CÂU HỎI · MỜI CHỌN MẢNH GHÉP</div>
           <div class="gs-q-text" style="text-align:center; padding: 25px 15px;">
-            <p style="font-size: 20px; color: var(--gs-gold); font-weight:800; margin-bottom: 12px;">👉 MỜI ĐỘI TIẾP THEO CHỌN MẢNH GHÉP TRÊN LƯỚI 3x3!</p>
-            <p style="font-size: 14px; color: var(--gs-text-sub); line-height: 1.6;">
-              Bấm chọn một ô số chưa mở bất kỳ trên lưới bên trái.<br>
-              <strong>Lưu ý:</strong> Ngay khi chọn ô, hệ thống sẽ kích hoạt <strong>5 GIÂY ĐƯA RA QUYẾT ĐỊNH CÓ DÙNG PHIẾU CHỨC NĂNG HAY KHÔNG</strong> trước khi câu hỏi xuất hiện!
+            <p style="font-size: 21px; color: var(--gs-gold); font-weight:800; margin-bottom: 14px;">
+              👉 BẤM VÀO MỘT Ô SỐ (1 – 9) BÊN TRÁI ĐỂ HIỂN THỊ CÂU HỎI!
+            </p>
+            <p style="font-size: 15px; color: var(--gs-text-sub); line-height: 1.65;">
+              • Câu hỏi đang được ẩn cho đến khi bạn bấm chọn mảnh ghép.<br>
+              • Khi mở mảnh ghép, đội trả lời sẽ có <strong>20 giây</strong> để chọn đáp án (+10đ nếu đúng, -10đ nếu sai).<br>
+              • Bất cứ lúc nào cũng có thể bấm <strong>"🔔 ĐOÁN BỨC TRANH TỔNG THỂ"</strong> bên trái để nhập từ khóa giải mã bức tranh (không giới hạn thời gian).
             </p>
           </div>
         `;
@@ -364,6 +600,10 @@ export class StationGameModal {
             } else {
               gameshow.modifyScore(currentTeam.id, -10, 'Trả lời sai mảnh ghép');
             }
+          },
+          () => {
+            this.r1ActiveTileQuestion = false;
+            this.render();
           }
         );
       }
@@ -374,16 +614,196 @@ export class StationGameModal {
   }
 
   // ==========================================================================
+  // ROUND 1 SECRET PAINTING FILL-IN GUESS CARD (Không giới hạn thời gian)
+  // ==========================================================================
+  private renderGuessSecretPaintingCard(): HTMLElement {
+    const panel = document.createElement('div');
+    panel.className = 'gs-question-panel';
+
+    const points = gameshow.getRound1PictureGuessPoints();
+    const theme = document.createElement('div');
+    theme.className = 'gs-q-theme';
+    theme.textContent = `🔔 ĐOÁN BỨC TRANH TỔNG THỂ (+${points} ĐIỂM NẾU ĐÚNG · KHÔNG GIỚI HẠN THỜI GIAN)`;
+    panel.appendChild(theme);
+
+    const text = document.createElement('div');
+    text.className = 'gs-q-text';
+    text.style.fontSize = '19px';
+    text.style.marginBottom = '14px';
+    text.textContent = 'Tick chọn Đội đang trả lời và nhập từ khóa ngắn gọn của Bức tranh bí ẩn vào ô bên dưới:';
+    panel.appendChild(text);
+
+    // Team tick selector right inside the card
+    const teamTickBox = document.createElement('div');
+    teamTickBox.className = 'gs-guess-team-tick-box';
+
+    const tickLabel = document.createElement('div');
+    tickLabel.className = 'gs-guess-team-tick-label';
+    tickLabel.textContent = '1. TICK CHỌN ĐỘI ĐANG TRẢ LỜI:';
+    teamTickBox.appendChild(tickLabel);
+
+    const tickGrid = document.createElement('div');
+    tickGrid.className = 'gs-guess-team-tick-grid';
+
+    gameshow.teams.forEach((team, idx) => {
+      const isSelected = idx === this.selectedTeamIndex;
+      const isEliminated = Boolean(team.isEliminatedInRound1);
+      const tickBtn = document.createElement('button');
+      tickBtn.type = 'button';
+      tickBtn.className = `gs-guess-team-tick-btn ${isSelected ? 'selected' : ''} ${isEliminated ? 'eliminated' : ''}`;
+      tickBtn.style.borderColor = isSelected ? 'var(--gs-gold)' : team.color;
+      tickBtn.disabled = isEliminated || this.isQuestionAnswered;
+      tickBtn.innerHTML = `
+        <span class="gs-tick-icon">${isSelected ? '☑️' : '⬜'}</span>
+        <span>${team.name}${isEliminated ? ' (Đã đoán sai)' : ''}</span>
+      `;
+      tickBtn.addEventListener('click', () => {
+        if (isEliminated || this.isQuestionAnswered) return;
+        this.selectedTeamIndex = idx;
+        sfx.playBuzzer();
+        // Update tick UI in-place without losing input text
+        this.modalContainer.querySelectorAll('.gs-guess-team-tick-btn').forEach((b, bIdx) => {
+          const sel = bIdx === idx;
+          b.classList.toggle('selected', sel);
+          const icon = b.querySelector('.gs-tick-icon');
+          if (icon) icon.textContent = sel ? '☑️' : '⬜';
+        });
+        this.modalContainer.querySelectorAll('.gs-selector-team-btn').forEach((b, bIdx) => {
+          const sel = bIdx === idx;
+          b.classList.toggle('selected', sel);
+        });
+        const inputEl = panel.querySelector<HTMLInputElement>('.gs-fillin-input');
+        if (inputEl) {
+          inputEl.placeholder = `Nhập từ khóa ngắn gọn cho [${team.name}]...`;
+          inputEl.focus();
+        }
+      });
+      tickGrid.appendChild(tickBtn);
+    });
+
+    teamTickBox.appendChild(tickGrid);
+    panel.appendChild(teamTickBox);
+
+    // Fill-in input row
+    const inputRow = document.createElement('div');
+    inputRow.className = 'gs-fillin-row';
+
+    const currentTeam = gameshow.teams[this.selectedTeamIndex];
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'gs-fillin-input';
+    input.placeholder = `Nhập từ khóa ngắn gọn cho [${currentTeam.name}] tại đây...`;
+    input.disabled = this.isQuestionAnswered;
+
+    const submitBtn = document.createElement('button');
+    submitBtn.type = 'button';
+    submitBtn.className = 'gs-fillin-submit-btn';
+    submitBtn.textContent = '✔ KIỂM TRA ĐÁP ÁN';
+    submitBtn.disabled = this.isQuestionAnswered;
+
+    const checkPaintingGuess = () => {
+      if (this.isQuestionAnswered) return;
+      const rawValue = input.value.trim();
+      if (!rawValue) {
+        input.focus();
+        return;
+      }
+
+      const answeringTeam = gameshow.teams[this.selectedTeamIndex];
+      if (answeringTeam.isEliminatedInRound1) {
+        this.showScoreToast(
+          answeringTeam.name,
+          0,
+          `⚠️ ${answeringTeam.name} đã đoán sai trước đó và mất quyền đoán Bức tranh tổng thể ở Vòng 1. Hãy chọn đội khác!`,
+          2500
+        );
+        return;
+      }
+
+      this.isQuestionAnswered = true;
+      input.disabled = true;
+      submitBtn.disabled = true;
+
+      const normTyped = normalizeVietnamese(rawValue);
+      // Chấp nhận từ khóa ngắn gọn "cồng chiêng" hoặc "cồng chiêng tây nguyên"
+      const isCorrect = normTyped.includes('cong chieng');
+
+      if (isCorrect) {
+        input.classList.add('correct');
+        gameshow.modifyScore(answeringTeam.id, points, 'Đoán đúng Bức tranh tổng thể');
+        gameshow.r1OpenedTiles.fill(true);
+        gameshow.markStationCompleted('M01');
+        sfx.playSuccess();
+        sfx.playGong();
+
+        this.showScoreToast(
+          answeringTeam.name,
+          points,
+          `🎉 CHÍNH XÁC! Từ khóa bức tranh là: "${r1Data.secret_title}".\n${answeringTeam.name} giành trọn +${points} điểm và mở khóa Chìa Khóa Vòng 1!`,
+          4000,
+          () => {
+            this.isGuessingSecretPainting = false;
+            this.r1ActiveTileQuestion = false;
+            this.render();
+          }
+        );
+      } else {
+        input.classList.add('incorrect');
+        answeringTeam.isEliminatedInRound1 = true;
+        sfx.playFailure();
+
+        this.showScoreToast(
+          answeringTeam.name,
+          0,
+          `❌ Đáp án "${rawValue}" chưa chính xác!\n${answeringTeam.name} đã mất quyền đoán Bức tranh tổng thể trong Vòng 1.`,
+          3500,
+          () => {
+            this.isGuessingSecretPainting = false;
+            this.render();
+          }
+        );
+      }
+    };
+
+    submitBtn.addEventListener('click', checkPaintingGuess);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        checkPaintingGuess();
+      }
+    });
+
+    inputRow.appendChild(input);
+    inputRow.appendChild(submitBtn);
+    panel.appendChild(inputRow);
+
+    // Back to tile questions button
+    const cancelRow = document.createElement('div');
+    cancelRow.style.marginTop = '12px';
+    cancelRow.style.display = 'flex';
+    cancelRow.style.justifyContent = 'flex-start';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'gs-nav-btn prev';
+    cancelBtn.textContent = '⬅ QUAY LẠI LƯỚI MẢNH GHÉP';
+    cancelBtn.addEventListener('click', () => {
+      this.isGuessingSecretPainting = false;
+      this.r1ActiveTileQuestion = false;
+      this.stopQuestionTimer();
+      this.render();
+    });
+    cancelRow.appendChild(cancelBtn);
+    panel.appendChild(cancelRow);
+
+    return panel;
+  }
+
+  // ==========================================================================
   // ROUND 2: PHIÊN CHỢ VÙNG CAO
   // ==========================================================================
   private renderRound2(): HTMLElement {
-    if (this.is5sPhaseActive) {
-      return this.render5sPhase(`Vòng 2 - Câu ${this.currentQuestionIndex + 1}`, () => {
-        this.stop5sPhase();
-        this.render();
-      });
-    }
-
     const container = document.createElement('div');
     container.style.display = 'flex';
     container.style.flexDirection = 'column';
@@ -393,17 +813,50 @@ export class StationGameModal {
     const currentTeam = gameshow.teams[this.selectedTeamIndex];
     const currentBid = this.r2Bids[currentTeam.id] || 10;
 
-    // Question
-    const qPanel = this.renderQuestionCard(
-      q,
-      `CHỦ ĐỀ: ${q.theme} · MỨC CƯỢC CỦA ${currentTeam.name}: ${currentBid} ĐIỂM`,
-      (isCorrect) => {
-        const delta = isCorrect ? currentBid : -currentBid;
-        gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Thắng điểm cược' : 'Thua điểm cược');
-      }
-    );
+    // Inline Bidding Chips Bar
+    const bidBox = document.createElement('div');
+    bidBox.className = 'gs-r2-bid-box';
+    bidBox.style.margin = '0 0 10px';
+    bidBox.innerHTML = `<div>CHỦ ĐỀ CÂU HỎI ${this.currentQuestionIndex + 1}: <strong style="color:var(--gs-gold)">${q.theme}</strong> · CHỌN MỨC CƯỢC CHO <strong style="color:${currentTeam.color}">${currentTeam.name}</strong>:</div>`;
 
-    container.appendChild(qPanel);
+    const bidRow = document.createElement('div');
+    bidRow.className = 'gs-bid-row';
+
+    [10, 15, 20, 25, 30].forEach((amount) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = `gs-bid-chip ${currentBid === amount ? 'active' : ''}`;
+      chip.textContent = `${amount} điểm`;
+      chip.disabled = this.isQuestionAnswered;
+      chip.addEventListener('click', () => {
+        if (this.isQuestionAnswered) return;
+        this.r2Bids[currentTeam.id] = amount;
+        sfx.playBuzzer();
+        this.render();
+      });
+      bidRow.appendChild(chip);
+    });
+
+    bidBox.appendChild(bidRow);
+    container.appendChild(bidBox);
+
+    if (!this.isQuestionRevealed) {
+      const promptPanel = this.createRevealQuestionPrompt(
+        `CÂU ${this.currentQuestionIndex + 1}/${r2Data.questions.length} · CHỦ ĐỀ: ${q.theme}`,
+        `1. Chọn Đội trả lời ở thanh trên cùng và chọn mức điểm cược (<strong>10 – 30 điểm</strong>) phù hợp với độ tự tin về chủ đề <strong>"${q.theme}"</strong>.<br>2. Trả lời ĐÚNG sẽ cộng đúng số điểm đã cược; trả lời SAI sẽ bị trừ số điểm đã cược.<br>3. Khi đã chốt mức cược, bấm nút bên dưới để mở câu hỏi và bắt đầu 20 giây trả lời!`
+      );
+      container.appendChild(promptPanel);
+    } else {
+      const qPanel = this.renderQuestionCard(
+        q,
+        `CHỦ ĐỀ: ${q.theme} · MỨC CƯỢC CỦA ${currentTeam.name}: ${currentBid} ĐIỂM`,
+        (isCorrect) => {
+          const delta = isCorrect ? currentBid : -currentBid;
+          gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Thắng điểm cược' : 'Thua điểm cược');
+        }
+      );
+      container.appendChild(qPanel);
+    }
 
     const nav = this.createRoundNav(r2Data.questions.length, 'M02', 'Vòng 2: Phiên Chợ Vùng Cao');
     container.appendChild(nav);
@@ -415,13 +868,6 @@ export class StationGameModal {
   // ROUND 3: TIẾNG VANG ĐẠI NGÀN (Audio & Fill-in text input)
   // ==========================================================================
   private renderRound3(): HTMLElement {
-    if (this.is5sPhaseActive) {
-      return this.render5sPhase(`Vòng 3 - Câu ${this.currentQuestionIndex + 1}`, () => {
-        this.stop5sPhase();
-        this.render();
-      });
-    }
-
     const container = document.createElement('div');
     container.style.display = 'flex';
     container.style.flexDirection = 'column';
@@ -429,67 +875,78 @@ export class StationGameModal {
 
     const q = r3Data.questions[this.currentQuestionIndex % r3Data.questions.length];
 
-    // Audio Visualizer
-    if (q.type === 'audio') {
-      const visualizer = document.createElement('div');
-      visualizer.className = 'gs-audio-visualizer';
-      for (let i = 0; i < 5; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'gs-audio-bar';
-        visualizer.appendChild(bar);
+    if (!this.isQuestionRevealed) {
+      const qTypeLabel = q.type === 'audio' ? 'NHẬN DIỆN ÂM THANH NHẠC CỤ' : 'ĐIỀN KHUYẾT CA DAO TỤC NGỮ';
+      const promptPanel = this.createRevealQuestionPrompt(
+        `CÂU ${this.currentQuestionIndex + 1}/${r3Data.questions.length} · ${qTypeLabel}`,
+        `Các đội chuẩn bị tinh thần bấm chuông giành quyền trả lời (+20 điểm nếu đúng, -10 điểm nếu sai).<br>Khi các đội đã sẵn sàng, hãy bấm nút bên dưới để hiển thị câu hỏi và bắt đầu 20 giây!`
+      );
+      container.appendChild(promptPanel);
+    } else {
+      // Audio Visualizer
+      if (q.type === 'audio') {
+        const visualizer = document.createElement('div');
+        visualizer.className = 'gs-audio-visualizer';
+        for (let i = 0; i < 5; i++) {
+          const bar = document.createElement('div');
+          bar.className = 'gs-audio-bar';
+          visualizer.appendChild(bar);
+        }
+
+        const playAudioBtn = document.createElement('button');
+        playAudioBtn.className = 'gs-guess-painting-btn';
+        playAudioBtn.style.maxWidth = '360px';
+        playAudioBtn.style.margin = '4px auto 8px';
+        playAudioBtn.textContent = '🔊 PHÁT ĐOẠN ÂM THANH NHẠC CỤ';
+        playAudioBtn.addEventListener('click', () => {
+          if (q.audio_type === 'dan_tinh') sfx.playDanTinhSample();
+          else if (q.audio_type === 'khen_mong') sfx.playKhenMongSample();
+          else sfx.playGong();
+        });
+
+        container.appendChild(visualizer);
+        container.appendChild(playAudioBtn);
       }
 
-      const playAudioBtn = document.createElement('button');
-      playAudioBtn.className = 'gs-guess-painting-btn';
-      playAudioBtn.style.maxWidth = '360px';
-      playAudioBtn.style.margin = '8px auto';
-      playAudioBtn.textContent = '🔊 PHÁT ĐOẠN ÂM THANH NHẠC CỤ';
-      playAudioBtn.addEventListener('click', () => {
-        if (q.audio_type === 'dan_tinh') sfx.playDanTinhSample();
-        else if (q.audio_type === 'khen_mong') sfx.playKhenMongSample();
-        else sfx.playGong();
+      // Buzzers Row
+      const buzzerRow = document.createElement('div');
+      buzzerRow.className = 'gs-buzzer-row';
+      buzzerRow.style.marginBottom = '10px';
+
+      gameshow.teams.forEach((team, idx) => {
+        const btn = document.createElement('button');
+        const isFirst = this.r3BuzzedTeamId === team.id;
+        btn.className = `gs-buzzer-btn ${isFirst ? 'buzzed' : ''}`;
+        btn.textContent = isFirst ? `🔔 ${team.name} ĐÃ BẤM CHUÔNG!` : `Bấm chuông: ${team.name}`;
+        btn.addEventListener('click', () => {
+          if (this.isQuestionAnswered) return;
+          if (!this.r3BuzzedTeamId) {
+            this.r3BuzzedTeamId = team.id;
+            this.selectedTeamIndex = idx;
+            sfx.playBuzzer();
+            this.render();
+          } else if (!this.r3SecondBuzzedTeamId && this.r3BuzzedTeamId !== team.id) {
+            this.r3SecondBuzzedTeamId = team.id;
+            sfx.playBuzzer();
+          }
+        });
+        buzzerRow.appendChild(btn);
       });
 
-      container.appendChild(visualizer);
-      container.appendChild(playAudioBtn);
-    }
+      container.appendChild(buzzerRow);
 
-    // Buzzers Row
-    const buzzerRow = document.createElement('div');
-    buzzerRow.className = 'gs-buzzer-row';
-
-    gameshow.teams.forEach((team, idx) => {
-      const btn = document.createElement('button');
-      const isFirst = this.r3BuzzedTeamId === team.id;
-      btn.className = `gs-buzzer-btn ${isFirst ? 'buzzed' : ''}`;
-      btn.textContent = isFirst ? `🔔 ${team.name} ĐÃ BẤM CHUÔNG!` : `Bấm chuông: ${team.name}`;
-      btn.addEventListener('click', () => {
-        if (!this.r3BuzzedTeamId) {
-          this.r3BuzzedTeamId = team.id;
-          this.selectedTeamIndex = idx;
-          sfx.playBuzzer();
-          this.render();
-        } else if (!this.r3SecondBuzzedTeamId && this.r3BuzzedTeamId !== team.id) {
-          this.r3SecondBuzzedTeamId = team.id;
-          sfx.playBuzzer();
-        }
-      });
-      buzzerRow.appendChild(btn);
-    });
-
-    container.appendChild(buzzerRow);
-
-    // If fill-in type question
-    if (q.type === 'fill_in') {
-      const fillInPanel = this.renderFillInQuestionCard(q);
-      container.appendChild(fillInPanel);
-    } else {
-      const qPanel = this.renderQuestionCard(q, 'NHẬN DIỆN ÂM THANH NHẠC CỤ (+20 / -10 ĐIỂM)', (isCorrect) => {
-        const currentTeam = gameshow.teams[this.selectedTeamIndex];
-        const delta = isCorrect ? 20 : -10;
-        gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Bấm chuông đúng' : 'Bấm chuông sai');
-      });
-      container.appendChild(qPanel);
+      // If fill-in type question
+      if (q.type === 'fill_in') {
+        const fillInPanel = this.renderFillInQuestionCard(q);
+        container.appendChild(fillInPanel);
+      } else {
+        const qPanel = this.renderQuestionCard(q, 'NHẬN DIỆN ÂM THANH NHẠC CỤ (+20 / -10 ĐIỂM)', (isCorrect) => {
+          const currentTeam = gameshow.teams[this.selectedTeamIndex];
+          const delta = isCorrect ? 20 : -10;
+          gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Bấm chuông đúng' : 'Bấm chuông sai');
+        });
+        container.appendChild(qPanel);
+      }
     }
 
     const nav = this.createRoundNav(r3Data.questions.length, 'M03', 'Vòng 3: Tiếng Vang Đại Ngàn');
@@ -502,13 +959,6 @@ export class StationGameModal {
   // ROUND 4: LỬA THIÊNG ĐẠI NGÀN (Torches & Prey Pot)
   // ==========================================================================
   private renderRound4(): HTMLElement {
-    if (this.is5sPhaseActive) {
-      return this.render5sPhase(`Vòng 4 - Câu ${this.currentQuestionIndex + 1}`, () => {
-        this.stop5sPhase();
-        this.render();
-      });
-    }
-
     const container = document.createElement('div');
     container.style.display = 'flex';
     container.style.flexDirection = 'column';
@@ -516,14 +966,39 @@ export class StationGameModal {
 
     const currentTeam = gameshow.teams[this.selectedTeamIndex];
     const currentTorch = this.r4Torches[currentTeam.id] || null;
+    const q = r4Data.questions[this.currentQuestionIndex % r4Data.questions.length];
 
-    // Torch active indicator in Question View
-    if (currentTorch) {
-      const torchBadge = document.createElement('div');
-      torchBadge.className = 'gs-torch-active-indicator';
-      torchBadge.innerHTML = `🔥 <strong>${currentTeam.name}</strong> đang cược: <span style="color:var(--gs-gold); font-weight:800;">${currentTorch === 'silver' ? 'THẺ ĐUỐC BẠC (x2: +40 / -40 ĐIỂM)' : 'THẺ ĐUỐC VÀNG (x3: +60 / -60 ĐIỂM)'}</span>`;
-      container.appendChild(torchBadge);
-    }
+    // Inline Torch Selector Row
+    const torchRow = document.createElement('div');
+    torchRow.className = 'gs-torch-row';
+
+    const silverBtn = document.createElement('button');
+    silverBtn.type = 'button';
+    silverBtn.className = `gs-torch-card gs-torch-silver ${currentTorch === 'silver' ? 'active' : ''}`;
+    silverBtn.textContent = `🥈 ĐUỐC BẠC CHO ${currentTeam.name} (x2: +40 / -40đ)`;
+    silverBtn.disabled = this.isQuestionAnswered;
+    silverBtn.addEventListener('click', () => {
+      if (this.isQuestionAnswered) return;
+      this.r4Torches[currentTeam.id] = currentTorch === 'silver' ? null : 'silver';
+      sfx.playCardActivate();
+      this.render();
+    });
+
+    const goldBtn = document.createElement('button');
+    goldBtn.type = 'button';
+    goldBtn.className = `gs-torch-card gs-torch-gold ${currentTorch === 'gold' ? 'active' : ''}`;
+    goldBtn.textContent = `🥇 ĐUỐC VÀNG CHO ${currentTeam.name} (x3: +60 / -60đ)`;
+    goldBtn.disabled = this.isQuestionAnswered;
+    goldBtn.addEventListener('click', () => {
+      if (this.isQuestionAnswered) return;
+      this.r4Torches[currentTeam.id] = currentTorch === 'gold' ? null : 'gold';
+      sfx.playCardActivate();
+      this.render();
+    });
+
+    torchRow.appendChild(silverBtn);
+    torchRow.appendChild(goldBtn);
+    container.appendChild(torchRow);
 
     // Prey Pot Alert
     if (gameshow.preyPot > 0) {
@@ -533,27 +1008,72 @@ export class StationGameModal {
       container.appendChild(pot);
     }
 
-    const q = r4Data.questions[this.currentQuestionIndex % r4Data.questions.length];
-    const qPanel = this.renderQuestionCard(q, `CHUNG KẾT · ĐỘ KHÓ: ${q.difficulty}`, (isCorrect) => {
-      const torch = this.r4Torches[currentTeam.id];
-      let delta = isCorrect ? 20 : -10;
-      if (torch === 'silver') delta = isCorrect ? 40 : -40;
-      else if (torch === 'gold') delta = isCorrect ? 60 : -60;
+    if (!this.isQuestionRevealed) {
+      const promptPanel = this.createRevealQuestionPrompt(
+        `CÂU ${this.currentQuestionIndex + 1}/${r4Data.questions.length} · ĐỘ KHÓ: ${q.difficulty.toUpperCase()}`,
+        `1. Dựa vào độ khó <strong>"${q.difficulty}"</strong>, đội đang thi có thể chọn bật <strong>Đuốc Bạc (x2: +40/-40đ)</strong>, <strong>Đuốc Vàng (x3: +60/-60đ)</strong> hoặc không dùng đuốc (+20/-10đ).<br>2. Nếu dùng Đuốc mà trả lời sai, số điểm bị trừ sẽ rơi vào <strong>Quỹ Săn Mồi</strong>!<br>3. Bấm nút bên dưới khi đã sẵn sàng mở câu hỏi!`
+      );
+      container.appendChild(promptPanel);
+    } else {
+      const qPanel = this.renderQuestionCard(q, `CHUNG KẾT · ĐỘ KHÓ: ${q.difficulty}`, (isCorrect) => {
+        const torch = this.r4Torches[currentTeam.id];
+        let delta = isCorrect ? 20 : -10;
+        if (torch === 'silver') delta = isCorrect ? 40 : -40;
+        else if (torch === 'gold') delta = isCorrect ? 60 : -60;
 
-      if (!isCorrect && (torch === 'silver' || torch === 'gold')) {
-        gameshow.preyPot = Math.abs(delta);
-        sfx.playPreyWarning();
-      }
+        if (!isCorrect && (torch === 'silver' || torch === 'gold')) {
+          gameshow.preyPot = Math.abs(delta);
+          sfx.playPreyWarning();
+        }
 
-      gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Đúng câu hỏi chung kết' : 'Sai câu hỏi chung kết');
-    });
-
-    container.appendChild(qPanel);
+        gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Đúng câu hỏi chung kết' : 'Sai câu hỏi chung kết');
+      });
+      container.appendChild(qPanel);
+    }
 
     const nav = this.createRoundNav(r4Data.questions.length, 'M04', 'Vòng 4: Lửa Thiêng Đại Ngàn');
     container.appendChild(nav);
 
     return container;
+  }
+
+  private createRevealQuestionPrompt(title: string, instructionsHtml: string): HTMLElement {
+    const panel = document.createElement('div');
+    panel.className = 'gs-question-panel gs-r1-prompt-panel';
+    panel.style.justifyContent = 'center';
+    panel.style.alignItems = 'center';
+    panel.style.textAlign = 'center';
+
+    const theme = document.createElement('div');
+    theme.className = 'gs-q-theme';
+    theme.textContent = title;
+    panel.appendChild(theme);
+
+    const desc = document.createElement('div');
+    desc.style.fontSize = '16px';
+    desc.style.color = 'var(--gs-text-sub)';
+    desc.style.lineHeight = '1.7';
+    desc.style.maxWidth = '680px';
+    desc.style.margin = '12px 0 24px';
+    desc.innerHTML = instructionsHtml;
+    panel.appendChild(desc);
+
+    const openBtn = document.createElement('button');
+    openBtn.type = 'button';
+    openBtn.className = 'gs-guess-painting-btn';
+    openBtn.style.maxWidth = '420px';
+    openBtn.style.fontSize = '19px';
+    openBtn.style.padding = '16px 28px';
+    openBtn.textContent = '📖 BẤM ĐỂ HIỂN THỊ CÂU HỎI (20 GIÂY)';
+    openBtn.addEventListener('click', () => {
+      this.isQuestionRevealed = true;
+      sfx.playBuzzer();
+      this.startQuestionTimer();
+      this.render();
+    });
+    panel.appendChild(openBtn);
+
+    return panel;
   }
 
   // ==========================================================================
@@ -642,7 +1162,12 @@ export class StationGameModal {
         } else {
           btn.classList.add('incorrect');
           sfx.playFailure();
-          alert('Chưa chính xác! Hãy suy nghĩ về cội nguồn sức mạnh ngàn đời của khối đại đoàn kết toàn dân tộc.');
+          this.showScoreToast(
+            'CHƯA CHÍNH XÁC',
+            0,
+            'Hãy suy nghĩ về cội nguồn sức mạnh ngàn đời của khối đại đoàn kết toàn dân tộc.',
+            2800
+          );
         }
       });
       optGrid.appendChild(btn);
@@ -657,15 +1182,19 @@ export class StationGameModal {
   }
 
   // ==========================================================================
-  // MULTIPLE-CHOICE 4 OPTIONS QUESTION CARD (Tự động cộng/trừ điểm theo Nhóm)
+  // MULTIPLE-CHOICE 4 OPTIONS QUESTION CARD (Có đồng hồ 20s & chống spam click)
   // ==========================================================================
   private renderQuestionCard(
     q: { question: string; options?: string[]; correct_index?: number; explanation?: string },
     subtitle: string,
-    onAnswer: (isCorrect: boolean) => void
+    onAnswer: (isCorrect: boolean) => void,
+    onCompleteAfterToast?: () => void
   ): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    // 20s Countdown Header
+    panel.appendChild(this.createTimerHeaderWidget());
 
     if (this.activeStrategyNotice) {
       const noticeBanner = document.createElement('div');
@@ -685,44 +1214,65 @@ export class StationGameModal {
     const optGrid = document.createElement('div');
     optGrid.className = 'gs-options-grid';
 
+    const allOptionButtons: HTMLButtonElement[] = [];
+
     if (q.options && q.options.length) {
       q.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'gs-option-btn';
         btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+        btn.disabled = this.isQuestionAnswered;
+        allOptionButtons.push(btn);
 
         btn.addEventListener('click', () => {
+          // Chặn tuyệt đối việc spam click nhiều lần
+          if (this.isQuestionAnswered) return;
+          this.isQuestionAnswered = true;
+          this.stopQuestionTimer();
+
+          allOptionButtons.forEach((b) => {
+            b.disabled = true;
+          });
+
           const isCorrect = idx === q.correct_index;
           if (isCorrect) {
             btn.classList.add('correct');
             sfx.playSuccess();
           } else {
             btn.classList.add('incorrect');
+            if (typeof q.correct_index === 'number' && allOptionButtons[q.correct_index]) {
+              allOptionButtons[q.correct_index].classList.add('correct');
+            }
             sfx.playFailure();
           }
 
           // Trigger scoring
           onAnswer(isCorrect);
 
-          // Show floating score or card award on screen
+          // Consume blocked turn
+          gameshow.consumeBlockedTurns();
+
+          // Show floating score or card award on screen (single unified timer, no competing setTimeout!)
           const currentTeam = gameshow.teams[this.selectedTeamIndex];
           const lastDelta = gameshow.lastScoreDeltas[gameshow.lastScoreDeltas.length - 1];
           const delta = lastDelta ? lastDelta.delta : (isCorrect ? 10 : -10);
 
+          const afterToast = () => {
+            if (onCompleteAfterToast) {
+              onCompleteAfterToast();
+            } else {
+              this.render();
+            }
+          };
+
           const qAny = q as { has_card?: string };
           if (isCorrect && qAny.has_card) {
             gameshow.awardCard(currentTeam.id, qAny.has_card as FunctionalCardType);
-            this.showCardAwardToast(currentTeam.name, qAny.has_card as FunctionalCardType);
+            this.showCardAwardToast(currentTeam.name, qAny.has_card as FunctionalCardType, afterToast);
           } else {
-            this.showScoreToast(currentTeam.name, delta, q.explanation || '');
+            this.showScoreToast(currentTeam.name, delta, q.explanation || '', 3200, afterToast);
           }
-
-          // Consume blocked turn
-          gameshow.consumeBlockedTurns();
-
-          setTimeout(() => {
-            this.render();
-          }, 3500);
         });
 
         optGrid.appendChild(btn);
@@ -733,7 +1283,7 @@ export class StationGameModal {
     panel.appendChild(text);
     panel.appendChild(optGrid);
 
-    // Advance button to start 5s phase for next question
+    // Advance button to move to next question
     if (this.activeStationId !== 'M01') {
       const advanceRow = document.createElement('div');
       advanceRow.className = 'gs-advance-next-row';
@@ -743,11 +1293,18 @@ export class StationGameModal {
 
       if (this.currentQuestionIndex < totalQ - 1) {
         const nextQBtn = document.createElement('button');
+        nextQBtn.type = 'button';
         nextQBtn.className = 'gs-btn-advance-5s';
-        nextQBtn.innerHTML = `👉 CHUYỂN SANG CÂU TIẾP THEO (${this.currentQuestionIndex + 2}/${totalQ}) · BẮT ĐẦU 5 GIÂY QUYẾT ĐỊNH ➡`;
+        nextQBtn.innerHTML = `👉 CHUYỂN SANG CÂU TIẾP THEO (${this.currentQuestionIndex + 2}/${totalQ}) ➡`;
         nextQBtn.addEventListener('click', () => {
+          this.clearActiveToast();
+          this.stopQuestionTimer();
           this.currentQuestionIndex++;
-          this.start5sPhase();
+          this.isQuestionRevealed = false;
+          this.isQuestionAnswered = false;
+          this.r3BuzzedTeamId = null;
+          this.r3SecondBuzzedTeamId = null;
+          this.render();
         });
         advanceRow.appendChild(nextQBtn);
       }
@@ -758,11 +1315,14 @@ export class StationGameModal {
   }
 
   // ==========================================================================
-  // FILL-IN QUESTION CARD (Có thanh gõ câu trả lời theo yêu cầu của bạn)
+  // FILL-IN QUESTION CARD (Có đồng hồ 20s & thanh gõ câu trả lời)
   // ==========================================================================
   private renderFillInQuestionCard(q: { question: string; correct_answer?: string; explanation?: string; has_card?: string | null }): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    // 20s Countdown Header
+    panel.appendChild(this.createTimerHeaderWidget());
 
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
@@ -782,15 +1342,30 @@ export class StationGameModal {
     input.type = 'text';
     input.className = 'gs-fillin-input';
     input.placeholder = `Người phụ trách gõ câu trả lời cho [${currentTeam.name}] tại đây...`;
+    input.disabled = this.isQuestionAnswered;
 
     const submitBtn = document.createElement('button');
+    submitBtn.type = 'button';
     submitBtn.className = 'gs-fillin-submit-btn';
     submitBtn.textContent = '✔ KIỂM TRA ĐÁP ÁN';
+    submitBtn.disabled = this.isQuestionAnswered;
 
     const checkAnswer = () => {
-      const typed = input.value.trim().toLowerCase();
-      const standard = (q.correct_answer || '').trim().toLowerCase();
-      const isCorrect = typed === standard || typed.includes(standard);
+      if (this.isQuestionAnswered) return;
+      const rawVal = input.value.trim();
+      if (!rawVal) {
+        input.focus();
+        return;
+      }
+
+      this.isQuestionAnswered = true;
+      this.stopQuestionTimer();
+      input.disabled = true;
+      submitBtn.disabled = true;
+
+      const typed = normalizeVietnamese(rawVal);
+      const standard = normalizeVietnamese(q.correct_answer || '');
+      const isCorrect = typed === standard || (standard.length > 0 && typed.includes(standard));
 
       if (isCorrect) {
         gameshow.modifyScore(currentTeam.id, +20, 'Điền khuyết đúng');
@@ -802,26 +1377,30 @@ export class StationGameModal {
         input.classList.add('incorrect');
       }
 
+      gameshow.consumeBlockedTurns();
+
+      const afterToast = () => {
+        this.render();
+      };
+
       if (isCorrect && q.has_card) {
         gameshow.awardCard(currentTeam.id, q.has_card as FunctionalCardType);
-        this.showCardAwardToast(currentTeam.name, q.has_card as FunctionalCardType);
+        this.showCardAwardToast(currentTeam.name, q.has_card as FunctionalCardType, afterToast);
       } else {
         this.showScoreToast(
           currentTeam.name,
           isCorrect ? +20 : -10,
-          `Đáp án chính xác: "${q.correct_answer}". ${q.explanation || ''}`
+          `Đáp án chính xác: "${q.correct_answer}". ${q.explanation || ''}`,
+          3200,
+          afterToast
         );
       }
-
-      setTimeout(() => {
-        this.currentQuestionIndex++;
-        this.start5sPhase();
-      }, 3500);
     };
 
     submitBtn.addEventListener('click', checkAnswer);
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
+        e.preventDefault();
         checkAnswer();
       }
     });
@@ -853,8 +1432,14 @@ export class StationGameModal {
     prevBtn.disabled = this.currentQuestionIndex === 0;
     prevBtn.addEventListener('click', () => {
       if (this.currentQuestionIndex > 0) {
+        this.clearActiveToast();
+        this.stopQuestionTimer();
         this.currentQuestionIndex--;
-        this.start5sPhase();
+        this.isQuestionRevealed = false;
+        this.isQuestionAnswered = false;
+        this.r3BuzzedTeamId = null;
+        this.r3SecondBuzzedTeamId = null;
+        this.render();
       }
     });
 
@@ -868,8 +1453,14 @@ export class StationGameModal {
     nextBtn.disabled = this.currentQuestionIndex >= totalQuestions - 1;
     nextBtn.addEventListener('click', () => {
       if (this.currentQuestionIndex < totalQuestions - 1) {
+        this.clearActiveToast();
+        this.stopQuestionTimer();
         this.currentQuestionIndex++;
-        this.start5sPhase();
+        this.isQuestionRevealed = false;
+        this.isQuestionAnswered = false;
+        this.r3BuzzedTeamId = null;
+        this.r3SecondBuzzedTeamId = null;
+        this.render();
       }
     });
 
@@ -892,260 +1483,14 @@ export class StationGameModal {
   }
 
   // ==========================================================================
-  // 5-SECOND STRATEGY / FUNCTIONAL CARD PHASE
-  // ==========================================================================
-  private render5sPhase(
-    roundTitle: string,
-    onSkip: () => void
-  ): HTMLElement {
-    const box = document.createElement('div');
-    box.className = 'gs-5s-prep-container';
-
-    // 1. Header with unmistakable prominent title
-    const header = document.createElement('div');
-    header.className = 'gs-5s-header';
-    header.innerHTML = `
-      <div class="gs-5s-badge">⏱️ THỜI GIAN ĐƯA RA QUYẾT ĐỊNH TRƯỚC CÂU HỎI · ${roundTitle.toUpperCase()}</div>
-      <h2 class="gs-5s-main-title">TRƯỚC MỖI CÂU HỎI: 5 GIÂY ĐƯA RA QUYẾT ĐỊNH CÓ DÙNG PHIẾU CHỨC NĂNG HAY KHÔNG?</h2>
-      <p class="gs-5s-sub-desc">
-        🔒 Nội dung câu hỏi và các phương án đang được tạm ẩn.<br>
-        Các đội có đúng <strong>5 giây</strong> để đưa ra quyết định: Kích hoạt Phiếu Chức Năng (Cướp Điểm, Cấm Lượt${this.activeStationId === 'M04' ? ', Đuốc Bạc/Vàng' : ''}) hoặc Bỏ qua không sử dụng.
-      </p>
-    `;
-    box.appendChild(header);
-
-    // Active Strategy Notice
-    if (this.activeStrategyNotice) {
-      const notice = document.createElement('div');
-      notice.className = 'gs-5s-notice-box';
-      notice.textContent = this.activeStrategyNotice;
-      box.appendChild(notice);
-    }
-
-    // 2. Countdown Circle
-    const timerRow = document.createElement('div');
-    timerRow.className = 'gs-5s-timer-row';
-    timerRow.innerHTML = `
-      <div class="gs-countdown-circle">
-        <span class="gs-countdown-number">${this.timer5sSecondsLeft}</span>
-        <span class="gs-countdown-label">GIÂY</span>
-      </div>
-    `;
-    box.appendChild(timerRow);
-
-    // Round 2 Bidding Chips (nếu là Vòng 2)
-    if (this.activeStationId === 'M02') {
-      const q = r2Data.questions[this.currentQuestionIndex % r2Data.questions.length];
-      const curTeam = gameshow.teams[this.selectedTeamIndex];
-      const currentBid = this.r2Bids[curTeam.id] || 10;
-
-      const bidBox = document.createElement('div');
-      bidBox.className = 'gs-r2-bid-box';
-      bidBox.style.margin = '4px 0 10px';
-      bidBox.innerHTML = `<div>ĐẤU THẦU ĐIỂM CƯỢC: <strong style="color:var(--gs-gold)">${q.theme}</strong> (Dành cho: <span style="color:#2ecc71">${curTeam.name}</span>)</div>`;
-
-      const bidRow = document.createElement('div');
-      bidRow.className = 'gs-bid-row';
-
-      [10, 15, 20, 25, 30].forEach((amount) => {
-        const chip = document.createElement('div');
-        chip.className = `gs-bid-chip ${currentBid === amount ? 'active' : ''}`;
-        chip.textContent = `${amount} điểm`;
-        chip.addEventListener('click', () => {
-          this.r2Bids[curTeam.id] = amount;
-          sfx.playBuzzer();
-          this.render();
-        });
-        bidRow.appendChild(chip);
-      });
-
-      bidBox.appendChild(bidRow);
-      box.appendChild(bidBox);
-    }
-
-    // 3. Grid of Teams
-    const teamsGrid = document.createElement('div');
-    teamsGrid.className = 'gs-5s-teams-grid';
-
-    gameshow.teams.forEach((team) => {
-      const card = document.createElement('div');
-      card.className = 'gs-5s-team-card';
-      card.style.borderColor = team.color;
-
-      const teamHeader = document.createElement('div');
-      teamHeader.className = 'gs-5s-team-header';
-      teamHeader.innerHTML = `
-        <strong style="color:${team.color}">${team.name}</strong>
-        <span class="gs-5s-team-score">${team.score}đ</span>
-      `;
-      card.appendChild(teamHeader);
-
-      const actionList = document.createElement('div');
-      actionList.className = 'gs-5s-team-actions';
-
-      let hasUsableCard = false;
-
-      // Thẻ Cướp Điểm
-      if (team.cards.steal_points > 0) {
-        hasUsableCard = true;
-        const stealBtn = document.createElement('button');
-        stealBtn.className = 'gs-card-act-btn steal';
-        stealBtn.innerHTML = `⚡ Dùng Cướp Điểm (${team.cards.steal_points})`;
-        stealBtn.addEventListener('click', () => {
-          this.cardTargetPicker = { type: 'steal', userTeamId: team.id };
-          this.render();
-        });
-        actionList.appendChild(stealBtn);
-      }
-
-      // Thẻ Cấm Lượt
-      if (team.cards.block_turn > 0) {
-        hasUsableCard = true;
-        const blockBtn = document.createElement('button');
-        blockBtn.className = 'gs-card-act-btn block';
-        blockBtn.innerHTML = `🔒 Dùng Cấm Lượt (${team.cards.block_turn})`;
-        blockBtn.addEventListener('click', () => {
-          this.cardTargetPicker = { type: 'block', userTeamId: team.id };
-          this.render();
-        });
-        actionList.appendChild(blockBtn);
-      }
-
-      // Thẻ Khiên
-      if (team.cards.shield > 0) {
-        const shieldPill = document.createElement('div');
-        shieldPill.className = 'gs-card-shield-pill';
-        shieldPill.innerHTML = `🛡️ Khiên Bảo Vệ (${team.cards.shield}) sẵn sàng`;
-        actionList.appendChild(shieldPill);
-      }
-
-      // Vòng 4: Thẻ Đuốc Bạc / Đuốc Vàng
-      if (this.activeStationId === 'M04') {
-        const torchRow = document.createElement('div');
-        torchRow.className = 'gs-5s-torch-row';
-
-        const currentTorch = this.r4Torches[team.id];
-
-        const silverBtn = document.createElement('button');
-        silverBtn.className = `gs-torch-mini ${currentTorch === 'silver' ? 'active' : ''}`;
-        silverBtn.textContent = '🥈 Đuốc Bạc (x2)';
-        silverBtn.addEventListener('click', () => {
-          this.r4Torches[team.id] = currentTorch === 'silver' ? null : 'silver';
-          sfx.playCardActivate();
-          this.render();
-        });
-
-        const goldBtn = document.createElement('button');
-        goldBtn.className = `gs-torch-mini ${currentTorch === 'gold' ? 'active' : ''}`;
-        goldBtn.textContent = '🥇 Đuốc Vàng (x3)';
-        goldBtn.addEventListener('click', () => {
-          this.r4Torches[team.id] = currentTorch === 'gold' ? null : 'gold';
-          sfx.playCardActivate();
-          this.render();
-        });
-
-        torchRow.appendChild(silverBtn);
-        torchRow.appendChild(goldBtn);
-        actionList.appendChild(torchRow);
-      }
-
-      // In-line Target Picker for Steal or Block (Non-blocking in-game buttons!)
-      if (this.cardTargetPicker && this.cardTargetPicker.userTeamId === team.id) {
-        const pickerBox = document.createElement('div');
-        pickerBox.className = 'gs-5s-target-picker';
-
-        const pickerTitle = document.createElement('div');
-        pickerTitle.className = 'gs-5s-target-title';
-        pickerTitle.textContent = this.cardTargetPicker.type === 'steal'
-          ? '🎯 CHỌN ĐỘI ĐỂ RÚT 20 ĐIỂM:'
-          : '🎯 CHỌN ĐỘI ĐỂ CẤM LƯỢT Ở CÂU NÀY:';
-        pickerBox.appendChild(pickerTitle);
-
-        const btnsRow = document.createElement('div');
-        btnsRow.className = 'gs-5s-target-btns';
-
-        const targets = gameshow.teams.filter((t) => t.id !== team.id);
-        targets.forEach((tgt) => {
-          const tgtBtn = document.createElement('button');
-          tgtBtn.className = 'gs-5s-target-btn';
-          tgtBtn.textContent = this.cardTargetPicker?.type === 'steal'
-            ? `${tgt.name} (${tgt.score}đ)`
-            : tgt.name;
-          tgtBtn.addEventListener('click', () => {
-            if (this.cardTargetPicker?.type === 'steal') {
-              const res = gameshow.useStealPointsCard(team.id, tgt.id);
-              if (res.shielded) {
-                sfx.playCardActivate();
-                this.activeStrategyNotice = `🛡️ ${res.message}`;
-              } else if (res.success) {
-                sfx.playSuccess();
-                this.activeStrategyNotice = `⚡ ${res.message}`;
-              } else {
-                this.activeStrategyNotice = res.message;
-              }
-            } else if (this.cardTargetPicker?.type === 'block') {
-              const res = gameshow.useBlockTurnCard(team.id, tgt.id);
-              if (res.shielded) {
-                sfx.playCardActivate();
-                this.activeStrategyNotice = `🛡️ ${res.message}`;
-              } else if (res.success) {
-                sfx.playCardActivate();
-                this.activeStrategyNotice = `🔒 ${res.message}`;
-              } else {
-                this.activeStrategyNotice = res.message;
-              }
-            }
-            this.cardTargetPicker = null;
-            this.render();
-          });
-          btnsRow.appendChild(tgtBtn);
-        });
-
-        const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'gs-5s-target-cancel';
-        cancelBtn.textContent = '❌ Hủy';
-        cancelBtn.addEventListener('click', () => {
-          this.cardTargetPicker = null;
-          this.render();
-        });
-        btnsRow.appendChild(cancelBtn);
-
-        pickerBox.appendChild(btnsRow);
-        actionList.appendChild(pickerBox);
-      }
-
-      if (!hasUsableCard && team.cards.shield <= 0 && this.activeStationId !== 'M04') {
-        const noCard = document.createElement('div');
-        noCard.className = 'gs-5s-no-card';
-        noCard.textContent = 'Chưa sở hữu phiếu chức năng';
-        actionList.appendChild(noCard);
-      }
-
-      card.appendChild(actionList);
-      teamsGrid.appendChild(card);
-    });
-
-    box.appendChild(teamsGrid);
-
-    // 4. Skip Button
-    const footer = document.createElement('div');
-    footer.className = 'gs-5s-footer';
-    const skipBtn = document.createElement('button');
-    skipBtn.className = 'gs-5s-skip-btn';
-    skipBtn.textContent = '⏩ BỎ QUA 5 GIÂY · BẮT ĐẦU CÂU HỎI NGAY';
-    skipBtn.addEventListener('click', onSkip);
-    footer.appendChild(skipBtn);
-
-    box.appendChild(footer);
-    return box;
-  }
-
-  // ==========================================================================
   // CARD AWARD CELEBRATION TOAST
   // ==========================================================================
-  private showCardAwardToast(teamName: string, cardType: FunctionalCardType) {
-    const existing = this.modalContainer.querySelector('.gs-score-toast');
-    if (existing) existing.remove();
+  private showCardAwardToast(
+    teamName: string,
+    cardType: FunctionalCardType,
+    onDismiss?: () => void
+  ) {
+    this.clearActiveToast();
 
     const toast = document.createElement('div');
     toast.className = 'gs-score-toast gs-card-award-toast';
@@ -1158,17 +1503,17 @@ export class StationGameModal {
     if (cardType === 'steal_points') {
       cardIcon = '⚡';
       cardTitle = 'THẺ CƯỚP ĐIỂM';
-      cardDesc = 'Rút trực tiếp 20 điểm từ 1 đội bất kỳ chuyển về quỹ điểm của đội mình (Dùng ngay sau khi kết thúc một câu hỏi bất kỳ).';
+      cardDesc = 'Rút trực tiếp 20 điểm từ 1 đội bất kỳ chuyển về quỹ điểm của đội mình.';
       cardColor = '#f39c12';
     } else if (cardType === 'block_turn') {
       cardIcon = '🔒';
       cardTitle = 'THẺ CẤM LƯỢT';
-      cardDesc = 'Khóa hoàn toàn quyền trả lời/bấm chuông của 1 đội đối thủ ở câu hỏi kế tiếp (Dùng trong 5 giây trước khi vào câu hỏi).';
+      cardDesc = 'Khóa quyền trả lời/bấm chuông của 1 đội đối thủ ở câu hỏi kế tiếp.';
       cardColor = '#e74c3c';
     } else if (cardType === 'shield') {
       cardIcon = '🛡️';
       cardTitle = 'THẺ KHIÊN BẢO VỆ';
-      cardDesc = 'Vô hiệu hóa 1 đòn tấn công từ đội khác (Chống bị cướp điểm hoặc chống bị cấm lượt, phản đòn ngay tại thời điểm bị tác động).';
+      cardDesc = 'Vô hiệu hóa 1 đòn tấn công từ đội khác (Chống bị cướp điểm hoặc chống bị cấm lượt).';
       cardColor = '#2ecc71';
     }
 
@@ -1190,19 +1535,24 @@ export class StationGameModal {
     const dismiss = () => {
       if (dismissed) return;
       dismissed = true;
+      if (this.toastTimeout !== null) {
+        clearTimeout(this.toastTimeout);
+        this.toastTimeout = null;
+      }
       toast.remove();
-      this.render();
+      if (onDismiss) onDismiss();
     };
 
     toast.addEventListener('click', dismiss);
     this.modalContainer.appendChild(toast);
 
-    setTimeout(() => {
+    this.toastTimeout = window.setTimeout(() => {
       dismiss();
-    }, 4500);
+    }, 4000);
   }
 
   private finishCurrentStation(stationId: string, stationName: string) {
+    this.stopQuestionTimer();
     const isNew = gameshow.markStationCompleted(stationId);
     sfx.playGong();
     sfx.playSuccess();
@@ -1211,18 +1561,22 @@ export class StationGameModal {
       ? `🎉 XIN CHÚC MỪNG CÁC ĐỘI!\nĐã hoàn thành xuất sắc [${stationName}] và mở khóa thành công CHÌA KHÓA thứ ${totalKeys}/4!\n\n${totalKeys >= 4 ? '✨ ĐÃ THU THẬP ĐỦ 4 CHÌA KHÓA! Phong ấn Trống Đồng Đông Sơn tại trung tâm bản đồ đã được phá giải!' : `Còn thiếu ${4 - totalKeys} chìa khóa nữa để mở Trống Đồng Đông Sơn.`}`
       : `Vòng thi [${stationName}] đã hoàn thành trước đó! (Hiện có ${totalKeys}/4 Chìa Khóa)`;
 
-    this.showScoreToast('CHÌA KHÓA THU THẬP', 0, msg, 4500);
-    setTimeout(() => {
+    this.showScoreToast('CHÌA KHÓA THU THẬP', 0, msg, 4000, () => {
       this.render();
-    }, 2000);
+    });
   }
 
   // ==========================================================================
-  // FLOATING SCORE TOAST (Kéo dài 4s cùng hiệu ứng bắt mắt theo yêu cầu)
+  // FLOATING SCORE TOAST (Thống nhất 1 bộ hẹn giờ duy nhất, không xung đột render)
   // ==========================================================================
-  private showScoreToast(teamName: string, delta: number, explanation: string, durationMs = 4000) {
-    const existing = this.modalContainer.querySelector('.gs-score-toast');
-    if (existing) existing.remove();
+  private showScoreToast(
+    teamName: string,
+    delta: number,
+    explanation: string,
+    durationMs = 3500,
+    onDismiss?: () => void
+  ) {
+    this.clearActiveToast();
 
     const toast = document.createElement('div');
     toast.className = 'gs-score-toast';
@@ -1256,45 +1610,19 @@ export class StationGameModal {
     const dismiss = () => {
       if (dismissed) return;
       dismissed = true;
+      if (this.toastTimeout !== null) {
+        clearTimeout(this.toastTimeout);
+        this.toastTimeout = null;
+      }
       toast.remove();
+      if (onDismiss) onDismiss();
     };
 
     toast.addEventListener('click', dismiss);
     this.modalContainer.appendChild(toast);
 
-    setTimeout(() => {
+    this.toastTimeout = window.setTimeout(() => {
       dismiss();
     }, durationMs);
-  }
-
-  // ==========================================================================
-  // GUESS SECRET PAINTING (Vòng 1)
-  // ==========================================================================
-  private handleGuessSecretPainting() {
-    const curTeam = gameshow.teams[this.selectedTeamIndex];
-    const points = gameshow.getRound1PictureGuessPoints();
-    const confirmed = window.confirm(
-      `${curTeam.name} muốn đoán bức tranh tổng thể (+${points} điểm nếu đúng, BỊ LOẠI khỏi Vòng 1 nếu sai)?`
-    );
-    if (!confirmed) return;
-
-    const isCorrect = window.confirm(`MC xác nhận: ${curTeam.name} trả lời ĐÚNG hay SAI?`);
-    if (isCorrect) {
-      gameshow.modifyScore(curTeam.id, points, 'Đoán đúng Bức tranh tổng thể');
-      gameshow.r1OpenedTiles.fill(true);
-      gameshow.markStationCompleted('M01');
-      sfx.playSuccess();
-      sfx.playGong();
-      this.showScoreToast(
-        curTeam.name,
-        points,
-        `🎉 CHÚC MỪNG ${curTeam.name} ĐÃ ĐOÁN ĐÚNG BỨC TRANH BÍ ẨN VÀ GIÀNH ĐƯỢC CHÌA KHÓA VÒNG 1!`
-      );
-    } else {
-      curTeam.isEliminatedInRound1 = true;
-      sfx.playFailure();
-      alert(`${curTeam.name} đoán sai và BỊ LOẠI khỏi Vòng 1!`);
-    }
-    this.render();
   }
 }

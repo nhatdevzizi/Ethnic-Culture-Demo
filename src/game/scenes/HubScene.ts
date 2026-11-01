@@ -160,12 +160,18 @@ export class HubScene extends Phaser.Scene {
     block(42, height / 2, 84, height);
     block(width - 42, height / 2, 84, height);
 
+    const benchDecoration = decorationFrame('bamboo-bench');
     for (const bench of map.benches) {
-      this.add
-        .image(bench.x, bench.y, 'supplied-biome-1', 'bamboo-bench')
-        .setOrigin(0)
-        .setDisplaySize(64, 32)
+      const benchSprite = this.add
+        .image(bench.x + 32, bench.y + 32, benchDecoration.atlas, benchDecoration.id)
+        .setOrigin(0.5, 1)
         .setDepth(bench.y + 32);
+      benchSprite.setScale(
+        Math.min(
+          benchDecoration.width / benchSprite.width,
+          benchDecoration.height / benchSprite.height
+        )
+      );
     }
 
     for (const station of minigameRegistry) {
@@ -177,15 +183,9 @@ export class HubScene extends Phaser.Scene {
         .setOrigin(0.5, 1)
         .setDepth(y - 12);
       facade.setScale(Math.min(192 / facade.width, 128 / facade.height));
-      facade.setInteractive({ useHandCursor: true });
-      facade.on('pointerdown', () => this.portal(station));
       if (!station.enabled) facade.setTint(0xc0c8b0);
 
-      const zone = this.add
-        .zone(x, y - 6, 64, 36)
-        .setOrigin(0.5)
-        .setInteractive({ useHandCursor: true });
-      zone.on('pointerdown', () => this.portal(station));
+      this.add.zone(x, y - 6, 64, 36).setOrigin(0.5);
 
       const stationIcons: Record<string, string> = {
         M01: '🏮',
@@ -200,9 +200,7 @@ export class HubScene extends Phaser.Scene {
         element('strong', '', `${icon} ${ui.t(station.titleKey)}`),
         element('span', '', ui.t(station.objectiveKey))
       );
-      plaque.style.pointerEvents = 'auto';
-      plaque.style.cursor = 'pointer';
-      plaque.onclick = () => this.portal(station);
+      plaque.style.pointerEvents = 'none';
       ui.screen.append(plaque);
       this.stationPlaques.push({
         id: station.id,
@@ -219,7 +217,7 @@ export class HubScene extends Phaser.Scene {
           M04: { key: 'npc_thai', name: 'Nàng Ban (Thái)', title: 'Nàng Ban - Cô gái Thái bên Lửa Thiêng' },
         };
         const npc = npcConfig[station.id];
-        const npcImg = this.add
+        this.add
           .image(
             instructor.x,
             instructor.y + 18,
@@ -229,8 +227,6 @@ export class HubScene extends Phaser.Scene {
           .setOrigin(0.5, 1)
           .setDisplaySize(npc ? 46 : (station.id === 'M02' ? 32 : 44), 74)
           .setDepth(instructor.y + 18);
-        npcImg.setInteractive({ useHandCursor: true });
-        npcImg.on('pointerdown', () => this.portal(station));
 
         if (npc) {
           this.addWorldLabel(
@@ -306,7 +302,6 @@ export class HubScene extends Phaser.Scene {
       .setOrigin(0.5, 0.5)
       .setDisplaySize(130, 130)
       .setDepth(map.board.y + 8);
-    drumSprite.setInteractive({ useHandCursor: true });
     this.tweens.add({
       targets: drumSprite,
       angle: 360,
@@ -314,7 +309,6 @@ export class HubScene extends Phaser.Scene {
       repeat: -1,
       ease: 'Linear',
     });
-    drumSprite.on('pointerdown', () => this.tryOpenGrandFinale());
 
     this.addWorldLabel(
       map.board.x,

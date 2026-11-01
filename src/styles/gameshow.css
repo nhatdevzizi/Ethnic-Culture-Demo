@@ -1691,3 +1691,145 @@
 }
 
 
+
+/* ==========================================================================
+   20-SECOND QUESTION TIMER & SECRET PAINTING FILL-IN GUESS CARD
+   ========================================================================== */
+.gs-q-timer-wrap {
+  width: 100%;
+  margin-bottom: 14px;
+  background: rgba(10, 26, 22, 0.9);
+  border: 1.5px solid #2e5d50;
+  border-radius: 10px;
+  padding: 10px 16px;
+  box-sizing: border-box;
+}
+
+.gs-q-timer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.gs-q-timer-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: #a8e6cf;
+  letter-spacing: 0.8px;
+}
+
+.gs-q-timer-badge {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  background: #183d33;
+  border: 1.5px solid var(--gs-gold);
+  border-radius: 20px;
+  padding: 3px 14px;
+  transition: all 0.25s;
+}
+
+.gs-q-timer-badge strong {
+  font-size: 20px;
+  color: var(--gs-gold);
+}
+
+.gs-q-timer-badge.urgent {
+  background: rgba(192, 57, 43, 0.35);
+  border-color: #e74c3c;
+  animation: gsPulse 0.5s infinite alternate;
+}
+
+.gs-q-timer-badge.urgent strong {
+  color: #ff6b6b;
+}
+
+.gs-q-timer-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.gs-q-timer-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc71, #f4c430);
+  border-radius: 4px;
+  transition: width 0.9s linear, background 0.3s;
+}
+
+.gs-q-timer-bar-fill.urgent {
+  background: linear-gradient(90deg, #e74c3c, #f39c12);
+}
+
+.gs-option-btn:disabled {
+  cursor: default;
+  opacity: 0.88;
+}
+
+.gs-fillin-input.correct {
+  border-color: #2ecc71 !important;
+  background: rgba(39, 174, 96, 0.25) !important;
+}
+
+.gs-fillin-input.incorrect {
+  border-color: #e74c3c !important;
+  background: rgba(192, 57, 43, 0.25) !important;
+}
+
+.gs-guess-team-tick-box {
+  background: rgba(12, 32, 27, 0.85);
+  border: 1.5px dashed var(--gs-gold);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.gs-guess-team-tick-label {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gs-gold);
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.gs-guess-team-tick-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.gs-guess-team-tick-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #16362f;
+  border: 2px solid #3c6559;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.gs-guess-team-tick-btn:hover:not(:disabled) {
+  background: #204b41;
+  transform: translateY(-1px);
+}
+
+.gs-guess-team-tick-btn.selected {
+  background: #24584c;
+  border-color: var(--gs-gold) !important;
+  box-shadow: 0 0 12px var(--gs-gold-glow);
+}
+
+.gs-guess-team-tick-btn.eliminated {
+  opacity: 0.45;
+  filter: grayscale(0.8);
+  cursor: not-allowed;
+}

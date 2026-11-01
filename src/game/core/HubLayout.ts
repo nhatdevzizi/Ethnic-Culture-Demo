@@ -27,7 +27,7 @@ export function hubObstacles(map: HubMap, stations: readonly MinigameDefinition[
     ]),
     ...waterRects(map.pond),
     ...map.trees.map(([x, y]) => ({ x: x - 14, y: y + 14, width: 28, height: 24 })),
-    ...map.benches.map(bench => ({ x: bench.x + 4, y: bench.y + 8, width: 56, height: 24 })),
+    ...map.benches.map(bench => ({ x: bench.x - 22, y: bench.y - 16, width: 108, height: 48 })),
     ...stations.map(station => ({ x: station.portal.x - 88, y: station.portal.y - 140, width: 176, height: 104 })),
     ...stations.filter(station => station.enabled).map(station => ({ x: station.portal.x + 90, y: station.portal.y - 18, width: 28, height: 26 })),
     { x: map.guide.x - 15, y: map.guide.y, width: 30, height: 24 },
