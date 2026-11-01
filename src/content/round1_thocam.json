@@ -1,90 +1,183 @@
 {
   "round_name": "VÒNG 1: MẢNH GHÉP THỔ CẨM",
-  "round_description": "Lật mở 9 ô thổ cẩm để tìm hiểu văn hóa và giải mã Bức tranh bí ẩn.",
+  "round_description": "Phần 1: Khái niệm & Đặc trưng cơ bản của Dân tộc — Mở 9 mảnh ghép đa dạng để giải mã Bức tranh bí ẩn.",
   "secret_title": "Cồng chiêng Tây Nguyên",
-  "secret_description": "Không gian văn hóa Cồng chiêng Tây Nguyên — Kiệt tác truyền khẩu và Di sản văn hóa phi vật thể của nhân loại (UNESCO công nhận năm 2005). Cồng chiêng là thanh âm thiêng liêng nối kết con người với thần linh, gắn bó mật thiết với vòng đời người và các lễ hội mùa màng của đồng bào các dân tộc Tây Nguyên (Ba Na, Gia Rai, Ê Đê, M'Nông, Cơ Ho...).",
-  "secret_image": "assets/images/cong_chieng_tay_nguyen.svg",
+  "secret_description": "Không gian văn hóa Cồng chiêng Tây Nguyên — Di sản văn hóa phi vật thể của nhân loại (UNESCO công nhận năm 2005). Đây là minh chứng sống động cho đặc trưng 'cộng đồng về văn hóa' và 'ý thức tự giác tộc người' của các dân tộc Tây Nguyên, đồng thời hòa quyện tạo nên nền văn hóa Quốc gia – Dân tộc Việt Nam thống nhất trong đa dạng.",
+  "secret_image": "assets/images/cong_chieng_tay_nguyen.jpg",
   "questions": [
     {
       "id": 1,
       "slot_number": 1,
+      "type": "ordering",
       "has_card": "steal_points",
-      "question": "Trang phục truyền thống của phụ nữ dân tộc Thái nổi tiếng với chiếc áo ôm sát và hàng khuy bạc tinh xảo có tên gọi là gì?",
-      "options": ["Áo cóm", "Áo chàm", "Áo bà ba", "Áo tơ tằm"],
-      "correct_index": 0,
-      "explanation": "Áo cóm kết hợp với váy đen dài và thắt lưng xanh (xài éo) là nét đẹp duyên dáng đặc trưng của phụ nữ Thái vùng Tây Bắc."
+      "question": "Hãy sắp xếp 4 hình thức cộng đồng người dưới đây theo ĐÚNG TRÌNH TỰ phát triển từ thấp đến cao trong lịch sử xã hội loài người:",
+      "items": [
+        "Thị tộc — Cộng đồng người đầu tiên trong công xã nguyên thủy, liên kết chủ yếu bằng quan hệ huyết thống và sở hữu chung tư liệu sản xuất",
+        "Bộ lạc — Liên minh gồm nhiều thị tộc có lãnh thổ chung, quản lý bởi hội đồng bộ lạc và thủ lĩnh theo hình thức dân chủ nguyên thủy",
+        "Bộ tộc — Cộng đồng hình thành khi xuất hiện chế độ tư hữu và phân hóa giai cấp; liên kết lãnh thổ vượt ngoài huyết thống nhưng kinh tế còn tự cấp, tự túc",
+        "Dân tộc — Cộng đồng người ổn định hợp thành nhân dân một nước với lãnh thổ chung, nền kinh tế thống nhất, ngôn ngữ chung và nhà nước độc lập"
+      ],
+      "initial_order": [2, 0, 3, 1],
+      "explanation": "Sự phát triển của phương thức sản xuất quyết định sự biến đổi tuần tự của các hình thức cộng đồng người từ thấp đến cao: Thị tộc → Bộ lạc → Bộ tộc → Dân tộc."
     },
     {
       "id": 2,
       "slot_number": 2,
+      "type": "true_false",
       "has_card": null,
-      "question": "Chiếc khăn đội đầu truyền thống được thêu hoa văn chỉ màu cầu kỳ của phụ nữ dân tộc Thái đen được gọi là gì?",
-      "options": ["Khăn Piêu", "Khăn rằn", "Khăn Mống", "Khăn Vằn"],
-      "correct_index": 0,
-      "explanation": "Khăn Piêu là tác phẩm nghệ thuật thêu thùa thể hiện sự khéo léo, tình cảm và tâm hồn của người con gái Thái."
+      "question": "Hãy tích chọn ĐÚNG hoặc SAI cho 4 nhận định dưới đây về cơ sở hình thành và sự biến đổi của các hình thức cộng đồng người:",
+      "statements": [
+        {
+          "text": "Sự biến đổi của phương thức sản xuất là nguyên nhân quyết định sự vận động, phát triển từ Thị tộc lên Bộ lạc, Bộ tộc và Dân tộc.",
+          "is_true": true
+        },
+        {
+          "text": "Trong cộng đồng Bộ lạc, quyền lực của thủ lĩnh và hội đồng bộ lạc đã mang đầy đủ bản chất của quyền lực nhà nước có giai cấp.",
+          "is_true": false
+        },
+        {
+          "text": "Ở phương Tây, dân tộc xuất hiện gắn liền với quá trình phương thức sản xuất tư bản chủ nghĩa xác lập và thay thế phương thức sản xuất phong kiến.",
+          "is_true": true
+        },
+        {
+          "text": "Ở phương Đông, dân tộc chỉ có thể hình thành sau khi nền kinh tế tư bản chủ nghĩa đã phát triển chín muồi và xóa bỏ hoàn toàn kinh tế phân tán.",
+          "is_true": false
+        }
+      ],
+      "explanation": "Nhận định 1 & 3 ĐÚNG. Nhận định 2 SAI vì quyền lực trong bộ lạc là dân chủ nguyên thủy, chưa có nhà nước. Nhận định 4 SAI vì ở phương Đông, dân tộc hình thành sớm trên cơ sở văn hóa, tâm lý dân tộc chín muồi dù kinh tế còn phân tán."
     },
     {
       "id": 3,
       "slot_number": 3,
+      "type": "matching",
       "has_card": null,
-      "question": "Lễ hội Lồng Tồng (xuống đồng) là lễ hội cầu mùa màng tươi tốt lớn nhất vào dịp đầu xuân của các dân tộc nào?",
-      "options": ["Tày, Nùng", "Chăm, Raglai", "Ê Đê, Ba Na", "Khmer, Hoa"],
-      "correct_index": 0,
-      "explanation": "Lễ hội Lồng Tồng của người Tày, Nùng mang ý nghĩa tạ ơn thần linh, cầu cho mưa thuận gió hòa, mùa màng bội thu."
+      "question": "Hãy nối mỗi ĐẶC TRƯNG CỦA QUỐC GIA – DÂN TỘC (Nghĩa rộng - Vế A) với NỘI DUNG BẢN CHẤT tương ứng (Vế B):",
+      "left_items": [
+        "1. Có chung một vùng lãnh thổ ổn định",
+        "2. Có chung phương thức sinh hoạt kinh tế",
+        "3. Có ngôn ngữ chung làm công cụ giao tiếp",
+        "4. Có chung một nhà nước độc lập"
+      ],
+      "right_items": [
+        "A. Đặc trưng quan trọng nhất, tạo cơ sở liên kết bền vững giữa các bộ phận và thành viên trong cộng đồng quốc gia",
+        "B. Không gian sinh tồn của dân tộc bao gồm vùng đất, vùng biển, hải đảo và vùng trời thuộc chủ quyền quốc gia",
+        "C. Yếu tố cốt lõi để phân biệt một Quốc gia – Dân tộc (Nation) với một Dân tộc – Tộc người (Ethnie)",
+        "D. Phục vụ giao tiếp thống nhất trong toàn xã hội nhưng vẫn tồn tại song hành cùng tiếng nói riêng của các tộc người"
+      ],
+      "correct_pairs": [1, 0, 3, 2],
+      "explanation": "Đáp án nối đúng: (1 ↔ B) Lãnh thổ là không gian sinh tồn thuộc chủ quyền; (2 ↔ A) Kinh tế là đặc trưng quan trọng nhất; (3 ↔ D) Ngôn ngữ quốc gia chung tồn tại cùng ngôn ngữ tộc người; (4 ↔ C) Nhà nước chung phân biệt Nation với Ethnie."
     },
     {
       "id": 4,
       "slot_number": 4,
+      "type": "true_false",
       "has_card": "shield",
-      "question": "Chất liệu nhuộm màu chàm truyền thống của đồng bào các dân tộc Tày, Nùng, Dao, H'Mông được chiết xuất từ đâu?",
-      "options": ["Cây chàm tự nhiên", "Củ nghệ rừng", "Vỏ cây sú vẹt", "Quả gấc chín"],
-      "correct_index": 0,
-      "explanation": "Đồng bào ngâm lá cây chàm, hòa với vôi và nước tro bếp để nhuộm vải, tạo nên sắc chàm bền đẹp ngát hương núi rừng."
+      "question": "Hãy tích chọn ĐÚNG hoặc SAI cho 4 luận điểm sau đây về 5 đặc trưng của Dân tộc theo nghĩa rộng (Quốc gia – Dân tộc):",
+      "statements": [
+        {
+          "text": "Việc một bộ phận công dân Việt Nam sinh sống, làm việc ở nước ngoài sẽ tự động biến nơi cư trú mới đó thành lãnh thổ của quốc gia gốc.",
+          "is_true": false
+        },
+        {
+          "text": "'Có chung phương thức sinh hoạt kinh tế' đòi hỏi mọi công dân trong quốc gia đều phải làm cùng một nghề nghiệp và có mức thu nhập ngang nhau.",
+          "is_true": false
+        },
+        {
+          "text": "Ở quốc gia đa tộc người, đặc trưng văn hóa nổi bật là sự 'thống nhất trong đa dạng' — kết hợp hài hòa giữa bản sắc chung quốc gia và sắc thái riêng của từng tộc người.",
+          "is_true": true
+        },
+        {
+          "text": "Năm đặc trưng của Quốc gia – Dân tộc luôn gắn bó hữu cơ trong một chỉnh thể, không thể lấy một yếu tố đơn lẻ để thay thế cho toàn bộ hệ thống đặc trưng.",
+          "is_true": true
+        }
+      ],
+      "explanation": "Luận điểm 3 & 4 ĐÚNG. Luận điểm 1 SAI vì cư dân sống ở nước ngoài không làm nơi cư trú mới thành lãnh thổ quốc gia gốc. Luận điểm 2 SAI vì kinh tế chung là sự gắn kết trong nền kinh tế thống nhất, không phải đồng nhất nghề nghiệp hay thu nhập."
     },
     {
       "id": 5,
       "slot_number": 5,
+      "type": "matching",
       "has_card": null,
-      "question": "Kiến trúc nhà ở truyền thống có mái cao vút hình lưỡi rìu, là biểu tượng trung tâm buôn làng Tây Nguyên gọi là gì?",
-      "options": ["Nhà Rông", "Nhà Dài", "Nhà Trình Tường", "Nhà Đất"],
-      "correct_index": 0,
-      "explanation": "Nhà Rông là nơi hội họp, tiếp khách quý, tổ chức các nghi lễ thiêng liêng và lưu giữ những giá trị văn hóa của buôn làng."
+      "question": "Hãy nối mỗi KHÁI NIỆM VỀ TỘC NGƯỜI (Dân tộc theo nghĩa hẹp - Vế A) với ĐẶC ĐIỂM XÁC ĐỊNH tương ứng (Vế B):",
+      "left_items": [
+        "1. Cộng đồng về ngôn ngữ tộc người",
+        "2. Cộng đồng về văn hóa tộc người",
+        "3. Ý thức tự giác tộc người",
+        "4. Tiêu chí phân biệt dân tộc đa số và thiểu số"
+      ],
+      "right_items": [
+        "A. Sự tự nhận thức về nguồn gốc, tộc danh và ý thức khẳng định sự tồn tại, phát triển của tộc người — tiêu chí quan trọng nhất",
+        "B. Căn cứ thuần túy vào số lượng dân cư của cộng đồng trong quốc gia, tuyệt đối không phân loại theo trình độ hay giá trị văn hóa",
+        "C. Bao gồm tiếng nói và chữ viết riêng; tuy nhiên một số tộc người có thể chuyển sang dùng ngôn ngữ khác nên không thể xét đơn độc",
+        "D. Phản ánh truyền thống, lối sống, phong tục, tập quán, tín ngưỡng qua các giá trị văn hóa vật thể và phi vật thể"
+      ],
+      "correct_pairs": [2, 3, 0, 1],
+      "explanation": "Đáp án nối đúng: (1 ↔ C) Ngôn ngữ tộc người; (2 ↔ D) Văn hóa vật thể & phi vật thể; (3 ↔ A) Ý thức tự giác tộc người là tiêu chí quan trọng nhất; (4 ↔ B) Đa số và thiểu số chỉ căn cứ vào quy mô dân số."
     },
     {
       "id": 6,
       "slot_number": 6,
+      "type": "fill_in",
       "has_card": null,
-      "question": "Bảo vật văn hóa bằng đồng nào của cư dân Đông Sơn cổ đại phản ánh đời sống tâm linh và nghệ thuật đúc đồng đỉnh cao của người Việt?",
-      "options": ["Trống đồng Đông Sơn", "Thạp đồng", "Dao găm đồng", "Chuông đồng"],
-      "correct_index": 0,
-      "explanation": "Trống đồng Đông Sơn với hình tượng mặt trời ở giữa và đàn chim Lạc bay quanh là biểu tượng rực rỡ của nền văn minh sông Hồng."
+      "question": "Điền cụm từ còn thiếu (4 tiếng): Trong 3 tiêu chí để nhận diện và phân định một Dân tộc – Tộc người (Ethnie), tiêu chí quan trọng nhất có vị trí quyết định đối với sự tồn tại và phát triển của tộc người là '[...] tộc người'.",
+      "correct_answer": "ý thức tự giác",
+      "explanation": "'Ý thức tự giác tộc người' (sự tự nhận thức về nguồn gốc, tộc danh và sự gắn bó với cộng đồng) là tiêu chí quan trọng nhất để phân định tộc người."
     },
     {
       "id": 7,
       "slot_number": 7,
+      "type": "true_false",
       "has_card": null,
-      "question": "Kỹ thuật vẽ sáp ong trên vải lanh (Batik) để tạo hoa văn thổ cẩm độc đáo là di sản thủ công tiêu biểu của dân tộc nào?",
-      "options": ["H'Mông", "Kinh", "Mường", "Chăm"],
-      "correct_index": 0,
-      "explanation": "Phụ nữ H'Mông dùng bút vẽ bằng đồng nhúng sáp ong nóng để vẽ hoa văn hình học tinh tế lên vải lanh trước khi nhuộm chàm."
+      "question": "Hãy tích chọn ĐÚNG hoặc SAI cho 4 nhận định dưới đây khi phân biệt giữa Quốc gia – Dân tộc (nghĩa rộng) và Dân tộc – Tộc người (nghĩa hẹp):",
+      "statements": [
+        {
+          "text": "Khi nói 'Dân tộc Việt Nam' là hiểu theo nghĩa rộng (toàn thể nhân dân một nước), còn khi nói 'dân tộc Tày, dân tộc Thái, dân tộc Ê Đê' là hiểu theo nghĩa hẹp (tộc người).",
+          "is_true": true
+        },
+        {
+          "text": "Mỗi cộng đồng tộc người (dân tộc theo nghĩa hẹp) trong một quốc gia đa dân tộc đều có một nhà nước độc lập và chủ quyền lãnh thổ tách biệt riêng.",
+          "is_true": false
+        },
+        {
+          "text": "Khi một cộng đồng tộc người di cư sang địa bàn mới hoặc giao lưu văn hóa với tộc người khác thì họ lập tức mất đi tư cách là một tộc người.",
+          "is_true": false
+        },
+        {
+          "text": "Hai khái niệm dân tộc theo nghĩa rộng và nghĩa hẹp tuy không đồng nhất nhưng gắn bó mật thiết: Quốc gia – Dân tộc bao hàm các cộng đồng tộc người.",
+          "is_true": true
+        }
+      ],
+      "explanation": "Nhận định 1 & 4 ĐÚNG. Nhận định 2 SAI vì các tộc người cùng chịu sự quản lý của một nhà nước chung thống nhất. Nhận định 3 SAI vì địa bàn cư trú có thể thay đổi nhưng ý thức tự giác và bản sắc văn hóa vẫn giữ vững tộc người."
     },
     {
       "id": 8,
       "slot_number": 8,
+      "type": "multiple_choice",
       "has_card": null,
-      "question": "Điệu múa xòe hoa uyển chuyển, gắn kết cộng đồng quanh đống lửa là di sản văn hóa phi vật thể của dân tộc nào?",
-      "options": ["Dân tộc Thái", "Dân tộc Hoa", "Dân tộc Cơ Tu", "Dân tộc Giáy"],
+      "question": "Trường hợp một bộ phận người dân tộc thiểu số trong quá trình sinh sống đan xen đã sử dụng thành thạo tiếng phổ thông trong giao tiếp hằng ngày nhưng vẫn giữ phong tục truyền thống, trang phục lễ hội và tự hào về tên gọi dân tộc mình phản ánh điều gì?",
+      "options": [
+        "Việc xác định tộc người phải xét tổng hợp cả 3 tiêu chí, trong đó ý thức tự giác tộc người và văn hóa giữ vai trò cốt lõi ngay cả khi điều kiện ngôn ngữ có sự giao thoa",
+        "Cộng đồng đó đã hoàn toàn mất đi bản sắc và không còn được coi là một tộc người riêng biệt",
+        "Ngôn ngữ chung của quốc gia đã xóa bỏ hoàn toàn sự tồn tại của các tộc người thiểu số",
+        "Chỉ những người không biết nói tiếng phổ thông mới được công nhận là thành viên của tộc người đó"
+      ],
       "correct_index": 0,
-      "explanation": "Nghệ thuật Xòe Thái đã được UNESCO ghi danh là Di sản văn hóa phi vật thể đại diện của nhân loại năm 2021."
+      "explanation": "Không thể phân định tộc người chỉ bằng ngôn ngữ đơn độc mà phải xét tổng hợp 3 tiêu chí (ngôn ngữ, văn hóa, ý thức tự giác tộc người), trong đó ý thức tự giác tộc người là quan trọng nhất."
     },
     {
       "id": 9,
       "slot_number": 9,
+      "type": "ordering",
       "has_card": null,
-      "question": "Bộ sử thi đồ sộ 'Đăm Săn' (Bài ca chàng Đăm Săn) là niềm tự hào văn học dân gian của dân tộc nào ở Tây Nguyên?",
-      "options": ["Ê Đê", "Ba Na", "Gia Rai", "Mnông"],
-      "correct_index": 0,
-      "explanation": "Sử thi Đăm Săn ngợi ca người tù trưởng dũng mãnh, bất khuất, khát khao chinh phục thiên nhiên vì sự hưng thịnh của buôn làng."
+      "question": "Hãy sắp xếp 4 cấp độ nhận thức dưới đây theo trình tự logic đi từ CẤU TRÚC TỘC NGƯỜI CỤ THỂ đến CHỈNH THỂ QUỐC GIA – DÂN TỘC VIỆT NAM:",
+      "items": [
+        "Mỗi cá nhân tự nhận thức về nguồn gốc, tộc danh của mình (Ý thức tự giác tộc người)",
+        "Hình thành 54 cộng đồng tộc người (Kinh, Tày, Thái, Mông, Ê Đê, Khmer...) với ngôn ngữ và sắc thái văn hóa đặc trưng riêng",
+        "Các tộc người giao lưu, cư trú gắn bó trên cùng một lãnh thổ, chung phương thức sinh hoạt kinh tế và ngôn ngữ quốc gia",
+        "Hợp thành Quốc gia – Dân tộc Việt Nam thống nhất dưới sự quản lý của Nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam"
+      ],
+      "initial_order": [2, 0, 3, 1],
+      "explanation": "Trình tự kết nối chặt chẽ từ: (1) Ý thức tự giác tộc người → (2) Cộng đồng 54 tộc người → (3) Liên kết lãnh thổ, kinh tế, ngôn ngữ chung → (4) Chỉnh thể Quốc gia – Dân tộc Việt Nam thống nhất."
     }
   ]
 }

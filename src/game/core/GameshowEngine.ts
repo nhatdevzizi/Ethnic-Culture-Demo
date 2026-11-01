@@ -19,6 +19,7 @@ export interface Team {
   silverTorch: boolean;   // Thẻ Đuốc Bạc (x2)
   goldTorch: boolean;     // Thẻ Đuốc Vàng (x3)
   isEliminatedInRound1?: boolean;
+  isEliminatedInRound2Vertical?: boolean;
   isBlockedNextQuestion?: boolean;
 }
 
@@ -39,6 +40,11 @@ export class GameshowEngine {
   r1OpenedTiles: boolean[] = Array(9).fill(false);
   r1AnsweredCount = 0;
   r1SecretRevealed = false;
+
+  // Vòng 2: Trạng thái 7 Hàng Ngang Ô Chữ & Từ khóa Hàng Dọc
+  r2OpenedRows: boolean[] = Array(7).fill(false);
+  r2AnsweredCount = 0;
+  r2VerticalRevealed = false;
 
   // Lịch sử biến động điểm gần nhất để kích hoạt hiệu ứng 4-5s
   lastScoreDeltas: ScoreDeltaEvent[] = [];
@@ -89,6 +95,7 @@ export class GameshowEngine {
       silverTorch: true,
       goldTorch: true,
       isEliminatedInRound1: false,
+      isEliminatedInRound2Vertical: false,
       isBlockedNextQuestion: false,
     }));
   }
@@ -205,6 +212,15 @@ export class GameshowEngine {
     if (this.r1AnsweredCount <= 5) return 20; // Trước khi mở ô thứ 6
     if (this.r1AnsweredCount <= 8) return 10; // Trước khi mở ô thứ 9
     return 10;
+  }
+
+  /**
+   * Tính điểm dự đoán Từ Khóa Hàng Dọc (Vòng 2 Ô Chữ)
+   */
+  getRound2VerticalGuessPoints(): number {
+    if (this.r2AnsweredCount <= 2) return 40;
+    if (this.r2AnsweredCount <= 4) return 30;
+    return 20;
   }
 }
 

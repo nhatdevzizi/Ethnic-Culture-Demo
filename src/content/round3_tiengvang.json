@@ -1,58 +1,97 @@
 {
   "round_name": "VÒNG 3: TIẾNG VANG ĐẠI NGÀN",
-  "round_description": "Bấm chuông phản xạ, nhận diện âm thanh nhạc cụ dân tộc và điền khuyết ca dao tục ngữ.",
+  "round_description": "Phần 3.1: Quan điểm của Đảng & Chính sách Chính trị – Kinh tế – Văn hóa dân tộc (Âm thanh di sản, Đúng/Sai, Sắp xếp, Nối cặp, Điền từ).",
   "questions": [
     {
       "id": 1,
       "type": "audio",
       "audio_type": "dan_tinh",
       "has_card": "block_turn",
-      "question": "Lắng nghe thanh âm mộc mạc, tha thiết sau và cho biết đây là tiếng của loại nhạc cụ truyền thống nào?",
-      "options": ["Đàn Tính (Tày, Nùng)", "Đàn Đáy", "Đàn Nhị", "Đàn Tam"],
+      "question": "Lắng nghe thanh âm sau đây. Trong chính sách bảo tồn và phát huy giá trị văn hóa truyền thống của Đảng và Nhà nước, nhạc cụ này gắn liền với di sản 'Thực hành Then của người Tày, Nùng, Thái' được UNESCO ghi danh là Di sản văn hóa phi vật thể của nhân loại. Đó là nhạc cụ nào?",
+      "options": ["Đàn Tính (Tính tẩu)", "Đàn Đáy", "Đàn Nhị", "Đàn Tam"],
       "correct_index": 0,
-      "explanation": "Đàn Tính (Tính tẩu) làm từ bầu quả bầu khô và cần đàn bằng gỗ mềm, là linh hồn trong các làn điệu Hát Then di sản của người Tày, Nùng, Thái."
+      "explanation": "Đàn Tính (Tính tẩu) là nhạc cụ linh hồn trong Thực hành Then của người Tày, Nùng, Thái — minh chứng tiêu biểu cho chính sách giữ gìn bản sắc văn hóa các tộc người của Đảng và Nhà nước."
     },
     {
       "id": 2,
-      "type": "audio",
-      "audio_type": "khen_mong",
-      "has_card": null,
-      "question": "Âm thanh dạt dào, réo rắt ngân vang giữa vách đá tai mèo này là tiếng nhạc cụ nào của chàng trai vùng cao?",
-      "options": ["Khèn Mông", "Sáo Mèo", "Kèn Pí Lè", "Đàn Môi"],
-      "correct_index": 0,
-      "explanation": "Khèn Mông không chỉ là nhạc cụ mà còn là người bạn tâm giao, phương tiện tỏ tình và biểu đạt lòng kiên cường của người Mông trên non cao."
+      "type": "true_false",
+      "audio_type": null,
+      "has_card": "steal_points",
+      "question": "Hãy tích chọn ĐÚNG hoặc SAI cho 4 nhận định dưới đây về Quan điểm cơ bản của Đảng Cộng sản Việt Nam đối với vấn đề dân tộc:",
+      "statements": [
+        {
+          "text": "Vấn đề dân tộc và đoàn kết dân tộc là vấn đề chiến lược cơ bản, lâu dài, đồng thời cũng là vấn đề cấp bách hiện nay của cách mạng Việt Nam.",
+          "is_true": true
+        },
+        {
+          "text": "Các dân tộc trong đại gia đình Việt Nam bình đẳng, đoàn kết, tương trợ, giúp nhau cùng phát triển và kiên quyết đấu tranh với mọi âm mưu chia rẽ dân tộc.",
+          "is_true": true
+        },
+        {
+          "text": "Khi ưu tiên đầu tư phát triển kinh tế vùng dân tộc và miền núi, có thể tạm gác việc bảo vệ môi trường sinh thái và giữ gìn bản sắc văn hóa truyền thống.",
+          "is_true": false
+        },
+        {
+          "text": "Công tác dân tộc và thực hiện chính sách dân tộc chỉ là trách nhiệm riêng của chính quyền các địa phương miền núi và đồng bào dân tộc thiểu số.",
+          "is_true": false
+        }
+      ],
+      "explanation": "Nhận định 1 & 2 ĐÚNG. Nhận định 3 SAI vì phát triển kinh tế vùng cao luôn phải gắn với giải quyết vấn đề xã hội, giữ gìn bản sắc văn hóa và bảo vệ bền vững môi trường sinh thái. Nhận định 4 SAI vì công tác dân tộc là nhiệm vụ của toàn Đảng, toàn dân, toàn quân và cả hệ thống chính trị."
     },
     {
       "id": 3,
-      "type": "audio",
-      "audio_type": "cong_chieng",
-      "has_card": "steal_points",
-      "question": "Thanh âm trầm hùng, linh thiêng, vang vọng khắp núi rừng đại ngàn này là của nhạc cụ nào?",
-      "options": ["Cồng chiêng Tây Nguyên", "Trống Paranưng Chăm", "Trống đồng", "Chuông đồng"],
-      "correct_index": 0,
-      "explanation": "Dàn cồng chiêng gồm chiêng núm và cồng bằng, tạo nên bản giao hưởng đa âm sắc linh thiêng của núi rừng Tây Nguyên."
+      "type": "ordering",
+      "audio_type": null,
+      "has_card": null,
+      "question": "Theo quan điểm và chính sách phát triển kinh tế – xã hội vùng dân tộc và miền núi của Đảng, hãy sắp xếp 4 bước triển khai dưới đây theo ĐÚNG TRÌNH TỰ từ xây dựng kết cấu hạ tầng đến nâng cao vị thế hàng hóa bản địa:",
+      "items": [
+        "Ưu tiên đầu tư kết cấu hạ tầng thiết yếu: Triển khai Chương trình 135, mở các tuyến cao tốc vùng cao (Nội Bài – Lào Cai, Hòa Bình – Mộc Châu, Đồng Đăng – Trà Lĩnh) và đưa điện lưới, sóng 4G/5G về tận thôn bản",
+        "Khai thác tiềm năng, thế mạnh đặc thù của từng vùng: Phát triển nông – lâm nghiệp đặc sản kết hợp xây dựng các mô hình 'Bản làng du lịch cộng đồng' (Homestay)",
+        "Hỗ trợ chuẩn hóa sản xuất và bảo hộ thương hiệu: Nâng tầm các đặc sản truyền thống (miến dong, nếp hương, chè Shan tuyết...) đạt chuẩn thương hiệu OCOP",
+        "Ứng dụng chuyển đổi số và mở rộng thị trường: Đồng bào vùng cao chủ động livestream quảng bá và đưa nông sản OCOP lên các sàn thương mại điện tử trong nước và xuất khẩu"
+      ],
+      "initial_order": [2, 0, 3, 1],
+      "explanation": "Chuỗi chính sách kinh tế vùng cao vận hành đồng bộ: (1) Đầu tư hạ tầng giao thông, điện, viễn thông → (2) Khai thác thế mạnh bản địa & du lịch cộng đồng → (3) Xây dựng thương hiệu OCOP → (4) Thương mại điện tử & livestream nông sản."
     },
     {
       "id": 4,
-      "type": "fill_in",
+      "type": "matching",
       "audio_type": null,
-      "has_card": null,
-      "question": "Điền từ còn thiếu vào câu ca dao quen thuộc ca ngợi tinh thần đoàn kết, tương trợ lẫn nhau của các dân tộc: 'Bầu ơi thương lấy bí cùng, tuy rằng khác giống nhưng chung một [...]'?",
-      "correct_answer": "giàn",
-      "options": ["giàn", "nhà", "vườn", "cây"],
-      "correct_index": 0,
-      "explanation": "'Chung một giàn' nhắc nhở các dân tộc anh em trên dải đất Việt Nam dù phong tục, ngôn ngữ khác nhau nhưng đều chung một cội nguồn và vận mệnh đất nước."
+      "has_card": "shield",
+      "question": "Hãy nối mỗi NỘI DUNG CHÍNH SÁCH DÂN TỘC (Chính trị, Kinh tế, Văn hóa - Vế A) với MINH CHỨNG THỰC TIỄN tương ứng ở Việt Nam hiện nay (Vế B):",
+      "left_items": [
+        "1. Chính sách Chính trị: Bảo đảm quyền bình đẳng tham gia quản lý nhà nước",
+        "2. Chính sách Kinh tế: Phát huy tiềm năng bản địa gắn với sinh kế bền vững",
+        "3. Chính sách Văn hóa: Phát triển ngôn ngữ và nâng cao đời sống tinh thần",
+        "4. Tinh thần tương trợ, đoàn kết 'Đồng bào' trong đại gia đình các dân tộc"
+      ],
+      "right_items": [
+        "A. Kênh truyền hình VTV5 phát sóng chương trình bằng 26 thứ tiếng dân tộc thiểu số và vận động xóa bỏ hủ tục tảo hôn, thách cưới cao",
+        "B. 76 đại biểu là người dân tộc thiểu số trúng cử Quốc hội khóa XVI (chiếm 15,2% tổng số đại biểu Quốc hội cả nước)",
+        "C. Hàng ngàn chuyến xe '0 đồng' và nhu yếu phẩm từ khắp cả nước hướng về đồng bào Lào Cai, Yên Bái, Cao Bằng sau bão Yagi cùng dự án Nuôi Em",
+        "D. Biến nhà trình tường, nhà sàn ở Lô Lô Chải (Hà Giang), Bản Lác (Hòa Bình) thành Homestay du lịch cộng đồng thu hút du khách trong và ngoài nước"
+      ],
+      "correct_pairs": [1, 3, 0, 2],
+      "explanation": "Đáp án nối đúng: (1 ↔ B) Đại biểu Quốc hội người DTTS chiếm 15,2%; (2 ↔ D) Mô hình Bản làng du lịch cộng đồng Homestay; (3 ↔ A) Kênh VTV5 26 thứ tiếng & xóa bỏ hủ tục; (4 ↔ C) Nghĩa đồng bào trong bão Yagi & dự án Nuôi Em."
     },
     {
       "id": 5,
+      "type": "audio",
+      "audio_type": "khen_mong",
+      "has_card": null,
+      "question": "Âm thanh réo rắt ngân vang giữa núi đá vùng cao này là của nhạc cụ truyền thống nào — biểu tượng văn hóa đã được các nghệ sĩ trẻ đưa vào những ca khúc đương đại ('Để Mị nói cho mà nghe', 'Người miền núi chất') để lan tỏa bản sắc Việt Nam ra thế giới?",
+      "options": ["Khèn Mông", "Sáo Mèo", "Kèn Pí Lè", "Đàn Môi"],
+      "correct_index": 0,
+      "explanation": "Tiếng Khèn Mông kết hợp trong âm nhạc hiện đại là minh chứng sống động cho việc xây dựng nền văn hóa Việt Nam tiên tiến, đậm đà bản sắc dân tộc và mở rộng giao lưu văn hóa quốc tế."
+    },
+    {
+      "id": 6,
       "type": "fill_in",
       "audio_type": null,
       "has_card": null,
-      "question": "Điền từ còn thiếu vào câu tục ngữ nhắc nhớ đạo lý ngàn đời của con Rồng cháu Tiên: 'Nhiễu điều phủ lấy giá gương, người trong một [...] phải thương nhau cùng'?",
-      "correct_answer": "nước",
-      "options": ["nước", "nhà", "làng", "buôn"],
-      "correct_index": 0,
-      "explanation": "'Người trong một nước phải thương nhau cùng' khẳng định tình đoàn kết keo sơn, gắn bó keo sơn của 54 dân tộc anh em."
+      "question": "Điền con số chính xác: Chương trình hỗ trợ phát triển kinh tế – xã hội các xã đặc biệt khó khăn vùng dân tộc thiểu số và miền núi (đầu tư đường giao thông, điện lưới, trường học, trạm y tế cơ sở) của Chính phủ được biết đến rộng rãi với tên gọi 'Chương trình [...]'.",
+      "correct_answer": "135",
+      "explanation": "Chương trình 135 là chương trình trọng điểm hỗ trợ phát triển hạ tầng và xóa đói giảm nghèo cho các xã, thôn bản đặc biệt khó khăn vùng dân tộc thiểu số và miền núi."
     }
   ]
 }
