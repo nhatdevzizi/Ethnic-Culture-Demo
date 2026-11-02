@@ -1385,7 +1385,7 @@ export class StationGameModal {
       const qTypeLabel = this.getQuestionFormatLabel(q.type);
       const promptPanel = this.createRevealQuestionPrompt(
         `CÂU ${this.currentQuestionIndex + 1}/${r3Data.questions.length} · ${qTypeLabel}`,
-        `1. Dạng câu hỏi: <strong>${qTypeLabel}</strong> (+20 điểm nếu đúng, -10 điểm nếu sai).<br>2. Nếu trả lời SAI, đáp án chưa hiển thị mà đội đó bị đánh dấu mất lượt và nhường quyền trả lời cho đội tiếp theo.<br>3. Bấm nút bên dưới để hiển thị nội dung câu hỏi!`
+        `1. Dạng câu hỏi: <strong>${qTypeLabel}</strong> (+20 điểm nếu đúng, -10 điểm nếu sai).<br>2. Nếu trả lời SAI, đáp án chưa hiển thị mà đội đó bị đánh dấu mất lượt và nhường quyền trả lời cho đội tiếp theo.`
       );
       container.appendChild(promptPanel);
     } else {
@@ -1485,7 +1485,7 @@ export class StationGameModal {
     if (!this.isQuestionRevealed) {
       const promptPanel = this.createRevealQuestionPrompt(
         `CÂU ${this.currentQuestionIndex + 1}/${r4Data.questions.length} · ĐỘ KHÓ: ${q.difficulty.toUpperCase()} · ${qTypeLabel}`,
-        `1. Dựa vào độ khó <strong>"${q.difficulty}"</strong> (${qTypeLabel}), đội đang thi có thể chọn bật <strong>Đuốc Bạc (x2: +40/-40đ)</strong>, <strong>Đuốc Vàng (x3: +60/-60đ)</strong> hoặc không dùng đuốc (+20/-10đ).<br>2. Nếu trả lời SAI, đáp án vẫn giữ kín, số điểm bị trừ khi dùng Đuốc sẽ rơi vào <strong>Quỹ Săn Mồi</strong> và chuyển lượt ngay cho đội khác trả lời cướp điểm!<br>3. Bấm nút bên dưới khi đã sẵn sàng mở câu hỏi!`
+        `1. Dựa vào độ khó <strong>"${q.difficulty}"</strong> (${qTypeLabel}), đội đang thi có thể chọn bật <strong>Đuốc Bạc (x2: +40/-40đ)</strong>, <strong>Đuốc Vàng (x3: +60/-60đ)</strong> hoặc không dùng đuốc (+20/-10đ).<br>2. Nếu trả lời SAI, đáp án vẫn giữ kín, số điểm bị trừ khi dùng Đuốc sẽ rơi vào <strong>Quỹ Săn Mồi</strong> và chuyển lượt ngay cho đội khác trả lời cướp điểm!`
       );
       container.appendChild(promptPanel);
     } else {
@@ -1537,11 +1537,6 @@ export class StationGameModal {
     panel.style.alignItems = 'center';
     panel.style.textAlign = 'center';
 
-    const emblem = document.createElement('div');
-    emblem.className = 'gs-prompt-hero-emblem';
-    emblem.innerHTML = '🥁 🌟 📜';
-    panel.appendChild(emblem);
-
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme gs-prompt-hero-title';
     theme.textContent = title;
@@ -1549,18 +1544,21 @@ export class StationGameModal {
 
     const desc = document.createElement('div');
     desc.className = 'gs-prompt-hero-desc';
-    const items = instructionsHtml.split('<br>');
+    const items = instructionsHtml
+      .split('<br>')
+      .map((it) => it.trim())
+      .filter((it) => it.length > 0 && !it.startsWith('3.') && !/bấm nút/i.test(it));
     if (items.length > 1) {
-      desc.innerHTML = items.map((it) => `<div class="gs-prompt-hero-item">${it.trim()}</div>`).join('');
+      desc.innerHTML = items.map((it) => `<div class="gs-prompt-hero-item">${it}</div>`).join('');
     } else {
-      desc.innerHTML = instructionsHtml;
+      desc.innerHTML = items[0] || instructionsHtml;
     }
     panel.appendChild(desc);
 
     const openBtn = document.createElement('button');
     openBtn.type = 'button';
     openBtn.className = 'gs-guess-painting-btn gs-prompt-hero-btn';
-    openBtn.textContent = '📖 BẤM ĐỂ HIỂN THỊ CÂU HỎI';
+    openBtn.textContent = 'HIỂN THỊ CÂU HỎI';
     openBtn.addEventListener('click', () => {
       this.isQuestionRevealed = true;
       sfx.playBuzzer();
@@ -1634,7 +1632,7 @@ export class StationGameModal {
     if (!this.isQuestionRevealed) {
       const promptCol = this.createRevealQuestionPrompt(
         '🌟 THỬ THÁCH ĐẠI KẾT CỤC · GIẢI MÃ TRỐNG ĐỒNG ĐÔNG SƠN',
-        `1. Cả 4 Chìa Khóa Văn Hóa đã hội tụ mở khóa <strong>Trống Đồng Đông Sơn Hoàng Kim</strong>!<br>2. Chọn Đội hoặc Cá nhân đại diện trả lời câu hỏi ý nghĩa cuối cùng (+100 điểm danh dự).<br>3. Khi đã sẵn sàng, bấm nút bên dưới để mở câu hỏi và tiến tới <strong>Khu Vực Chúc Mừng Hoàn Thành Cuộc Chơi</strong>!`
+        `1. Cả 4 Chìa Khóa Văn Hóa đã hội tụ mở khóa <strong>Trống Đồng Đông Sơn Hoàng Kim</strong>!<br>2. Chọn Đội hoặc Cá nhân đại diện trả lời câu hỏi ý nghĩa cuối cùng (+100 điểm danh dự).`
       );
       layout.appendChild(promptCol);
     } else {
