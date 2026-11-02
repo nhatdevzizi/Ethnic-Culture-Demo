@@ -469,11 +469,27 @@
   color: #7a2418;
   border-radius: 4px;
 }
-.gs-station-dialog .gs-interactive-submit-row { border-top: 1.5px dashed var(--gs-line-strong); }
+.gs-station-dialog .gs-interactive-submit-row {
+  border-top: 1.5px dashed var(--gs-line-strong);
+  margin-top: auto !important;
+  padding-top: 14px !important;
+  padding-bottom: 4px !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: transparent !important;
+  position: relative !important;
+  z-index: 2;
+}
 .gs-station-dialog .gs-interactive-status { color: var(--gs-accent-deep); }
 
 /* Khung đáp án mở */
 .gs-station-dialog .gs-revealed-answer-banner {
+  display: none !important;
   background: #e7efd6;
   border: 2px solid var(--gs-leaf-ok);
   border-left-width: 8px;
@@ -965,14 +981,14 @@
 
 /* Thẻ câu hỏi lấp đầy 100% chiều cao và độ rộng */
 .gs-station-dialog .gs-question-panel {
-  flex: 1;
-  min-height: 0;
-  height: 100%;
+  flex: 1 0 auto;
+  min-height: 100%;
+  height: auto;
   width: 100%;
   max-width: none !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: space-between !important;
+  justify-content: flex-start !important;
   padding: 18px 28px !important;
   gap: 12px !important;
   box-sizing: border-box;
@@ -1088,31 +1104,31 @@
 
 /* Dạng câu hỏi Nối ý (Matching) */
 .gs-station-dialog .gs-matching-grid {
-  flex: 1;
-  min-height: 0;
   display: grid;
   grid-template-columns: 1fr 1.35fr;
-  gap: 18px;
+  gap: 14px;
   align-items: stretch;
+  width: 100%;
+  margin-bottom: 6px;
 }
 .gs-station-dialog .gs-matching-col {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  height: 100%;
+  height: auto;
 }
 .gs-station-dialog .gs-match-card {
-  flex: 1;
-  min-height: clamp(72px, 10vh, 110px);
-  padding: 12px 18px;
+  min-height: 56px;
+  padding: 10px 14px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  box-sizing: border-box;
 }
 .gs-station-dialog .gs-match-card-text {
-  font-size: clamp(20px, 1.9vw, 28px) !important;
+  font-size: clamp(16px, 1.3vw, 21px) !important;
   font-weight: 800 !important;
-  line-height: 1.38 !important;
+  line-height: 1.35 !important;
 }
 
 /* Ô nhập từ khóa đoán tranh / ô chữ */

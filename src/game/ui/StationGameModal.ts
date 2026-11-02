@@ -787,10 +787,10 @@ export class StationGameModal {
           gameshow.r1OpenedTiles.fill(true);
           gameshow.r1SecretRevealed = true;
           this.showScoreToast(
-            'TẤT CẢ CÁC NHÓM ĐỀU ĐÃ ĐOÁN SAI',
+            '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI',
             0,
-            `❌ Đáp án "${rawValue}" chưa chính xác!\nTất cả các nhóm đều đã hết lượt đoán. Từ khóa chính xác của bức tranh là: "${r1Data.secret_title}"!`,
-            4500,
+            '',
+            3500,
             () => {
               this.isGuessingSecretPainting = false;
               this.r1ActiveTileQuestion = false;
@@ -1291,10 +1291,10 @@ export class StationGameModal {
           gameshow.r2OpenedRows.fill(true);
           gameshow.r2VerticalRevealed = true;
           this.showScoreToast(
-            'TẤT CẢ CÁC NHÓM ĐỀU ĐOÁN SAI HÀNG DỌC',
+            '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI',
             -10,
-            `❌ Đáp án "${rawValue}" chưa chính xác!\nTất cả các nhóm đều đã hết lượt đoán. Từ khóa Hàng Dọc chính xác là: "${r2Data.vertical_keyword}"!`,
-            4200,
+            '',
+            3500,
             () => {
               this.isGuessingVerticalKeyword = false;
               this.r2ActiveRowQuestion = false;
@@ -1903,12 +1903,11 @@ export class StationGameModal {
       // Cập nhật giao diện ngay lập tức để hiển thị khung Đáp Án Chính Xác & Giải Thích trên thẻ câu hỏi
       this.render();
 
-      const fullExplanation = `📢 Tất cả các nhóm đều đã trả lời sai câu hỏi này! Đáp án chính xác:\n${extraPrefix ? extraPrefix : ""}`;
       this.showScoreToast(
-        '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI · MỞ ĐÁP ÁN CHÍNH XÁC',
+        '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI',
         delta,
-        fullExplanation,
-        4200,
+        '',
+        3500,
         () => {
           if (onCompleteAfterToast) {
             onCompleteAfterToast();
@@ -1924,21 +1923,8 @@ export class StationGameModal {
    * Hiển thị khung Đáp Án Chính Xác & Giải Thích trực tiếp trên thẻ câu hỏi sau khi có đội trả lời đúng
    * hoặc sau khi cả 4 đội đều trả lời sai. Đồng thời ở Vòng 1 hiển thị nút Quay Về Bảng Mảnh Ghép!
    */
-  private appendPostAnswerFooter(panel: HTMLElement, answerSummary: string, _explanation?: string) {
+  private appendPostAnswerFooter(panel: HTMLElement, _answerSummary?: string, _explanation?: string) {
     if (this.isQuestionAnswered) {
-      const allFailed = gameshow.teams.every(
-        (t) => this.failedTeamIdsOnQuestion.has(t.id) || t.isBlockedNextQuestion
-      );
-      const ansBanner = document.createElement('div');
-      ansBanner.className = 'gs-revealed-answer-banner';
-      ansBanner.innerHTML = `
-        <div class="gs-revealed-answer-title">
-          ${allFailed ? '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI — ĐÁP ÁN CHÍNH XÁC LÀ:' : '✅ ĐÁP ÁN CHÍNH XÁC:'}
-          <span>${answerSummary}</span>
-        </div>
-      `;
-      panel.appendChild(ansBanner);
-
       if (this.activeStationId === 'M01' && this.r1ActiveTileQuestion) {
         const backBtn = document.createElement('button');
         backBtn.type = 'button';

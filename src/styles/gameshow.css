@@ -2185,9 +2185,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 14px;
-  margin-top: 10px;
+  margin-top: auto;
   padding-top: 12px;
   border-top: 1.5px solid rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+  width: 100%;
 }
 
 .gs-interactive-status {
@@ -2400,16 +2402,16 @@
 .gs-matching-grid {
   display: grid;
   grid-template-columns: 1fr 1.35fr;
-  gap: 22px;
+  gap: 18px;
   align-items: stretch;
-  flex: 1;
+  width: 100%;
 }
 
 .gs-matching-col {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  justify-content: space-between;
+  gap: 10px;
+  height: auto;
 }
 
 .gs-matching-col-header {
