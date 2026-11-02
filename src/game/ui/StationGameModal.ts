@@ -2325,35 +2325,50 @@ export class StationGameModal {
       }
       card.disabled = this.isQuestionAnswered;
 
+      const lMatch = leftText.match(/^(\d+\.)\s*(.*)$/);
+      const lPrefix = lMatch ? lMatch[1] : `${leftIdx + 1}.`;
+      const lBody = lMatch ? lMatch[2] : leftText;
+
       const textSpan = document.createElement('div');
       textSpan.className = 'gs-match-card-text';
-      textSpan.textContent = leftText;
-      card.appendChild(textSpan);
 
-      const badgeRow = document.createElement('div');
-      badgeRow.className = 'gs-match-badge-row';
+      const prefixSpan = document.createElement('span');
+      prefixSpan.className = 'gs-match-prefix';
+      prefixSpan.textContent = lPrefix;
 
+      const slotSpan = document.createElement('span');
       if (pairedRightIdx !== undefined) {
-        const pairTag = document.createElement('span');
-        pairTag.className = 'gs-match-pair-pill';
-        pairTag.style.background = color;
-        pairTag.textContent = `🔗 Đã nối: ${leftIdx + 1} ↔ ${String.fromCharCode(65 + pairedRightIdx)}`;
-        badgeRow.appendChild(pairTag);
+        slotSpan.className = 'gs-match-slot-box paired';
+        slotSpan.textContent = `[ ${String.fromCharCode(65 + pairedRightIdx)} ]`;
+        slotSpan.style.backgroundColor = color;
+        slotSpan.style.borderColor = color;
+      } else if (isSelected) {
+        slotSpan.className = 'gs-match-slot-box selecting';
+        slotSpan.textContent = '[ ? ]';
       } else {
-        const waitTag = document.createElement('span');
-        waitTag.className = 'gs-match-unpaired-pill';
-        waitTag.textContent = isSelected ? '👉 Đang chọn — Hãy click 1 ý ở Vế B' : 'Chưa nối';
-        badgeRow.appendChild(waitTag);
+        slotSpan.className = 'gs-match-slot-box empty';
+        slotSpan.textContent = '[ ___ ]';
       }
+
+      const bodySpan = document.createElement('span');
+      bodySpan.className = 'gs-match-body';
+      bodySpan.textContent = lBody;
+
+      textSpan.appendChild(prefixSpan);
+      textSpan.appendChild(slotSpan);
+      textSpan.appendChild(bodySpan);
 
       if (this.isQuestionAnswered) {
+        const isRight = pairedRightIdx === q.correct_pairs[leftIdx];
         const ansKey = document.createElement('span');
-        ansKey.className = 'gs-match-correct-key';
-        ansKey.textContent = `Đúng: ${leftIdx + 1} ↔ ${String.fromCharCode(65 + q.correct_pairs[leftIdx])}`;
-        badgeRow.appendChild(ansKey);
+        ansKey.className = `gs-match-correct-key ${isRight ? 'correct' : 'incorrect'}`;
+        ansKey.textContent = isRight
+          ? '✔ Đúng'
+          : `✖ Đúng: [ ${String.fromCharCode(65 + q.correct_pairs[leftIdx])} ]`;
+        textSpan.appendChild(ansKey);
       }
 
-      card.appendChild(badgeRow);
+      card.appendChild(textSpan);
 
       card.addEventListener('click', () => {
         if (this.isQuestionAnswered) return;
@@ -2385,21 +2400,50 @@ export class StationGameModal {
       }
       card.disabled = this.isQuestionAnswered;
 
+      const rMatch = rightText.match(/^([A-Za-z]\.)\s*(.*)$/);
+      const rPrefix = rMatch ? rMatch[1] : `${String.fromCharCode(65 + rightIdx)}.`;
+      const rBody = rMatch ? rMatch[2] : rightText;
+
       const textSpan = document.createElement('div');
       textSpan.className = 'gs-match-card-text';
-      textSpan.textContent = rightText;
-      card.appendChild(textSpan);
 
+      const prefixSpan = document.createElement('span');
+      prefixSpan.className = 'gs-match-prefix';
+      prefixSpan.textContent = rPrefix;
+
+      const slotSpan = document.createElement('span');
       if (pairedLeftIdx !== undefined) {
-        const badgeRow = document.createElement('div');
-        badgeRow.className = 'gs-match-badge-row';
-        const pairTag = document.createElement('span');
-        pairTag.className = 'gs-match-pair-pill';
-        pairTag.style.background = color;
-        pairTag.textContent = `🔗 Cặp ${pairedLeftIdx + 1} ↔ ${String.fromCharCode(65 + rightIdx)}`;
-        badgeRow.appendChild(pairTag);
-        card.appendChild(badgeRow);
+        slotSpan.className = 'gs-match-slot-box paired';
+        slotSpan.textContent = `[ ${pairedLeftIdx + 1} ]`;
+        slotSpan.style.backgroundColor = color;
+        slotSpan.style.borderColor = color;
+      } else {
+        slotSpan.className = 'gs-match-slot-box empty';
+        slotSpan.textContent = '[ ___ ]';
       }
+
+      const bodySpan = document.createElement('span');
+      bodySpan.className = 'gs-match-body';
+      bodySpan.textContent = rBody;
+
+      textSpan.appendChild(prefixSpan);
+      textSpan.appendChild(slotSpan);
+      textSpan.appendChild(bodySpan);
+
+      if (this.isQuestionAnswered) {
+        const expectedLeftIdx = q.correct_pairs.indexOf(rightIdx);
+        if (expectedLeftIdx !== -1) {
+          const isRight = pairedLeftIdx === expectedLeftIdx;
+          const ansKey = document.createElement('span');
+          ansKey.className = `gs-match-correct-key ${isRight ? 'correct' : 'incorrect'}`;
+          ansKey.textContent = isRight
+            ? '✔ Đúng'
+            : `✖ Đúng: [ ${expectedLeftIdx + 1} ]`;
+          textSpan.appendChild(ansKey);
+        }
+      }
+
+      card.appendChild(textSpan);
 
       card.addEventListener('click', () => {
         if (this.isQuestionAnswered) return;
@@ -2425,7 +2469,7 @@ export class StationGameModal {
       rightCol.appendChild(card);
     });
 
-    matchGrid.appendChild(leftCol);
+        matchGrid.appendChild(leftCol);
     matchGrid.appendChild(rightCol);
     panel.appendChild(matchGrid);
 

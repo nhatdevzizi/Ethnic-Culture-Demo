@@ -983,14 +983,14 @@
 .gs-station-dialog .gs-question-panel {
   flex: 1 0 auto;
   min-height: 100%;
-  height: auto;
+  height: 100%;
   width: 100%;
   max-width: none !important;
   display: flex !important;
   flex-direction: column !important;
-  justify-content: flex-start !important;
-  padding: 18px 28px !important;
-  gap: 12px !important;
+  justify-content: space-between !important;
+  padding: 16px 26px !important;
+  gap: 10px !important;
   box-sizing: border-box;
 }
 
@@ -1104,31 +1104,104 @@
 
 /* Dạng câu hỏi Nối ý (Matching) */
 .gs-station-dialog .gs-matching-grid {
+  flex: 1;
   display: grid;
   grid-template-columns: 1fr 1.35fr;
-  gap: 14px;
+  gap: 12px;
   align-items: stretch;
   width: 100%;
-  margin-bottom: 6px;
 }
 .gs-station-dialog .gs-matching-col {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  height: auto;
+  gap: 6px;
+  height: 100%;
+  justify-content: space-between;
+}
+.gs-station-dialog .gs-matching-col-header {
+  font-size: 15px !important;
+  padding: 6px 10px !important;
+  border-radius: 6px !important;
 }
 .gs-station-dialog .gs-match-card {
-  min-height: 56px;
-  padding: 10px 14px;
+  flex: 1;
+  min-height: 0;
+  padding: 6px 14px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
   box-sizing: border-box;
 }
 .gs-station-dialog .gs-match-card-text {
-  font-size: clamp(16px, 1.3vw, 21px) !important;
+  font-size: clamp(17px, 1.45vw, 22px) !important;
   font-weight: 800 !important;
-  line-height: 1.35 !important;
+  line-height: 1.34 !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Ô trống (Slot box) ngay trong từng ý */
+.gs-match-prefix {
+  font-weight: 900;
+  color: var(--gs-accent-deep, #78281f);
+  margin-right: 2px;
+}
+.gs-match-body {
+  font-weight: 800;
+  flex: 1;
+}
+.gs-match-slot-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 30px;
+  padding: 0 8px;
+  margin: 0 8px 0 2px;
+  border-radius: 6px;
+  font-size: clamp(18px, 1.5vw, 23px);
+  font-weight: 900;
+  vertical-align: middle;
+  line-height: 1;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: all 0.18s ease;
+}
+.gs-match-slot-box.empty {
+  border: 2px dashed #8d6e4a;
+  background: #fdfaf3;
+  color: #8d6e4a;
+  letter-spacing: 1px;
+}
+.gs-match-slot-box.selecting {
+  border: 2.5px solid #d49a17;
+  background: #fff8dc;
+  color: #9c6c06;
+}
+.gs-match-slot-box.paired {
+  color: #ffffff;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.gs-match-correct-key {
+  margin-left: 10px;
+  font-size: 15px;
+  font-weight: 900;
+  padding: 3px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+.gs-match-correct-key.correct {
+  color: #2e6d32;
+  background: #e5f4e3;
+  border: 1.5px solid #4caf50;
+}
+.gs-match-correct-key.incorrect {
+  color: #a32215;
+  background: #fbeae8;
+  border: 1.5px solid #e53935;
 }
 
 /* Ô nhập từ khóa đoán tranh / ô chữ */
