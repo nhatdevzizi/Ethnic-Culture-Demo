@@ -1659,16 +1659,26 @@
 }
 
 .gs-station-dialog .gs-prompt-hero-desc {
-  font-size: clamp(21px, 2.0vw, 28px) !important;
-  line-height: 1.8 !important;
-  max-width: 980px !important;
+  font-size: clamp(20px, 1.85vw, 26px) !important;
+  line-height: 1.75 !important;
+  width: 95% !important;
+  max-width: 1260px !important;
   background: rgba(255, 255, 255, 0.55) !important;
   border: 2px dashed var(--gs-line-strong) !important;
   border-radius: 12px !important;
-  padding: 26px 36px !important;
-  margin: 14px auto 30px !important;
+  padding: 24px 36px !important;
+  margin: 14px auto 26px !important;
   color: var(--gs-ink) !important;
-  text-align: center !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+}
+
+.gs-station-dialog .gs-prompt-hero-item {
+  margin-bottom: 12px;
+  text-align: left !important;
+}
+.gs-station-dialog .gs-prompt-hero-item:last-child {
+  margin-bottom: 0;
 }
 
 .gs-station-dialog .gs-prompt-hero-btn {

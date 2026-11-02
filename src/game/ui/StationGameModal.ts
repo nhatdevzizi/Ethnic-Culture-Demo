@@ -1549,7 +1549,12 @@ export class StationGameModal {
 
     const desc = document.createElement('div');
     desc.className = 'gs-prompt-hero-desc';
-    desc.innerHTML = instructionsHtml;
+    const items = instructionsHtml.split('<br>');
+    if (items.length > 1) {
+      desc.innerHTML = items.map((it) => `<div class="gs-prompt-hero-item">${it.trim()}</div>`).join('');
+    } else {
+      desc.innerHTML = instructionsHtml;
+    }
     panel.appendChild(desc);
 
     const openBtn = document.createElement('button');
