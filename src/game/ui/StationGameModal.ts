@@ -758,7 +758,7 @@ export class StationGameModal {
         gameshow.modifyScore(answeringTeam.id, points, 'Đoán đúng Bức tranh tổng thể');
         gameshow.r1OpenedTiles.fill(true);
         gameshow.r1SecretRevealed = true;
-        gameshow.markStationCompleted('M01');
+        const isNew = gameshow.markStationCompleted('M01');
         sfx.playSuccess();
         sfx.playGong();
 
@@ -773,7 +773,7 @@ export class StationGameModal {
             this.r1ActiveTileQuestion = false;
             this.render();
             if (totalKeysAfterR1 >= 4) {
-              this.showDrumUnsealedCelebrationToast();
+              this.showQuadrantUnlockedCelebration('M01', 'Mảnh Ghép Thổ Cẩm', isNew);
             }
           }
         );
@@ -1261,7 +1261,7 @@ export class StationGameModal {
         gameshow.modifyScore(answeringTeam.id, points, 'Giải mã đúng Từ khóa Hàng Dọc');
         gameshow.r2OpenedRows.fill(true);
         gameshow.r2VerticalRevealed = true;
-        gameshow.markStationCompleted('M02');
+        const isNew = gameshow.markStationCompleted('M02');
         sfx.playSuccess();
         sfx.playGong();
 
@@ -1276,7 +1276,7 @@ export class StationGameModal {
             this.r2ActiveRowQuestion = false;
             this.render();
             if (totalKeys >= 4) {
-              this.showDrumUnsealedCelebrationToast();
+              this.showQuadrantUnlockedCelebration('M02', 'Ô Chữ Đại Ngàn', isNew);
             }
           }
         );
@@ -2917,67 +2917,9 @@ export class StationGameModal {
     const isNew = gameshow.markStationCompleted(stationId);
     sfx.playGong();
     sfx.playSuccess();
-    const totalKeys = gameshow.getCollectedKeysCount();
-
-    if (totalKeys >= 4) {
-      this.showDrumUnsealedCelebrationToast(stationName);
-      return;
-    }
-
     this.showQuadrantUnlockedCelebration(stationId, stationName, isNew);
   }
 
-  private renderTrongDongQuadrantsHtml(highlightStationId?: string, size = 250): string {
-    const q1 = gameshow.isStationCompleted('M01');
-    const q2 = gameshow.isStationCompleted('M02');
-    const q3 = gameshow.isStationCompleted('M03');
-    const q4 = gameshow.isStationCompleted('M04');
-    const allUnlocked = gameshow.hasAllKeys();
-
-    return `
-      <div class="gs-trongdong-quadrants-wrap">
-        <div class="gs-trongdong-quadrants-circle ${allUnlocked ? 'all-unlocked' : ''}" style="width:${size}px; height:${size}px;">
-          <!-- Cung 1 (Top-Right): M01 -->
-          <div class="gs-trongdong-quadrant q1 ${q1 ? 'lit' : 'sealed'} ${highlightStationId === 'M01' ? 'highlight' : ''}">
-            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung I" />
-            <div class="gs-trongdong-quadrant-mask">
-              <span class="gs-quadrant-tag">${q1 ? '✨ CUNG I' : '🔒 CUNG I'}</span>
-            </div>
-          </div>
-          <!-- Cung 2 (Bottom-Right): M02 -->
-          <div class="gs-trongdong-quadrant q2 ${q2 ? 'lit' : 'sealed'} ${highlightStationId === 'M02' ? 'highlight' : ''}">
-            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung II" />
-            <div class="gs-trongdong-quadrant-mask">
-              <span class="gs-quadrant-tag">${q2 ? '✨ CUNG II' : '🔒 CUNG II'}</span>
-            </div>
-          </div>
-          <!-- Cung 3 (Bottom-Left): M03 -->
-          <div class="gs-trongdong-quadrant q3 ${q3 ? 'lit' : 'sealed'} ${highlightStationId === 'M03' ? 'highlight' : ''}">
-            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung III" />
-            <div class="gs-trongdong-quadrant-mask">
-              <span class="gs-quadrant-tag">${q3 ? '✨ CUNG III' : '🔒 CUNG III'}</span>
-            </div>
-          </div>
-          <!-- Cung 4 (Top-Left): M04 -->
-          <div class="gs-trongdong-quadrant q4 ${q4 ? 'lit' : 'sealed'} ${highlightStationId === 'M04' ? 'highlight' : ''}">
-            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung IV" />
-            <div class="gs-trongdong-quadrant-mask">
-              <span class="gs-quadrant-tag">${q4 ? '✨ CUNG IV' : '🔒 CUNG IV'}</span>
-            </div>
-          </div>
-          <div class="gs-trongdong-divider-h"></div>
-          <div class="gs-trongdong-divider-v"></div>
-          <div class="gs-trongdong-sun-core ${allUnlocked ? 'shining' : ''}"></div>
-        </div>
-        <div class="gs-trongdong-legend">
-          <div class="gs-legend-item ${q1 ? 'lit' : 'sealed'}"><span>${q1 ? '☀️' : '🔒'}</span> Cung I: Thổ Cẩm (${q1 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
-          <div class="gs-legend-item ${q2 ? 'lit' : 'sealed'}"><span>${q2 ? '☀️' : '🔒'}</span> Cung II: Phiên Chợ (${q2 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
-          <div class="gs-legend-item ${q3 ? 'lit' : 'sealed'}"><span>${q3 ? '☀️' : '🔒'}</span> Cung III: Cồng Chiêng (${q3 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
-          <div class="gs-legend-item ${q4 ? 'lit' : 'sealed'}"><span>${q4 ? '☀️' : '🔒'}</span> Cung IV: Lửa Thiêng (${q4 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
-        </div>
-      </div>
-    `;
-  }
 
   private showQuadrantUnlockedCelebration(stationId: string, stationName: string, isNew: boolean) {
     this.clearActiveToast();
@@ -3053,73 +2995,6 @@ export class StationGameModal {
     this.toastTimeout = window.setTimeout(() => dismiss(true), 12000);
   }
 
-  private showDrumUnsealedCelebrationToast(stationName?: string) {
-    this.clearActiveToast();
-
-    const toast = document.createElement('div');
-    toast.className = 'gs-score-toast gs-drum-unlock-toast';
-
-    const headerBadge = document.createElement('div');
-    headerBadge.className = 'gs-drum-unlock-badge';
-    headerBadge.textContent = '🔑 ĐÃ THU THẬP ĐỦ 4/4 CHÌA KHÓA VĂN HÓA!';
-
-    const drumVisualWrap = document.createElement('div');
-    drumVisualWrap.className = 'gs-drum-unlock-visual';
-    drumVisualWrap.innerHTML = this.renderTrongDongQuadrantsHtml(undefined, 250);
-
-    const title = document.createElement('div');
-    title.className = 'gs-result-team-name';
-    title.textContent = '✨ MỞ KHÓA HÌNH ẢNH TRỐNG ĐỒNG ĐÔNG SƠN ✨';
-
-    const exp = document.createElement('div');
-    exp.className = 'gs-result-explanation';
-    exp.textContent = stationName
-      ? `Chúc mừng các đội đã hoàn thành [${stationName}] và thu thập trọn vẹn 4/4 Chìa Khóa! Phong ấn đã được phá giải, Hình ảnh Trống Đồng Đông Sơn Hoàng Kim đã chính thức hiện diện rực rỡ tại trung tâm Bản đồ Lễ Hội!`
-      : 'Phong ấn 4 phương đã được phá giải! Hình ảnh Trống Đồng Đông Sơn Hoàng Kim đã chính thức được mở khóa và tỏa sáng rực rỡ tại Quảng trường Trung tâm!';
-
-    const actionWrap = document.createElement('div');
-    actionWrap.className = 'gs-drum-unlock-actions';
-
-    const goHubBtn = document.createElement('button');
-    goHubBtn.className = 'gs-victory-btn primary';
-    goHubBtn.textContent = '🗺️ Về Bản Đồ Ngắm Trống Đồng & Vào Đại Kết Cục';
-    goHubBtn.onclick = (e) => {
-      e.stopPropagation();
-      dismiss();
-      this.close();
-    };
-
-    const stayBtn = document.createElement('button');
-    stayBtn.className = 'gs-victory-btn secondary';
-    stayBtn.textContent = '✨ Tiếp tục xem kết quả';
-    stayBtn.onclick = (e) => {
-      e.stopPropagation();
-      dismiss();
-    };
-
-    actionWrap.appendChild(goHubBtn);
-    actionWrap.appendChild(stayBtn);
-
-    toast.appendChild(headerBadge);
-    toast.appendChild(drumVisualWrap);
-    toast.appendChild(title);
-    toast.appendChild(exp);
-    toast.appendChild(actionWrap);
-
-    let dismissed = false;
-    const dismiss = () => {
-      if (dismissed) return;
-      dismissed = true;
-      if (this.toastTimeout !== null) {
-        clearTimeout(this.toastTimeout);
-        this.toastTimeout = null;
-      }
-      toast.remove();
-      this.render();
-    };
-
-    this.modalContainer.appendChild(toast);
-  }
 
   // ==========================================================================
   // FLOATING SCORE TOAST
