@@ -51,6 +51,7 @@ export class StationGameModal {
 
   // Danh sách các đội đã trả lời sai và mất lượt ở câu hỏi hiện tại (Reset khi sang câu mới)
   private failedTeamIdsOnQuestion: Set<string> = new Set();
+  private questionWrongAttemptCount = 0;
 
   // Interactive Multi-Part Question States (True/False, Ordering, Matching)
   private lastInteractiveKey = '';
@@ -149,6 +150,7 @@ export class StationGameModal {
    */
   private resetCurrentQuestionAttemptState() {
     this.failedTeamIdsOnQuestion.clear();
+    this.questionWrongAttemptCount = 0;
     this.isQuestionAnswered = false;
     this.resetInteractiveState();
     this.ensureValidSelectedTeam();
@@ -233,69 +235,7 @@ export class StationGameModal {
     const dialog = document.createElement('div');
     dialog.className = `gs-station-dialog gs-theme-${this.activeStationId}`;
 
-    // 1. Top Header with Back Button and Station Name
-    const topBar = document.createElement('div');
-    topBar.className = 'gs-station-topbar';
-
-    const titleBox = document.createElement('div');
-    titleBox.className = 'gs-station-title-box';
-
-    let stationTitle = '';
-    let stationSubtitle = '';
-    if (this.activeStationId === 'M01') {
-      stationTitle = 'LÁN TRẠI 1: MẢNH GHÉP THỔ CẨM';
-      stationSubtitle = 'Phần 1 Chương 6 · Khái niệm & đặc trưng dân tộc — chọn ô số 1–9 để mở câu hỏi và giải mã bức tranh bí ẩn';
-    } else if (this.activeStationId === 'M02') {
-      stationTitle = 'LÁN TRẠI 2: Ô CHỮ ĐẠI NGÀN';
-      stationSubtitle = 'Phần 2 Chương 6 · Đặc điểm dân tộc Việt Nam — chọn Hàng ngang 1–7 để giải mã từ khóa Hàng dọc';
-    } else if (this.activeStationId === 'M03') {
-      stationTitle = 'LÁN TRẠI 3: TIẾNG VANG ĐẠI NGÀN';
-      stationSubtitle = 'Phần 3.1 Chương 6 · Quan điểm của Đảng & chính sách chính trị, kinh tế, văn hóa';
-    } else if (this.activeStationId === 'M04') {
-      stationTitle = 'LÁN TRẠI 4: LỬA THIÊNG ĐẠI NGÀN';
-      stationSubtitle = 'Phần 3.2 Chương 6 · Chính sách xã hội, quốc phòng – an ninh & thể chế mới — chọn Đuốc Bạc (x2) / Đuốc Vàng (x3)';
-    } else {
-      stationTitle = 'ĐẠI KẾT CỤC: ĐẠI ĐOÀN KẾT 54 DÂN TỘC VIỆT NAM';
-      stationSubtitle = 'Bức tranh đại đoàn kết & thử thách danh dự cuối cùng';
-    }
-
-
-    const h2 = document.createElement('h2');
-    h2.textContent = stationTitle;
-    const span = document.createElement('span');
-    span.textContent = stationSubtitle;
-    titleBox.appendChild(h2);
-    titleBox.appendChild(span);
-    topBar.appendChild(titleBox);
-
-    // Key progress badge in header
-    const keyStatusBox = document.createElement('div');
-    keyStatusBox.className = 'gs-header-key-box';
-    const keysCount = gameshow.getCollectedKeysCount();
-    const isThisDone = gameshow.isStationCompleted(this.activeStationId);
-    keyStatusBox.innerHTML = `
-      <span class="gs-key-pill ${keysCount >= 4 ? 'all-collected' : ''}">
-        Chìa khóa: <strong>${keysCount}/4</strong>
-      </span>
-      ${
-        this.activeStationId !== 'board'
-          ? `<span class="gs-station-status-pill ${isThisDone ? 'done' : 'pending'}">
-              ${isThisDone ? 'ĐÃ HOÀN THÀNH' : 'CHƯA HOÀN THÀNH'}
-            </span>`
-          : ''
-      }
-    `;
-    topBar.appendChild(keyStatusBox);
-
-    const backBtn = document.createElement('button');
-    backBtn.className = 'gs-btn-back-hub';
-    backBtn.innerHTML = '← VỀ BẢN ĐỒ';
-    backBtn.addEventListener('click', () => this.close());
-    topBar.appendChild(backBtn);
-
-    dialog.appendChild(topBar);
-
-    // 2. Team Selector Bar (Chọn Nhóm trả lời & kích hoạt thẻ chức năng)
+    // 1. Team Selector Bar (Chọn Nhóm trả lời, dùng thẻ & Nút Về Bản Đồ)
     if (!this.isGrandFinaleCelebration) {
       const teamSelectorBar = this.createTeamSelectorBar();
       dialog.appendChild(teamSelectorBar);
@@ -330,7 +270,7 @@ export class StationGameModal {
 
     const label = document.createElement('div');
     label.className = 'gs-selector-label';
-    label.innerHTML = `CHỌN ĐỘI TRẢ LỜI:`;
+    label.innerHTML = `CHỌN NHÓM TRẢ LỜI:`;
     bar.appendChild(label);
 
     const row = document.createElement('div');
@@ -430,8 +370,8 @@ export class StationGameModal {
         const pickerTitle = document.createElement('div');
         pickerTitle.className = 'gs-5s-target-title';
         pickerTitle.textContent = this.cardTargetPicker.type === 'steal'
-          ? '🎯 Chọn đội để rút 20đ:'
-          : '🎯 Chọn đội để cấm lượt:';
+          ? '🎯 Chọn nhóm để rút 20đ:'
+          : '🎯 Chọn nhóm để cấm lượt:';
         pickerBox.appendChild(pickerTitle);
 
         const btnsRow = document.createElement('div');
@@ -475,6 +415,15 @@ export class StationGameModal {
 
       row.appendChild(wrap);
     });
+
+    // Nút [← VỀ BẢN ĐỒ] đặt cạnh sau nút chọn nhóm 6
+    const backBtn = document.createElement('button');
+    backBtn.type = 'button';
+    backBtn.className = 'gs-btn-back-hub';
+    backBtn.innerHTML = '← VỀ BẢN ĐỒ';
+    backBtn.title = 'Quay về bản đồ lễ hội';
+    backBtn.addEventListener('click', () => this.close());
+    row.appendChild(backBtn);
 
     bar.appendChild(row);
     return bar;
@@ -609,7 +558,7 @@ export class StationGameModal {
       rightCol = document.createElement('div');
       rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
       const headerStatus = allTeamsEliminated
-        ? '📢 CẢ 4 ĐỘI ĐỀU ĐÃ ĐOÁN SAI · LỘ DIỆN TỪ KHÓA BỨC TRANH!'
+        ? '📢 TẤT CẢ CÁC NHÓM ĐỀU ĐÃ ĐOÁN SAI · LỘ DIỆN TỪ KHÓA BỨC TRANH!'
         : '🎉 ĐÃ GIẢI MÃ THÀNH CÔNG BỨC TRANH TỔNG THỂ!';
       rightCol.innerHTML = `
         <div class="gs-q-theme">${headerStatus}</div>
@@ -636,7 +585,7 @@ export class StationGameModal {
             </p>
             <p style="font-size: 17px; color: var(--gs-text-sub); line-height: 1.65;">
               👉 Hãy bấm nút <strong>"🔔 ĐOÁN BỨC TRANH TỔNG THỂ"</strong> bên trái để các đội nhập đáp án.<br>
-              • Từ khóa đáp án sẽ chỉ hiển thị sau khi <strong>có 1 đội đoán đúng</strong> hoặc <strong>cả 4 đội đều đoán sai</strong>!
+              • Từ khóa đáp án sẽ chỉ hiển thị sau khi <strong>có 1 đội đoán đúng</strong> hoặc <strong>tất cả các nhóm đều đoán sai</strong>!
             </p>
           </div>
         `;
@@ -652,7 +601,7 @@ export class StationGameModal {
             </p>
             <p style="font-size: 18px; color: var(--gs-text-sub); line-height: 1.7;">
               • Khi bấm vào 1 mảnh, bảng mảnh ghép sẽ tạm ẩn đi để hiển thị câu hỏi toàn màn hình.<br>
-              • Sau khi tìm ra đáp án (có đội trả lời đúng hoặc cả 4 đội đều sai), bấm nút <strong>"🔙 QUAY VỀ BẢNG MẢNH GHÉP"</strong> và mảnh vừa trả lời sẽ mở khóa hình ảnh!
+              • Sau khi tìm ra đáp án (có nhóm trả lời đúng hoặc tất cả các nhóm đều sai), bấm nút <strong>"🔙 QUAY VỀ BẢNG MẢNH GHÉP"</strong> và mảnh vừa trả lời sẽ mở khóa hình ảnh!
             </p>
           </div>
         `;
@@ -693,7 +642,7 @@ export class StationGameModal {
 
     const tickLabel = document.createElement('div');
     tickLabel.className = 'gs-guess-team-tick-label';
-    tickLabel.textContent = '1. CHỌN ĐỘI ĐANG ĐOÁN BỨC TRANH:';
+    tickLabel.textContent = '1. CHỌN NHÓM ĐANG ĐOÁN BỨC TRANH:';
     teamTickBox.appendChild(tickLabel);
 
     const tickGrid = document.createElement('div');
@@ -800,9 +749,9 @@ export class StationGameModal {
           gameshow.r1OpenedTiles.fill(true);
           gameshow.r1SecretRevealed = true;
           this.showScoreToast(
-            'CẢ 4 ĐỘI ĐỀU ĐÃ ĐOÁN SAI',
+            'TẤT CẢ CÁC NHÓM ĐỀU ĐÃ ĐOÁN SAI',
             0,
-            `❌ Đáp án "${rawValue}" chưa chính xác!\nCả 4 đội đều đã hết lượt đoán. Từ khóa chính xác của bức tranh là: "${r1Data.secret_title}"!`,
+            `❌ Đáp án "${rawValue}" chưa chính xác!\nTất cả các nhóm đều đã hết lượt đoán. Từ khóa chính xác của bức tranh là: "${r1Data.secret_title}"!`,
             4500,
             () => {
               this.isGuessingSecretPainting = false;
@@ -867,20 +816,58 @@ export class StationGameModal {
   // ROUND 2: Ô CHỮ ĐẠI NGÀN (ĐOÁN CHỮ HÀNG NGANG & HÀNG DỌC)
   // ==========================================================================
   private renderRound2(): HTMLElement {
-    const layout = document.createElement('div');
-    layout.className = 'gs-r2-crossword-layout';
+    // 1. Khi bấm vào 1 hàng ngang -> Nhảy sang toàn màn hình câu hỏi của hàng đó (giống Minigame 1)
+    if (this.r2ActiveRowQuestion && !this.isGuessingVerticalKeyword) {
+      const fullWrap = document.createElement('div');
+      fullWrap.className = 'gs-r1-fullscreen-question-wrap';
 
-    // Left Column: Visual Crossword Grid (7 Horizontal Rows & 1 Vertical Keyword Column)
-    const leftCol = document.createElement('div');
-    leftCol.className = 'gs-cw-board-panel';
+      const rowQ = r2Data.questions[this.currentQuestionIndex];
+      const qCard = this.renderCrosswordRowQuestionCard(rowQ, this.currentQuestionIndex);
+      fullWrap.appendChild(qCard);
+      return fullWrap;
+    }
+
+    // 2. Khi bấm vào Đoán Từ Khóa Hàng Dọc -> Nhảy sang màn hình đoán từ khóa toàn màn hình
+    if (this.isGuessingVerticalKeyword && !gameshow.r2VerticalRevealed) {
+      const fullWrap = document.createElement('div');
+      fullWrap.className = 'gs-r1-fullscreen-question-wrap';
+
+      const guessCard = this.renderGuessVerticalKeywordCard();
+      fullWrap.appendChild(guessCard);
+      return fullWrap;
+    }
+
+    // 3. Màn hình Bảng Ô Chữ Đại Ngàn (toàn màn hình, rộng rãi, không bị chèn ký tự)
+    const boardPanel = document.createElement('div');
+    boardPanel.className = 'gs-cw-board-panel gs-cw-board-fullscreen';
 
     const boardHeader = document.createElement('div');
     boardHeader.className = 'gs-cw-board-header';
     boardHeader.innerHTML = `
       <div class="gs-cw-board-title">🧩 BẢNG Ô CHỮ: 7 HÀNG NGANG & 1 HÀNG DỌC</div>
-      <div class="gs-cw-board-sub">Bấm vào Hàng ngang 1–7 để mở câu hỏi · Cột màu vàng thẳng đứng là <strong>TỪ KHÓA HÀNG DỌC (7 chữ cái)</strong></div>
+      <div class="gs-cw-board-sub">Bấm vào Hàng ngang (1–7) để mở câu hỏi · Cột màu vàng thẳng đứng là <strong>TỪ KHÓA HÀNG DỌC (7 chữ cái)</strong></div>
     `;
-    leftCol.appendChild(boardHeader);
+    boardPanel.appendChild(boardHeader);
+
+    // Banner hiển thị nếu từ khóa hàng dọc đã được giải mã thành công
+    const allTeamsEliminatedV = gameshow.teams.every((t) => Boolean(t.isEliminatedInRound2Vertical));
+    if (allTeamsEliminatedV) {
+      gameshow.r2VerticalRevealed = true;
+    }
+    if (gameshow.r2VerticalRevealed) {
+      const solvedBanner = document.createElement('div');
+      solvedBanner.className = 'gs-cw-solved-explanation';
+      solvedBanner.style.margin = '4px 0 10px';
+      solvedBanner.innerHTML = `
+        <div class="gs-cw-solved-title">
+          🌟 TỪ KHÓA HÀNG DỌC: ${r2Data.vertical_keyword}
+        </div>
+        <div class="gs-cw-solved-text">
+          ${r2Data.vertical_explanation}
+        </div>
+      `;
+      boardPanel.appendChild(solvedBanner);
+    }
 
     const gridWrap = document.createElement('div');
     gridWrap.className = 'gs-cw-grid-rows';
@@ -942,9 +929,9 @@ export class StationGameModal {
       gridWrap.appendChild(rowEl);
     });
 
-    leftCol.appendChild(gridWrap);
+    boardPanel.appendChild(gridWrap);
 
-    // Bottom Actions on Left Column: Guess Vertical Keyword & Complete Round 2
+    // Bottom Actions: Đoán Từ Khóa Hàng Dọc & Hoàn Thành Vòng 2
     const leftActions = document.createElement('div');
     leftActions.className = 'gs-cw-left-actions';
 
@@ -977,62 +964,8 @@ export class StationGameModal {
     });
     leftActions.appendChild(completeBtn);
 
-    leftCol.appendChild(leftActions);
-    layout.appendChild(leftCol);
-
-    // Right Column: Active Horizontal Row Question OR Vertical Keyword Guess Card
-    const allTeamsEliminatedV = gameshow.teams.every((t) => Boolean(t.isEliminatedInRound2Vertical));
-    if (allTeamsEliminatedV) {
-      gameshow.r2VerticalRevealed = true;
-    }
-
-    let rightCol: HTMLElement;
-    if (this.isGuessingVerticalKeyword && !gameshow.r2VerticalRevealed) {
-      rightCol = this.renderGuessVerticalKeywordCard();
-    } else if (gameshow.r2VerticalRevealed && !this.r2ActiveRowQuestion) {
-      rightCol = document.createElement('div');
-      rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
-      const statusHeader = allTeamsEliminatedV
-        ? '📢 CẢ 4 ĐỘI ĐỀU ĐOÁN SAI · LỘ DIỆN TỪ KHÓA HÀNG DỌC!'
-        : '🎉 ĐÃ GIẢI MÃ THÀNH CÔNG TỪ KHÓA HÀNG DỌC!';
-      rightCol.innerHTML = `
-        <div class="gs-q-theme">${statusHeader}</div>
-        <div class="gs-q-text" style="text-align:center; padding: 18px 14px;">
-          <p style="font-size: 30px; color: var(--gs-gold); font-weight:900; letter-spacing: 3px; margin-bottom: 14px;">
-            🌟 TỪ KHÓA HÀNG DỌC: ${r2Data.vertical_keyword}
-          </p>
-          <p style="font-size: 20px; color: var(--gs-text-sub); line-height: 1.65;">
-            ${r2Data.vertical_explanation}
-          </p>
-          <p class="gs-hint-note">
-            💡 Bạn vẫn có thể bấm vào bất kỳ Hàng Ngang nào (1–7) bên trái để xem hoặc giải tiếp các câu hỏi hàng ngang.
-          </p>
-        </div>
-      `;
-    } else if (this.r2ActiveRowQuestion) {
-      const rowQ = r2Data.questions[this.currentQuestionIndex];
-      rightCol = this.renderCrosswordRowQuestionCard(rowQ, this.currentQuestionIndex);
-    } else {
-      rightCol = document.createElement('div');
-      rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
-      rightCol.innerHTML = `
-        <div class="gs-q-theme">🧩 CHƯA CHỌN HÀNG NGANG · MỜI BẤM CHỌN HÀNG NGANG (1 – 7)</div>
-        <div class="gs-q-text" style="text-align:center; padding: 24px 16px;">
-          <p style="font-size: 24px; color: var(--gs-gold); font-weight:800; margin-bottom: 14px;">
-            👉 BẤM VÀO MỘT HÀNG NGANG (1 – 7) BÊN TRÁI ĐỂ MỞ CÂU HỎI ĐOÁN CHỮ!
-          </p>
-          <p style="font-size: 18px; color: var(--gs-text-sub); line-height: 1.7;">
-            • Chủ đề Vòng 2: <strong>Đặc điểm Dân tộc ở Việt Nam</strong>.<br>
-            • Giải đúng mỗi Hàng Ngang nhận <strong>+20 điểm</strong> và mở chữ cái thuộc <strong>Cột Hàng Dọc màu vàng</strong>.<br>
-            • Nếu trả lời SAI (<strong>-10 điểm</strong>), đáp án chưa lộ ra mà chuyển quyền cho đội khác trả lời!<br>
-            • Bất cứ lúc nào cũng có thể bấm <strong>"🌟 ĐOÁN TỪ KHÓA HÀNG DỌC"</strong> để giành tới +40 điểm!
-          </p>
-        </div>
-      `;
-    }
-
-    layout.appendChild(rightCol);
-    return layout;
+    boardPanel.appendChild(leftActions);
+    return boardPanel;
   }
 
   private renderCrosswordRowQuestionCard(
@@ -1157,6 +1090,34 @@ export class StationGameModal {
     inputRow.appendChild(submitBtn);
     panel.appendChild(inputRow);
 
+    // Nút quay về Bảng Ô Chữ
+    if (isAlreadySolved || this.isQuestionAnswered) {
+      const backBtn = document.createElement('button');
+      backBtn.type = 'button';
+      backBtn.className = 'gs-r1-back-to-board-btn unlocked';
+      backBtn.innerHTML = `🔙 QUAY VỀ BẢNG Ô CHỮ (ĐÃ GIẢI MÃ HÀNG NGANG SỐ ${rowIdx + 1})`;
+      backBtn.addEventListener('click', () => {
+        this.clearActiveToast();
+        this.r2ActiveRowQuestion = false;
+        this.resetCurrentQuestionAttemptState();
+        sfx.playSuccess();
+        this.render();
+      });
+      panel.appendChild(backBtn);
+    } else {
+      const cancelBtn = document.createElement('button');
+      cancelBtn.type = 'button';
+      cancelBtn.className = 'gs-r1-back-to-board-btn secondary';
+      cancelBtn.innerHTML = '⬅ Quay về bảng ô chữ (Chưa mở hàng này)';
+      cancelBtn.addEventListener('click', () => {
+        this.clearActiveToast();
+        this.r2ActiveRowQuestion = false;
+        this.resetCurrentQuestionAttemptState();
+        this.render();
+      });
+      panel.appendChild(cancelBtn);
+    }
+
     return panel;
   }
 
@@ -1200,7 +1161,7 @@ export class StationGameModal {
 
     const tickLabel = document.createElement('div');
     tickLabel.className = 'gs-guess-team-tick-label';
-    tickLabel.textContent = 'CHỌN ĐỘI ĐANG ĐOÁN TỪ KHÓA HÀNG DỌC:';
+    tickLabel.textContent = 'CHỌN NHÓM ĐANG ĐOÁN TỪ KHÓA HÀNG DỌC:';
     teamTickBox.appendChild(tickLabel);
 
     const tickGrid = document.createElement('div');
@@ -1309,9 +1270,9 @@ export class StationGameModal {
           gameshow.r2OpenedRows.fill(true);
           gameshow.r2VerticalRevealed = true;
           this.showScoreToast(
-            'CẢ 4 ĐỘI ĐỀU ĐOÁN SAI HÀNG DỌC',
+            'TẤT CẢ CÁC NHÓM ĐỀU ĐOÁN SAI HÀNG DỌC',
             -10,
-            `❌ Đáp án "${rawValue}" chưa chính xác!\nCả 4 đội đều đã hết lượt đoán. Từ khóa Hàng Dọc chính xác là: "${r2Data.vertical_keyword}"!`,
+            `❌ Đáp án "${rawValue}" chưa chính xác!\nTất cả các nhóm đều đã hết lượt đoán. Từ khóa Hàng Dọc chính xác là: "${r2Data.vertical_keyword}"!`,
             4200,
             () => {
               this.isGuessingVerticalKeyword = false;
@@ -1350,6 +1311,17 @@ export class StationGameModal {
     inputRow.appendChild(input);
     inputRow.appendChild(submitBtn);
     panel.appendChild(inputRow);
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'gs-r1-back-to-board-btn secondary';
+    cancelBtn.innerHTML = '⬅ Quay về bảng ô chữ';
+    cancelBtn.addEventListener('click', () => {
+      this.clearActiveToast();
+      this.isGuessingVerticalKeyword = false;
+      this.render();
+    });
+    panel.appendChild(cancelBtn);
 
     return panel;
   }
@@ -1533,31 +1505,29 @@ export class StationGameModal {
 
   private createRevealQuestionPrompt(title: string, instructionsHtml: string): HTMLElement {
     const panel = document.createElement('div');
-    panel.className = 'gs-question-panel gs-r1-prompt-panel';
+    panel.className = 'gs-question-panel gs-r1-prompt-panel gs-reveal-hero-panel';
     panel.style.justifyContent = 'center';
     panel.style.alignItems = 'center';
     panel.style.textAlign = 'center';
 
+    const emblem = document.createElement('div');
+    emblem.className = 'gs-prompt-hero-emblem';
+    emblem.innerHTML = '🥁 🌟 📜';
+    panel.appendChild(emblem);
+
     const theme = document.createElement('div');
-    theme.className = 'gs-q-theme';
+    theme.className = 'gs-q-theme gs-prompt-hero-title';
     theme.textContent = title;
     panel.appendChild(theme);
 
     const desc = document.createElement('div');
-    desc.style.fontSize = '19px';
-    desc.style.color = 'var(--gs-text-sub)';
-    desc.style.lineHeight = '1.75';
-    desc.style.maxWidth = '780px';
-    desc.style.margin = '14px 0 28px';
+    desc.className = 'gs-prompt-hero-desc';
     desc.innerHTML = instructionsHtml;
     panel.appendChild(desc);
 
     const openBtn = document.createElement('button');
     openBtn.type = 'button';
-    openBtn.className = 'gs-guess-painting-btn';
-    openBtn.style.maxWidth = '460px';
-    openBtn.style.fontSize = '20px';
-    openBtn.style.padding = '18px 32px';
+    openBtn.className = 'gs-guess-painting-btn gs-prompt-hero-btn';
     openBtn.textContent = '📖 BẤM ĐỂ HIỂN THỊ CÂU HỎI';
     openBtn.addEventListener('click', () => {
       this.isQuestionRevealed = true;
@@ -1672,7 +1642,7 @@ export class StationGameModal {
     const rankedTeams = [...gameshow.teams].sort((a, b) => b.score - a.score);
     const champion = rankedTeams[0];
 
-    const medals = ['🥇 QUÁN QUÂN', '🥈 Á QUÂN', '🥉 HẠNG BA', '🏅 KHUYẾN KHÍCH'];
+    const medals = ['🥇 QUÁN QUÂN', '🥈 Á QUÂN', '🥉 HẠNG BA', '🏅 KHUYẾN KHÍCH', '🏅 KHUYẾN KHÍCH'];
 
     const podiumHTML = rankedTeams
       .map(
@@ -1696,7 +1666,7 @@ export class StationGameModal {
           ${finaleData.challenge_question.special_reward_message}
         </p>
         <div class="gs-victory-champion-spotlight">
-          🌟 ĐỘI CHIẾN THẮNG CHUNG CUỘC: <strong style="color:${champion.color}">${champion.name.toUpperCase()} (${champion.score} ĐIỂM)</strong> 🌟
+          🌟 NHÓM CHIẾN THẮNG CHUNG CUỘC: <strong style="color:${champion.color}">${champion.name.toUpperCase()} (${champion.score} ĐIỂM)</strong> 🌟
         </div>
       </div>
 
@@ -1856,6 +1826,7 @@ export class StationGameModal {
     sfx.playFailure();
     onAnswer(false);
     this.failedTeamIdsOnQuestion.add(currentTeam.id);
+    this.questionWrongAttemptCount++;
 
     const lastDelta = gameshow.lastScoreDeltas[gameshow.lastScoreDeltas.length - 1];
     const delta = lastDelta ? lastDelta.delta : -10;
@@ -1877,7 +1848,7 @@ export class StationGameModal {
       this.showScoreToast(
         `❌ ${currentTeam.name} TRẢ LỜI SAI (MẤT LƯỢT CÂU NÀY)`,
         delta,
-        `Đáp án vẫn đang được giữ kín để đội khác trả lời!\n👉 Chuyển quyền trả lời sang: ${nextTeam.name} (Còn ${remainingTeams.length} đội còn lượt ở câu này).${preyNotice}`,
+        `Đáp án vẫn đang được giữ kín để đội khác trả lời!\n👉 Chuyển quyền trả lời sang: ${nextTeam.name} (Còn ${remainingTeams.length} nhóm còn lượt ở câu này).${preyNotice}`,
         3200,
         () => {
           if (nextIdx !== -1) {
@@ -1912,9 +1883,9 @@ export class StationGameModal {
       // Cập nhật giao diện ngay lập tức để hiển thị khung Đáp Án Chính Xác & Giải Thích trên thẻ câu hỏi
       this.render();
 
-      const fullExplanation = `📢 Cả 4 đội đều đã trả lời sai câu hỏi này! Đáp án chính xác:\n${extraPrefix ? extraPrefix + '\n' : ''}${q.explanation || ''}`;
+      const fullExplanation = `📢 Tất cả các nhóm đều đã trả lời sai câu hỏi này! Đáp án chính xác:\n${extraPrefix ? extraPrefix + '\n' : ''}${q.explanation || ''}`;
       this.showScoreToast(
-        '📢 CẢ 4 ĐỘI ĐỀU TRẢ LỜI SAI · MỞ ĐÁP ÁN CHÍNH XÁC',
+        '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI · MỞ ĐÁP ÁN CHÍNH XÁC',
         delta,
         fullExplanation,
         4200,
@@ -1942,7 +1913,7 @@ export class StationGameModal {
       ansBanner.className = 'gs-revealed-answer-banner';
       ansBanner.innerHTML = `
         <div class="gs-revealed-answer-title">
-          ${allFailed ? '📢 CẢ 4 ĐỘI ĐỀU TRẢ LỜI SAI — ĐÁP ÁN CHÍNH XÁC LÀ:' : '✅ ĐÁP ÁN CHÍNH XÁC:'}
+          ${allFailed ? '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI — ĐÁP ÁN CHÍNH XÁC LÀ:' : '✅ ĐÁP ÁN CHÍNH XÁC:'}
           <span>${answerSummary}</span>
         </div>
         ${explanation ? `<div class="gs-revealed-answer-exp">💡 <strong>Giải thích:</strong> ${explanation}</div>` : ''}
@@ -2602,7 +2573,7 @@ export class StationGameModal {
   }
 
   // ==========================================================================
-  // FILL-IN QUESTION CARD
+  // FILL-IN QUESTION CARD VỚI HÀNG Ô CHỮ GỢI Ý TIẾN TRÌNH THEO SỐ LẦN SAI
   // ==========================================================================
   private renderFillInQuestionCard(
     q: { question: string; correct_answer?: string; explanation?: string; has_card?: string | null },
@@ -2611,15 +2582,82 @@ export class StationGameModal {
     onCompleteAfterToast?: () => void
   ): HTMLElement {
     const panel = document.createElement('div');
-    panel.className = 'gs-question-panel';
+    panel.className = 'gs-question-panel gs-fillin-card-panel';
 
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
     theme.textContent = subtitle;
+    panel.appendChild(theme);
 
     const text = document.createElement('div');
     text.className = 'gs-q-text';
     text.textContent = q.question;
+    panel.appendChild(text);
+
+    // Xử lý gợi ý ô chữ tiến trình:
+    // - Lần sai 1: Hiện 1 hàng ô chữ giống trong minigame 2 (hiển thị số lượng từ và ký tự)
+    // - Lần sai 2: Mở chữ cái đầu tiên của mỗi từ trong đáp án
+    // - Lần sai 3 trở đi: Mở thêm chữ cái ngẫu nhiên của mỗi từ trong đáp án
+    const rawAnswer = (q.correct_answer || '').trim();
+    const words = rawAnswer.split(/\s+/).filter(Boolean);
+    const totalLetters = rawAnswer.replace(/\s+/g, '').length;
+    const wrongCount = Math.max(this.failedTeamIdsOnQuestion.size, this.questionWrongAttemptCount);
+
+    if (wrongCount >= 1 || this.isQuestionAnswered) {
+      const hintBox = document.createElement('div');
+      hintBox.className = 'gs-fill-hint-box';
+
+      const hintHeader = document.createElement('div');
+      hintHeader.className = 'gs-fill-hint-header';
+      if (this.isQuestionAnswered) {
+        hintHeader.innerHTML = `✅ <strong>ĐÁP ÁN CHÍNH XÁC:</strong> ${words.length} TỪ · ${totalLetters} KÝ TỰ`;
+      } else if (wrongCount === 1) {
+        hintHeader.innerHTML = `💡 <strong>GỢI Ý LẦN 1:</strong> ĐÁP ÁN GỒM <strong>${words.length} TỪ</strong> (${totalLetters} KÝ TỰ)`;
+      } else if (wrongCount === 2) {
+        hintHeader.innerHTML = `💡 <strong>GỢI Ý LẦN 2:</strong> ĐÃ MỞ CHỮ CÁI ĐẦU TIÊN CỦA MỖI TỪ!`;
+      } else {
+        hintHeader.innerHTML = `💡 <strong>GỢI Ý LẦN ${wrongCount}:</strong> ĐÃ MỞ THÊM CHỮ CÁI NGẪU NHIÊN CỦA MỖI TỪ!`;
+      }
+      hintBox.appendChild(hintHeader);
+
+      const hintTrack = document.createElement('div');
+      hintTrack.className = 'gs-fill-hint-track';
+
+      words.forEach((w, wIdx) => {
+        const wGroup = document.createElement('div');
+        wGroup.className = 'gs-word-group';
+
+        const chars = Array.from(w);
+        chars.forEach((ch, cIdx) => {
+          const slot = document.createElement('div');
+          let revealed = this.isQuestionAnswered;
+          if (!revealed && wrongCount >= 2 && cIdx === 0) {
+            revealed = true; // Chữ cái đầu tiên của mỗi từ
+          }
+          if (!revealed && wrongCount >= 3 && chars.length > 1) {
+            // Chữ cái ngẫu nhiên nhưng ổn định (deterministic)
+            const pseudoRand = ((this.currentQuestionIndex * 19 + wIdx * 11 + 5) % (chars.length - 1)) + 1;
+            if (cIdx === pseudoRand) {
+              revealed = true;
+            }
+          }
+
+          slot.className = `gs-cw-preview-slot ${revealed ? 'revealed' : ''}`;
+          slot.textContent = revealed ? ch.toUpperCase() : '';
+          wGroup.appendChild(slot);
+        });
+
+        hintTrack.appendChild(wGroup);
+      });
+
+      hintBox.appendChild(hintTrack);
+      panel.appendChild(hintBox);
+    } else {
+      const tipBox = document.createElement('div');
+      tipBox.className = 'gs-fill-hint-placeholder';
+      tipBox.innerHTML = `💡 <em>Gợi ý hàng ô chữ sẽ tự động mở sau lần trả lời sai đầu tiên để trợ giúp các nhóm!</em>`;
+      panel.appendChild(tipBox);
+    }
 
     const inputRow = document.createElement('div');
     inputRow.className = 'gs-fillin-row';
@@ -2686,9 +2724,6 @@ export class StationGameModal {
 
     inputRow.appendChild(input);
     inputRow.appendChild(submitBtn);
-
-    panel.appendChild(theme);
-    panel.appendChild(text);
     panel.appendChild(inputRow);
 
     this.appendPostAnswerFooter(panel, q.correct_answer || '', q.explanation);

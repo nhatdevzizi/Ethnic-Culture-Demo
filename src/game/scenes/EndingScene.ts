@@ -14,7 +14,7 @@ export class EndingScene extends Phaser.Scene {
 
     const rankedTeams = [...gameshow.teams].sort((a, b) => b.score - a.score);
     const podiumBox = element('div', 'gs-ending-podium');
-    const medals = ['🥇 QUÁN QUÂN', '🥈 Á QUÂN', '🥉 HẠNG BA', '🏅 KHUYẾN KHÍCH'];
+    const medals = ['🥇 QUÁN QUÂN', '🥈 Á QUÂN', '🥉 HẠNG BA', '🏅 KHUYẾN KHÍCH', '🏅 KHUYẾN KHÍCH'];
     podiumBox.innerHTML = rankedTeams
       .map(
         (team, idx) => `

@@ -5,11 +5,13 @@ describe('GameshowEngine', () => {
   let engine: GameshowEngine;
 
   beforeEach(() => {
-    engine = new GameshowEngine(['Đội 1', 'Đội 2', 'Đội 3', 'Đội 4']);
+    engine = new GameshowEngine();
   });
 
   it('initializes teams correctly', () => {
-    expect(engine.teams.length).toBe(4);
+    expect(engine.teams.length).toBe(5);
+    expect(engine.teams.map((t) => t.name)).toEqual(['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6']);
+    expect(engine.teams.map((t) => t.id)).toEqual(['team_1', 'team_2', 'team_3', 'team_5', 'team_6']);
     expect(engine.teams[0].score).toBe(0);
     expect(engine.teams[0].cards.steal_points).toBe(0);
     expect(engine.teams[0].silverTorch).toBe(true);

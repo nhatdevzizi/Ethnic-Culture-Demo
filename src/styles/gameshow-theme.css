@@ -141,21 +141,43 @@
 }
 
 .gs-station-dialog .gs-btn-back-hub {
-  background: transparent;
-  color: #f6e7bd;
-  border: 2px solid #f6e7bd;
+  background: #2b1d14;
+  color: #fbf6ea;
+  border: 2px solid #2b1d14;
   border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 800;
+  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--gs-line-strong);
 }
 .gs-station-dialog .gs-btn-back-hub:hover {
-  background: #f6e7bd;
-  color: var(--gs-brown);
-  transform: none;
+  background: var(--gs-accent);
+  border-color: var(--gs-accent-deep);
+  color: #fff;
+  transform: translateY(-1px);
 }
 
 /* ---------- THANH CHỌN ĐỘI ---------- */
 .gs-station-dialog .gs-team-selector-bar {
+  position: relative;
   background: var(--gs-paper-deep);
   border-bottom: 1.5px solid var(--gs-line);
+  padding: 14px 24px 12px;
+}
+.gs-station-dialog .gs-team-selector-bar::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6px;
+  background: url('/assets/decor/brocade-strip.svg') repeat-x left center / auto 6px;
 }
 .gs-station-dialog .gs-selector-label {
   color: var(--gs-brown);
@@ -882,24 +904,601 @@
   overflow-y: auto;
 }
 
-.gs-station-dialog .gs-finale-container .gs-q-text {
-  font-size: clamp(22px, 2.2vw, 29px) !important;
-  line-height: 1.45 !important;
-  margin-bottom: 4px !important;
+/* ==========================================================================
+   SCALE FOR LARGE MONITORS / PRESENTATION DISPLAY & ZERO WASTED SPACE
+   Tối ưu hóa toàn bộ không gian màn hình lớn / máy chiếu khi thuyết trình:
+   - Câu hỏi & đáp án phóng to rõ nét, đọc dễ dàng từ khoảng cách xa.
+   - Các phương án co giãn tự động lấp đầy chiều cao (flex: 1, 100% height),
+     triệt tiêu tối đa khoảng trống thừa ở đáy và các cạnh.
+   ========================================================================== */
+
+#station-game-modal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
 }
 
+.gs-station-dialog {
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Thanh chọn nhóm phía trên gọn gàng, dành tối đa không gian cho nội dung */
+.gs-station-dialog .gs-team-selector-bar {
+  flex-shrink: 0;
+  padding: 8px 20px 8px;
+  gap: 12px;
+}
+.gs-station-dialog .gs-selector-label {
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+.gs-station-dialog .gs-selector-team-btn {
+  padding: 7px 14px;
+  min-height: 42px;
+}
+.gs-station-dialog .gs-btn-back-hub {
+  padding: 7px 16px;
+  min-height: 42px;
+  font-size: 15px;
+}
+
+/* Toàn bộ thân nội dung chiếm trọn phần còn lại của màn hình */
+.gs-station-dialog .gs-station-body {
+  flex: 1;
+  min-height: 0;
+  padding: 10px 20px 14px !important;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Thẻ câu hỏi lấp đầy 100% chiều cao và độ rộng */
+.gs-station-dialog .gs-question-panel {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 18px 28px !important;
+  gap: 12px !important;
+  box-sizing: border-box;
+}
+
+/* Tiêu đề & chủ đề câu hỏi lớn, sắc nét */
+.gs-station-dialog .gs-q-theme {
+  font-size: clamp(19px, 1.55vw, 25px) !important;
+  font-weight: 900 !important;
+  letter-spacing: 1px !important;
+  margin-bottom: 2px !important;
+  padding-bottom: 6px !important;
+  flex-shrink: 0;
+}
+
+/* Chữ câu hỏi to, đậm, người ngồi dưới dễ dàng đọc rõ */
+.gs-station-dialog .gs-q-text {
+  font-size: clamp(26px, 2.6vw, 40px) !important;
+  line-height: 1.38 !important;
+  font-weight: 800 !important;
+  margin-bottom: 10px !important;
+  color: var(--gs-ink) !important;
+  flex-shrink: 0;
+}
+
+/* Lưới các phương án trắc nghiệm: co giãn tự động lấp đầy phần đáy, không để khoảng trống thừa */
+.gs-station-dialog .gs-options-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  align-content: stretch !important;
+  margin-top: 4px !important;
+}
+
+.gs-station-dialog .gs-option-btn {
+  height: 100% !important;
+  min-height: clamp(90px, 12.5vh, 150px) !important;
+  padding: 18px 24px !important;
+  font-size: clamp(22px, 2.1vw, 32px) !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+  border-width: 2.5px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Dạng câu hỏi Đúng / Sai (True / False) */
+.gs-station-dialog .gs-tf-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: stretch;
+}
+.gs-station-dialog .gs-tf-row {
+  flex: 1;
+  min-height: clamp(75px, 10.5vh, 115px);
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns: 84px 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+.gs-station-dialog .gs-tf-statement {
+  font-size: clamp(22px, 2.0vw, 30px) !important;
+  font-weight: 800 !important;
+  line-height: 1.38 !important;
+}
+.gs-station-dialog .gs-tf-index {
+  font-size: clamp(17px, 1.4vw, 22px);
+  padding: 8px 12px;
+}
+.gs-station-dialog .gs-tf-btn {
+  padding: 12px 26px;
+  font-size: clamp(19px, 1.7vw, 25px);
+  font-weight: 900;
+}
+
+/* Dạng câu hỏi Sắp xếp thứ tự (Ordering) */
+.gs-station-dialog .gs-order-list {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: stretch;
+}
+.gs-station-dialog .gs-order-row {
+  flex: 1;
+  min-height: clamp(75px, 10.5vh, 115px);
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns: 130px 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+.gs-station-dialog .gs-order-item-text {
+  font-size: clamp(22px, 2.0vw, 30px) !important;
+  font-weight: 800 !important;
+  line-height: 1.38 !important;
+}
+.gs-station-dialog .gs-order-step-badge {
+  font-size: clamp(16px, 1.4vw, 21px);
+  padding: 8px 12px;
+}
+.gs-station-dialog .gs-order-move-btn {
+  padding: 10px 18px;
+  font-size: clamp(18px, 1.5vw, 23px);
+}
+
+/* Dạng câu hỏi Nối ý (Matching) */
+.gs-station-dialog .gs-matching-grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 18px;
+  align-items: stretch;
+}
+.gs-station-dialog .gs-matching-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+}
+.gs-station-dialog .gs-match-card {
+  flex: 1;
+  min-height: clamp(72px, 10vh, 110px);
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.gs-station-dialog .gs-match-card-text {
+  font-size: clamp(20px, 1.9vw, 28px) !important;
+  font-weight: 800 !important;
+  line-height: 1.38 !important;
+}
+
+/* Ô nhập từ khóa đoán tranh / ô chữ */
+.gs-station-dialog .gs-fillin-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+}
+.gs-station-dialog .gs-fillin-input {
+  flex: 1;
+  font-size: clamp(24px, 2.2vw, 34px);
+  padding: 16px 22px;
+  min-height: 66px;
+  font-weight: 700;
+  border: 2.5px solid var(--gs-line-strong);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--gs-ink);
+}
+.gs-station-dialog .gs-fillin-submit-btn {
+  font-size: clamp(21px, 1.9vw, 28px);
+  padding: 16px 30px;
+  min-height: 66px;
+  font-weight: 900;
+}
+
+/* Vòng 1: Mảnh ghép & khung giới thiệu */
+.gs-station-dialog .gs-r1-layout {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+}
+.gs-station-dialog .gs-mosaic-container {
+  width: 100%;
+  height: 100%;
+  max-height: calc(100vh - 120px);
+  aspect-ratio: 3/2;
+  margin: 0 auto;
+}
+.gs-station-dialog .gs-tile-number {
+  font-size: clamp(50px, 5.2vw, 82px);
+  font-weight: 900;
+}
+.gs-station-dialog .gs-r1-prompt-panel {
+  max-width: none !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+}
+.gs-station-dialog .gs-r1-prompt-panel .gs-q-text {
+  font-size: clamp(22px, 2.1vw, 32px) !important;
+  line-height: 1.6 !important;
+}
+.gs-station-dialog .gs-guess-painting-btn {
+  font-size: clamp(19px, 1.6vw, 25px) !important;
+  padding: 14px 24px !important;
+  min-height: 52px !important;
+}
+.gs-station-dialog .gs-round-complete-btn {
+  font-size: clamp(18px, 1.5vw, 24px) !important;
+  padding: 14px 24px !important;
+  min-height: 52px !important;
+}
+
+/* Vòng 2: Bảng ô chữ đại ngàn */
+.gs-station-dialog .gs-r2-crossword-layout {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(540px, 1.1fr) 1.4fr;
+  gap: 18px;
+}
+.gs-station-dialog .gs-cw-board-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.gs-station-dialog .gs-cw-cell {
+  height: clamp(38px, 4.3vh, 48px);
+  font-size: clamp(18px, 1.5vw, 24px);
+  font-weight: 900;
+}
+.gs-station-dialog .gs-cw-row-num-btn {
+  width: clamp(48px, 3.8vw, 60px);
+  height: clamp(38px, 4.3vh, 48px);
+  font-size: clamp(18px, 1.4vw, 22px);
+  font-weight: 900;
+}
+.gs-station-dialog .gs-cw-board-title {
+  font-size: clamp(20px, 1.7vw, 26px);
+  font-weight: 900;
+}
+.gs-station-dialog .gs-cw-board-sub {
+  font-size: clamp(14px, 1.2vw, 17px);
+}
+
+/* Khung hiển thị đáp án đúng sau khi trả lời */
+.gs-station-dialog .gs-revealed-answer-banner {
+  margin-top: 8px;
+  padding: 12px 20px;
+  flex-shrink: 0;
+}
+.gs-station-dialog .gs-revealed-answer-title {
+  font-size: clamp(21px, 1.9vw, 28px);
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+.gs-station-dialog .gs-revealed-answer-exp {
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.5;
+}
+.gs-station-dialog .gs-r1-back-to-board-btn {
+  font-size: clamp(19px, 1.7vw, 25px);
+  padding: 12px 26px;
+  min-height: 52px;
+  font-weight: 900;
+  margin-top: 8px;
+}
+
+/* Vòng 4: Đuốc bạc, đuốc vàng & quỹ săn mồi */
+.gs-station-dialog .gs-torch-row {
+  flex-shrink: 0;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+.gs-station-dialog .gs-torch-card {
+  padding: 10px 22px;
+  font-size: clamp(16px, 1.4vw, 20px);
+  min-height: 48px;
+}
+.gs-station-dialog .gs-prey-pot {
+  font-size: clamp(18px, 1.5vw, 22px);
+  padding: 10px 20px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+/* Thông báo toast điểm số / sự kiện */
+.gs-score-toast {
+  padding: 24px 40px !important;
+  max-width: 88vw !important;
+  border-radius: 14px !important;
+}
+.gs-score-toast .gs-result-team-name {
+  font-size: clamp(26px, 2.5vw, 36px) !important;
+  font-weight: 900 !important;
+}
+.gs-score-toast .gs-result-delta {
+  font-size: clamp(40px, 3.8vw, 60px) !important;
+}
+.gs-score-toast .gs-result-reason {
+  font-size: clamp(21px, 2.0vw, 29px) !important;
+  line-height: 1.5 !important;
+}
+
+/* Đại kết cục: Câu hỏi ý nghĩa & Trống Đồng */
+.gs-station-dialog .gs-finale-container .gs-question-panel {
+  flex: 1;
+  min-height: 0;
+  padding: 18px 28px !important;
+  gap: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+.gs-station-dialog .gs-finale-container .gs-q-text {
+  font-size: clamp(26px, 2.5vw, 38px) !important;
+  line-height: 1.4 !important;
+  font-weight: 800 !important;
+  margin-bottom: 8px !important;
+}
 .gs-station-dialog .gs-finale-container .gs-options-grid {
   grid-template-columns: 1fr 1fr !important;
-  gap: 18px !important;
-  margin-top: 4px !important;
+  gap: 16px !important;
   flex: 1 !important;
 }
-
 .gs-station-dialog .gs-finale-container .gs-option-btn {
   padding: 20px 26px !important;
-  font-size: clamp(19px, 1.8vw, 23px) !important;
-  min-height: 92px !important;
-  line-height: 1.45 !important;
+  font-size: clamp(22px, 2.1vw, 30px) !important;
+  font-weight: 800 !important;
+  min-height: 96px !important;
+  height: 100% !important;
+  line-height: 1.42 !important;
 }
 
 
+
+
+/* ==========================================================================
+   MINIGAME 2 TOÀN MÀN HÌNH & GỢI Ý Ô CHỮ TIẾN TRÌNH CHO CÂU HỎI ĐIỀN KHUYẾT
+   ========================================================================== */
+
+/* Bảng Ô Chữ Đại Ngàn toàn màn hình (không chia đôi 2 cột chật hẹp) */
+.gs-station-dialog .gs-cw-board-fullscreen {
+  width: 100% !important;
+  max-width: 980px !important;
+  margin: 0 auto !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 16px 28px !important;
+  box-sizing: border-box !important;
+}
+
+/* Nút tên Hàng Ngang: Cố định độ rộng 110px, KHÔNG BAO GIỜ bị bẻ dòng số xuống dưới */
+.gs-station-dialog .gs-cw-row {
+  display: grid !important;
+  grid-template-columns: 110px 1fr !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 8px 12px !important;
+  border-radius: 8px !important;
+}
+
+.gs-station-dialog .gs-cw-row-num-btn {
+  width: 110px !important;
+  min-width: 110px !important;
+  max-width: 110px !important;
+  height: 44px !important;
+  font-size: 16px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  letter-spacing: 0.3px !important;
+}
+
+/* Lưới 12 ô chữ cái trong bảng chính */
+.gs-station-dialog .gs-cw-cells-track {
+  display: grid !important;
+  grid-template-columns: repeat(12, 1fr) !important;
+  gap: 6px !important;
+}
+
+.gs-station-dialog .gs-cw-cell {
+  height: clamp(38px, 4.4vh, 48px) !important;
+  border-radius: 4px !important;
+  font-size: clamp(19px, 1.6vw, 25px) !important;
+  font-weight: 900 !important;
+}
+
+/* Khung gợi ý tiến trình hàng ô chữ cho câu hỏi điền khuyết */
+.gs-station-dialog .gs-fill-hint-box {
+  background: rgba(255, 248, 230, 0.95);
+  border: 2px dashed #b58338;
+  border-radius: 10px;
+  padding: 16px 22px;
+  margin: 12px 0 16px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: gsFadeIn 0.25s ease-out;
+}
+
+.gs-station-dialog .gs-fill-hint-header {
+  font-size: clamp(18px, 1.6vw, 24px);
+  font-weight: 900;
+  color: var(--gs-accent-deep);
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.gs-station-dialog .gs-fill-hint-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.gs-station-dialog .gs-word-group {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  background: rgba(181, 131, 56, 0.12);
+  padding: 4px 6px;
+  border-radius: 6px;
+}
+
+/* Ô chữ gợi ý */
+.gs-station-dialog .gs-cw-preview-slot {
+  width: clamp(42px, 4.4vh, 52px) !important;
+  height: clamp(42px, 4.4vh, 52px) !important;
+  border-radius: 4px !important;
+  font-size: clamp(20px, 1.8vw, 26px) !important;
+  font-weight: 900 !important;
+  border: 2px solid var(--gs-brown) !important;
+  background: #fbf6ea !important;
+  color: var(--gs-ink) !important;
+}
+
+.gs-station-dialog .gs-cw-preview-slot.revealed {
+  background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+  color: #fff !important;
+  border-color: #1e8449 !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+
+.gs-station-dialog .gs-cw-preview-slot.vert-highlight {
+  border-color: #c08a2e !important;
+  background: #f9e5b7 !important;
+}
+
+.gs-station-dialog .gs-cw-preview-slot.vert-highlight.revealed {
+  background: linear-gradient(135deg, #d4ac0d, #f1c40f) !important;
+  color: #2b1d14 !important;
+}
+
+/* Thanh nhắc nhở nhẹ khi chưa có nhóm nào trả lời sai */
+.gs-station-dialog .gs-fill-hint-placeholder {
+  font-size: clamp(16px, 1.35vw, 20px);
+  color: var(--gs-ink-soft);
+  text-align: center;
+  margin: 10px 0 16px;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1.5px dashed var(--gs-line);
+  border-radius: 8px;
+  padding: 10px 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Tối ưu thẻ câu hỏi điền khuyết: phân bố cân đối, không để khoảng trắng rỗng */
+.gs-station-dialog .gs-fillin-card-panel {
+  justify-content: space-evenly !important;
+  padding: 24px 34px !important;
+}
+
+.gs-station-dialog .gs-fillin-card-panel .gs-q-text {
+  margin-bottom: 8px !important;
+}
+
+/* Màn hình hiển thị câu hỏi mở đầu (Reveal Hero Panel) - lấp đầy không gian trang nhã */
+.gs-station-dialog .gs-reveal-hero-panel {
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 30px 40px !important;
+}
+
+.gs-station-dialog .gs-prompt-hero-emblem {
+  font-size: clamp(40px, 3.8vw, 60px);
+  margin-bottom: 12px;
+  letter-spacing: 12px;
+}
+
+.gs-station-dialog .gs-prompt-hero-title {
+  font-size: clamp(28px, 2.7vw, 40px) !important;
+  font-weight: 900 !important;
+  color: var(--gs-accent-deep) !important;
+  margin-bottom: 16px !important;
+}
+
+.gs-station-dialog .gs-prompt-hero-desc {
+  font-size: clamp(21px, 2.0vw, 28px) !important;
+  line-height: 1.8 !important;
+  max-width: 980px !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  border: 2px dashed var(--gs-line-strong) !important;
+  border-radius: 12px !important;
+  padding: 26px 36px !important;
+  margin: 14px auto 30px !important;
+  color: var(--gs-ink) !important;
+  text-align: center !important;
+}
+
+.gs-station-dialog .gs-prompt-hero-btn {
+  font-size: clamp(23px, 2.1vw, 30px) !important;
+  padding: 20px 48px !important;
+  min-height: 70px !important;
+  max-width: 520px !important;
+  box-shadow: 4px 4px 0 var(--gs-brown) !important;
+}

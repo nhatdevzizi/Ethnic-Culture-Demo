@@ -77,27 +77,31 @@ export class GameshowEngine {
   }
 
   initTeams(names?: string[]) {
-    const defaultColors = ['#c0503f', '#cf8a2a', '#5f8a45', '#3f6d9e'];
-    const defaultNames = ['Đội Voi Tây Nguyên', 'Đội Chim Lạc', 'Đội Rừng Xanh', 'Đội Sao Vàng'];
+    const defaultColors = ['#c0503f', '#cf8a2a', '#5f8a45', '#3f6d9e', '#8e44ad'];
+    const defaultNames = ['Nhóm 1', 'Nhóm 2', 'Nhóm 3', 'Nhóm 5', 'Nhóm 6'];
 
     const chosenNames = names && names.length >= 2 ? names : defaultNames;
 
-    this.teams = chosenNames.map((name, idx) => ({
-      id: `team_${idx + 1}`,
-      name,
-      color: defaultColors[idx % defaultColors.length],
-      score: 0,
-      cards: {
-        steal_points: 0,
-        block_turn: 0,
-        shield: 0,
-      },
-      silverTorch: true,
-      goldTorch: true,
-      isEliminatedInRound1: false,
-      isEliminatedInRound2Vertical: false,
-      isBlockedNextQuestion: false,
-    }));
+    this.teams = chosenNames.map((name, idx) => {
+      const numMatch = name.match(/\d+/);
+      const id = numMatch ? `team_${numMatch[0]}` : `team_${idx + 1}`;
+      return {
+        id,
+        name,
+        color: defaultColors[idx % defaultColors.length],
+        score: 0,
+        cards: {
+          steal_points: 0,
+          block_turn: 0,
+          shield: 0,
+        },
+        silverTorch: true,
+        goldTorch: true,
+        isEliminatedInRound1: false,
+        isEliminatedInRound2Vertical: false,
+        isBlockedNextQuestion: false,
+      };
+    });
   }
 
   /**

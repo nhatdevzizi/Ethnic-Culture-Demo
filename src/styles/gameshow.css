@@ -1908,7 +1908,7 @@
 
 .gs-victory-podium-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(160px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 14px;
   width: 100%;
   max-width: 960px;
@@ -2009,7 +2009,7 @@
 
 .gs-ending-podium {
   display: grid;
-  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 12px;
   margin: 14px 0 18px;
 }
