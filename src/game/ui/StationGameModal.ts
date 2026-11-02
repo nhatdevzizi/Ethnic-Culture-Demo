@@ -1038,9 +1038,22 @@ export class StationGameModal {
         <div class="gs-cw-solved-title">
           ✅ ĐÁP ÁN HÀNG NGANG ${rowIdx + 1}: ${q.word_display} (Chữ cái Hàng Dọc: "${q.vertical_char}")
         </div>
-        
       `;
       panel.appendChild(solvedBox);
+
+      const backBtn = document.createElement('button');
+      backBtn.type = 'button';
+      backBtn.className = 'gs-r1-back-to-board-btn unlocked';
+      backBtn.innerHTML = '🔙 Quay về bảng ô chữ';
+      backBtn.addEventListener('click', () => {
+        this.clearActiveToast();
+        this.r2ActiveRowQuestion = false;
+        this.resetCurrentQuestionAttemptState();
+        sfx.playSuccess();
+        this.render();
+      });
+      panel.appendChild(backBtn);
+
       return panel;
     }
 
@@ -1116,7 +1129,7 @@ export class StationGameModal {
       const backBtn = document.createElement('button');
       backBtn.type = 'button';
       backBtn.className = 'gs-r1-back-to-board-btn unlocked';
-      backBtn.innerHTML = `🔙 QUAY VỀ BẢNG Ô CHỮ (ĐÃ GIẢI MÃ HÀNG NGANG SỐ ${rowIdx + 1})`;
+      backBtn.innerHTML = '🔙 Quay về bảng ô chữ';
       backBtn.addEventListener('click', () => {
         this.clearActiveToast();
         this.r2ActiveRowQuestion = false;
