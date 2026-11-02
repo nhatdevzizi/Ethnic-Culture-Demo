@@ -344,13 +344,43 @@ class OverlayController {
 
     const previewBox = element('div', 'gs-keys-drum-preview');
     const isUnlocked = count >= 4;
+    const q1 = gameshow.isStationCompleted('M01');
+    const q2 = gameshow.isStationCompleted('M02');
+    const q3 = gameshow.isStationCompleted('M03');
+    const q4 = gameshow.isStationCompleted('M04');
+
     previewBox.innerHTML = `
-      <div class="gs-keys-drum-img-wrap ${isUnlocked ? 'unlocked' : 'locked'}">
-        <img src="${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg" alt="Trống Đồng Đông Sơn" />
-        ${!isUnlocked ? `<div class="gs-keys-drum-lock-badge">🔒 ĐANG PHONG ẤN (${count}/4 🗝️)</div>` : ''}
+      <div class="gs-trongdong-quadrants-wrap">
+        <div class="gs-trongdong-quadrants-circle ${isUnlocked ? 'all-unlocked' : ''}" style="width:220px; height:220px;">
+          <div class="gs-trongdong-quadrant q1 ${q1 ? 'lit' : 'sealed'}">
+            <img src="${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung I" />
+            <div class="gs-trongdong-quadrant-mask"><span class="gs-quadrant-tag">${q1 ? '✨ CUNG I' : '🔒 CUNG I'}</span></div>
+          </div>
+          <div class="gs-trongdong-quadrant q2 ${q2 ? 'lit' : 'sealed'}">
+            <img src="${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung II" />
+            <div class="gs-trongdong-quadrant-mask"><span class="gs-quadrant-tag">${q2 ? '✨ CUNG II' : '🔒 CUNG II'}</span></div>
+          </div>
+          <div class="gs-trongdong-quadrant q3 ${q3 ? 'lit' : 'sealed'}">
+            <img src="${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung III" />
+            <div class="gs-trongdong-quadrant-mask"><span class="gs-quadrant-tag">${q3 ? '✨ CUNG III' : '🔒 CUNG III'}</span></div>
+          </div>
+          <div class="gs-trongdong-quadrant q4 ${q4 ? 'lit' : 'sealed'}">
+            <img src="${import.meta.env.BASE_URL}assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung IV" />
+            <div class="gs-trongdong-quadrant-mask"><span class="gs-quadrant-tag">${q4 ? '✨ CUNG IV' : '🔒 CUNG IV'}</span></div>
+          </div>
+          <div class="gs-trongdong-divider-h"></div>
+          <div class="gs-trongdong-divider-v"></div>
+          <div class="gs-trongdong-sun-core ${isUnlocked ? 'shining' : ''}"></div>
+        </div>
+        <div class="gs-trongdong-legend">
+          <div class="gs-legend-item ${q1 ? 'lit' : 'sealed'}"><span>${q1 ? '☀️' : '🔒'}</span> Cung I: Thổ Cẩm</div>
+          <div class="gs-legend-item ${q2 ? 'lit' : 'sealed'}"><span>${q2 ? '☀️' : '🔒'}</span> Cung II: Phiên Chợ</div>
+          <div class="gs-legend-item ${q3 ? 'lit' : 'sealed'}"><span>${q3 ? '☀️' : '🔒'}</span> Cung III: Cồng Chiêng</div>
+          <div class="gs-legend-item ${q4 ? 'lit' : 'sealed'}"><span>${q4 ? '☀️' : '🔒'}</span> Cung IV: Lửa Thiêng</div>
+        </div>
       </div>
       <strong class="gs-keys-drum-caption ${isUnlocked ? 'unlocked' : 'locked'}">
-        ${isUnlocked ? '✨ HÌNH ẢNH TRỐNG ĐỒNG ĐÔNG SƠN HOÀNG KIM ĐÃ ĐƯỢC MỞ KHÓA! ✨' : '🔒 Thu thập đủ 4/4 Chìa Khóa để mở khóa Hình ảnh Trống Đồng Đông Sơn'}
+        ${isUnlocked ? '✨ HÌNH ẢNH TRỐNG ĐỒNG ĐÔNG SƠN HOÀNG KIM ĐÃ ĐƯỢC MỞ KHÓA! ✨' : '🔒 Thu thập đủ 4/4 Cung phần tư để mở khóa Hình ảnh Trống Đồng Đông Sơn'}
       </strong>
     `;
     const btnRow = this.modal.querySelector('.button-row');

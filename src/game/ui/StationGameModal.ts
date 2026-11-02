@@ -37,6 +37,7 @@ export class StationGameModal {
   // Round 1 State: Ban đầu chưa hiển thị câu hỏi cho tới khi người chơi bấm chọn ô
   private r1ActiveTileQuestion = false;
   private isGuessingSecretPainting = false;
+  private lastSubmitTime = 0;
 
   // Round 2 State (Crossword: Hàng Ngang & Hàng Dọc)
   private r2ActiveRowQuestion = false;
@@ -488,13 +489,7 @@ export class StationGameModal {
       num.textContent = String(i + 1);
       tile.appendChild(num);
 
-      const q = r1Data.questions[i];
-      if (!isOpened && q && q.has_card) {
-        const badge = document.createElement('span');
-        badge.className = 'gs-tile-badge';
-        badge.textContent = 'PHIẾU';
-        tile.appendChild(badge);
-      }
+      // Đã ẩn toàn bộ huy hiệu gợi ý thẻ chức năng để đảm bảo tính bất ngờ ngẫu nhiên
 
       tile.addEventListener('click', () => {
         if (!isOpened) {
@@ -615,6 +610,49 @@ export class StationGameModal {
   // ==========================================================================
   // ROUND 1 SECRET PAINTING FILL-IN GUESS CARD
   // ==========================================================================
+  /**
+   * Giới hạn tần suất click nút submit đáp án (Tối đa 1 lần / 1 giây để chống spam click)
+   */
+  private attachThrottledSubmit(
+    submitBtn: HTMLButtonElement,
+    handler: () => void,
+    inputEl?: HTMLInputElement,
+    cooldownMs = 1000
+  ) {
+    const throttledHandler = () => {
+      const now = Date.now();
+      if (now - this.lastSubmitTime < cooldownMs) {
+        return;
+      }
+      this.lastSubmitTime = now;
+
+      // Khóa nút tức thì để ngăn spam click
+      submitBtn.disabled = true;
+      submitBtn.style.pointerEvents = 'none';
+      submitBtn.style.opacity = '0.6';
+
+      handler();
+
+      window.setTimeout(() => {
+        if (!this.isQuestionAnswered) {
+          submitBtn.disabled = false;
+          submitBtn.style.pointerEvents = '';
+          submitBtn.style.opacity = '';
+        }
+      }, cooldownMs);
+    };
+
+    submitBtn.addEventListener('click', throttledHandler);
+    if (inputEl) {
+      inputEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          throttledHandler();
+        }
+      });
+    }
+  }
+
   private renderGuessSecretPaintingCard(): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
@@ -779,13 +817,7 @@ export class StationGameModal {
       }
     };
 
-    submitBtn.addEventListener('click', checkPaintingGuess);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        checkPaintingGuess();
-      }
-    });
+    this.attachThrottledSubmit(submitBtn, checkPaintingGuess, input);
 
     inputRow.appendChild(input);
     inputRow.appendChild(submitBtn);
@@ -862,9 +894,7 @@ export class StationGameModal {
         <div class="gs-cw-solved-title">
           🌟 TỪ KHÓA HÀNG DỌC: ${r2Data.vertical_keyword}
         </div>
-        <div class="gs-cw-solved-text">
-          ${r2Data.vertical_explanation}
-        </div>
+        
       `;
       boardPanel.appendChild(solvedBanner);
     }
@@ -885,7 +915,7 @@ export class StationGameModal {
       const rowBtn = document.createElement('button');
       rowBtn.type = 'button';
       rowBtn.className = 'gs-cw-row-num-btn';
-      rowBtn.innerHTML = `Hàng ${rowIdx + 1}${!isRowOpened && rowQ.has_card ? ' ⭐' : ''}`;
+      rowBtn.innerHTML = `Hàng ${rowIdx + 1}`;
       rowEl.appendChild(rowBtn);
 
       const cellsTrack = document.createElement('div');
@@ -1009,9 +1039,7 @@ export class StationGameModal {
         <div class="gs-cw-solved-title">
           ✅ ĐÁP ÁN HÀNG NGANG ${rowIdx + 1}: ${q.word_display} (Chữ cái Hàng Dọc: "${q.vertical_char}")
         </div>
-        <div class="gs-cw-solved-text">
-          ${q.explanation}
-        </div>
+        
       `;
       panel.appendChild(solvedBox);
       return panel;
@@ -1078,13 +1106,7 @@ export class StationGameModal {
       );
     };
 
-    submitBtn.addEventListener('click', checkRowAnswer);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        checkRowAnswer();
-      }
-    });
+    this.attachThrottledSubmit(submitBtn, checkRowAnswer, input);
 
     inputRow.appendChild(input);
     inputRow.appendChild(submitBtn);
@@ -1248,7 +1270,7 @@ export class StationGameModal {
         this.showScoreToast(
           answeringTeam.name,
           points,
-          `🎉 CHÍNH XÁC! Từ khóa Hàng Dọc là: "${r2Data.vertical_keyword}".\n${r2Data.vertical_explanation}\n(${answeringTeam.name} giành +${points} điểm và mở khóa Chìa Khóa Vòng 2: ${totalKeys}/4!)`,
+          `🎉 CHÍNH XÁC! Từ khóa Hàng Dọc là: "${r2Data.vertical_keyword}".\n(${answeringTeam.name} giành +${points} điểm và mở khóa Chìa Khóa Vòng 2: ${totalKeys}/4!)`,
           4200,
           () => {
             this.isGuessingVerticalKeyword = false;
@@ -1300,13 +1322,7 @@ export class StationGameModal {
       }
     };
 
-    submitBtn.addEventListener('click', checkVerticalGuess);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        checkVerticalGuess();
-      }
-    });
+    this.attachThrottledSubmit(submitBtn, checkVerticalGuess, input);
 
     inputRow.appendChild(input);
     inputRow.appendChild(submitBtn);
@@ -1809,15 +1825,21 @@ export class StationGameModal {
           4200,
           afterToast
         );
-      } else if (q.has_card) {
-        gameshow.awardCard(currentTeam.id, q.has_card as FunctionalCardType);
-        this.showCardAwardToast(currentTeam.name, q.has_card as FunctionalCardType, afterToast);
       } else {
-        const fullExplanation = extraPrefix ? `${extraPrefix}\n${q.explanation || ''}` : (q.explanation || '');
+        const awardedCard = gameshow.claimQuestionCard(this.activeStationId, this.currentQuestionIndex);
+
+        if (awardedCard) {
+          gameshow.awardCard(currentTeam.id, awardedCard);
+          this.showCardAwardToast(currentTeam.name, awardedCard, afterToast);
+          return;
+        }
+
+        const fullExplanation = extraPrefix || "Chính xác!";
         const reasonNote = lastDelta && lastDelta.reason.includes('Quỹ Săn Mồi')
           ? `🔥 ${lastDelta.reason}!\n\n${fullExplanation}`
           : fullExplanation;
         this.showScoreToast(currentTeam.name, delta, reasonNote, 3800, afterToast);
+        return;
       }
       return;
     }
@@ -1883,7 +1905,7 @@ export class StationGameModal {
       // Cập nhật giao diện ngay lập tức để hiển thị khung Đáp Án Chính Xác & Giải Thích trên thẻ câu hỏi
       this.render();
 
-      const fullExplanation = `📢 Tất cả các nhóm đều đã trả lời sai câu hỏi này! Đáp án chính xác:\n${extraPrefix ? extraPrefix + '\n' : ''}${q.explanation || ''}`;
+      const fullExplanation = `📢 Tất cả các nhóm đều đã trả lời sai câu hỏi này! Đáp án chính xác:\n${extraPrefix ? extraPrefix : ""}`;
       this.showScoreToast(
         '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI · MỞ ĐÁP ÁN CHÍNH XÁC',
         delta,
@@ -1904,7 +1926,7 @@ export class StationGameModal {
    * Hiển thị khung Đáp Án Chính Xác & Giải Thích trực tiếp trên thẻ câu hỏi sau khi có đội trả lời đúng
    * hoặc sau khi cả 4 đội đều trả lời sai. Đồng thời ở Vòng 1 hiển thị nút Quay Về Bảng Mảnh Ghép!
    */
-  private appendPostAnswerFooter(panel: HTMLElement, answerSummary: string, explanation?: string) {
+  private appendPostAnswerFooter(panel: HTMLElement, answerSummary: string, _explanation?: string) {
     if (this.isQuestionAnswered) {
       const allFailed = gameshow.teams.every(
         (t) => this.failedTeamIdsOnQuestion.has(t.id) || t.isBlockedNextQuestion
@@ -1916,7 +1938,6 @@ export class StationGameModal {
           ${allFailed ? '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI — ĐÁP ÁN CHÍNH XÁC LÀ:' : '✅ ĐÁP ÁN CHÍNH XÁC:'}
           <span>${answerSummary}</span>
         </div>
-        ${explanation ? `<div class="gs-revealed-answer-exp">💡 <strong>Giải thích:</strong> ${explanation}</div>` : ''}
       `;
       panel.appendChild(ansBanner);
 
@@ -2063,7 +2084,7 @@ export class StationGameModal {
     submitBtn.className = 'gs-fillin-submit-btn';
     submitBtn.textContent = '✔ CHỐT ĐÁP ÁN ĐÚNG / SAI';
     submitBtn.disabled = this.isQuestionAnswered;
-    submitBtn.addEventListener('click', () => {
+    const checkTfAnswer = () => {
       if (this.isQuestionAnswered) return;
       if (selectedCount < q.statements.length) {
         this.interactiveWarningMsg = `⚠️ Bạn mới chọn ${selectedCount}/${q.statements.length} mệnh đề. Hãy tích Đúng hoặc Sai cho tất cả các ý trước khi chốt!`;
@@ -2079,7 +2100,8 @@ export class StationGameModal {
       const isCorrect = correctCount === q.statements.length;
       const summaryPrefix = `Đáp án đúng: ${q.statements.map((s, i) => `Ý ${i + 1}: ${s.is_true ? 'ĐÚNG' : 'SAI'}`).join(' | ')}.`;
       this.finalizeInteractiveAnswer(q, isCorrect, onAnswer, onCompleteAfterToast, summaryPrefix);
-    });
+    };
+    this.attachThrottledSubmit(submitBtn, checkTfAnswer);
 
     footerRow.appendChild(statusInfo);
     footerRow.appendChild(submitBtn);
@@ -2229,7 +2251,7 @@ export class StationGameModal {
     submitBtn.className = 'gs-fillin-submit-btn';
     submitBtn.textContent = '✔ CHỐT THỨ TỰ SẮP XẾP';
     submitBtn.disabled = this.isQuestionAnswered;
-    submitBtn.addEventListener('click', () => {
+    const checkOrderAnswer = () => {
       if (this.isQuestionAnswered) return;
       this.stopQuestionTimer();
       this.orderingSwapIdx = null;
@@ -2237,7 +2259,8 @@ export class StationGameModal {
       const isCorrect = this.orderingCurrent.every((itemIdx, pos) => itemIdx === pos);
       const summaryPrefix = 'Đã hoàn tất kiểm tra trình tự sắp xếp 4 bước.';
       this.finalizeInteractiveAnswer(q, isCorrect, onAnswer, onCompleteAfterToast, summaryPrefix);
-    });
+    };
+    this.attachThrottledSubmit(submitBtn, checkOrderAnswer);
 
     footerRow.appendChild(hintSpan);
     footerRow.appendChild(submitBtn);
@@ -2459,7 +2482,7 @@ export class StationGameModal {
     submitBtn.className = 'gs-fillin-submit-btn';
     submitBtn.textContent = '✔ CHỐT CẶP NỐI';
     submitBtn.disabled = this.isQuestionAnswered;
-    submitBtn.addEventListener('click', () => {
+    const checkMatchAnswer = () => {
       if (this.isQuestionAnswered) return;
       if (pairedCount < q.left_items.length) {
         this.interactiveWarningMsg = `⚠️ Bạn mới nối ${pairedCount}/${q.left_items.length} cặp. Hãy nối đầy đủ cả 4 cặp giữa Vế A và Vế B trước khi chốt!`;
@@ -2475,7 +2498,8 @@ export class StationGameModal {
       const isCorrect = correctCount === q.left_items.length;
       const summaryPrefix = `Cặp nối đúng: ${q.correct_pairs.map((r, l) => `${l + 1} ↔ ${String.fromCharCode(65 + r)}`).join(' | ')}.`;
       this.finalizeInteractiveAnswer(q, isCorrect, onAnswer, onCompleteAfterToast, summaryPrefix);
-    });
+    };
+    this.attachThrottledSubmit(submitBtn, checkMatchAnswer);
 
     actionBtns.appendChild(resetBtn);
     actionBtns.appendChild(submitBtn);
@@ -2532,6 +2556,9 @@ export class StationGameModal {
 
         btn.addEventListener('click', () => {
           if (this.isQuestionAnswered) return;
+          const now = Date.now();
+          if (now - this.lastSubmitTime < 1000) return;
+          this.lastSubmitTime = now;
           this.stopQuestionTimer();
 
           allOptionButtons.forEach((b) => {
@@ -2714,13 +2741,7 @@ export class StationGameModal {
       );
     };
 
-    submitBtn.addEventListener('click', checkAnswer);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        checkAnswer();
-      }
-    });
+    this.attachThrottledSubmit(submitBtn, checkAnswer, input);
 
     inputRow.appendChild(input);
     inputRow.appendChild(submitBtn);
@@ -2831,10 +2852,10 @@ export class StationGameModal {
 
     toast.innerHTML = `
       <div class="gs-card-award-card" style="border-color:${cardColor}">
-        <div class="gs-card-award-crown">👑 PHẦN THƯỞNG PHIẾU CHỨC NĂNG 👑</div>
+        <div class="gs-card-award-crown">🎁 BẤT NGỜ MỞ KHÓA THẺ CHỨC NĂNG! 🎁</div>
         <div class="gs-card-award-icon">${cardIcon}</div>
         <div class="gs-card-award-type" style="color:${cardColor}">${cardTitle}</div>
-        <div class="gs-card-award-winner">Trao cho: <strong>${teamName}</strong></div>
+        <div class="gs-card-award-winner">Trao cho: <strong>${teamName}</strong> (+20 điểm & Thẻ)</div>
         <div class="gs-card-award-desc">${cardDesc}</div>
       </div>
       <div class="gs-toast-progress-bar"></div>
@@ -2875,13 +2896,138 @@ export class StationGameModal {
       return;
     }
 
-    const msg = isNew
-      ? `🎉 XIN CHÚC MỪNG CÁC ĐỘI!\nĐã hoàn thành xuất sắc [${stationName}] và mở khóa thành công CHÌA KHÓA thứ ${totalKeys}/4!\n\nCòn thiếu ${4 - totalKeys} chìa khóa nữa để mở khóa Hình ảnh Trống Đồng Đông Sơn.`
-      : `Vòng thi [${stationName}] đã hoàn thành trước đó! (Hiện có ${totalKeys}/4 Chìa Khóa)`;
+    this.showQuadrantUnlockedCelebration(stationId, stationName, isNew);
+  }
 
-    this.showScoreToast('CHÌA KHÓA THU THẬP', 0, msg, 4000, () => {
+  private renderTrongDongQuadrantsHtml(highlightStationId?: string, size = 250): string {
+    const q1 = gameshow.isStationCompleted('M01');
+    const q2 = gameshow.isStationCompleted('M02');
+    const q3 = gameshow.isStationCompleted('M03');
+    const q4 = gameshow.isStationCompleted('M04');
+    const allUnlocked = gameshow.hasAllKeys();
+
+    return `
+      <div class="gs-trongdong-quadrants-wrap">
+        <div class="gs-trongdong-quadrants-circle ${allUnlocked ? 'all-unlocked' : ''}" style="width:${size}px; height:${size}px;">
+          <!-- Cung 1 (Top-Right): M01 -->
+          <div class="gs-trongdong-quadrant q1 ${q1 ? 'lit' : 'sealed'} ${highlightStationId === 'M01' ? 'highlight' : ''}">
+            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung I" />
+            <div class="gs-trongdong-quadrant-mask">
+              <span class="gs-quadrant-tag">${q1 ? '✨ CUNG I' : '🔒 CUNG I'}</span>
+            </div>
+          </div>
+          <!-- Cung 2 (Bottom-Right): M02 -->
+          <div class="gs-trongdong-quadrant q2 ${q2 ? 'lit' : 'sealed'} ${highlightStationId === 'M02' ? 'highlight' : ''}">
+            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung II" />
+            <div class="gs-trongdong-quadrant-mask">
+              <span class="gs-quadrant-tag">${q2 ? '✨ CUNG II' : '🔒 CUNG II'}</span>
+            </div>
+          </div>
+          <!-- Cung 3 (Bottom-Left): M03 -->
+          <div class="gs-trongdong-quadrant q3 ${q3 ? 'lit' : 'sealed'} ${highlightStationId === 'M03' ? 'highlight' : ''}">
+            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung III" />
+            <div class="gs-trongdong-quadrant-mask">
+              <span class="gs-quadrant-tag">${q3 ? '✨ CUNG III' : '🔒 CUNG III'}</span>
+            </div>
+          </div>
+          <!-- Cung 4 (Top-Left): M04 -->
+          <div class="gs-trongdong-quadrant q4 ${q4 ? 'lit' : 'sealed'} ${highlightStationId === 'M04' ? 'highlight' : ''}">
+            <img src="assets/sprites/trong_dong_dong_son.svg" class="gs-trongdong-img" alt="Cung IV" />
+            <div class="gs-trongdong-quadrant-mask">
+              <span class="gs-quadrant-tag">${q4 ? '✨ CUNG IV' : '🔒 CUNG IV'}</span>
+            </div>
+          </div>
+          <div class="gs-trongdong-divider-h"></div>
+          <div class="gs-trongdong-divider-v"></div>
+          <div class="gs-trongdong-sun-core ${allUnlocked ? 'shining' : ''}"></div>
+        </div>
+        <div class="gs-trongdong-legend">
+          <div class="gs-legend-item ${q1 ? 'lit' : 'sealed'}"><span>${q1 ? '☀️' : '🔒'}</span> Cung I: Thổ Cẩm (${q1 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
+          <div class="gs-legend-item ${q2 ? 'lit' : 'sealed'}"><span>${q2 ? '☀️' : '🔒'}</span> Cung II: Phiên Chợ (${q2 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
+          <div class="gs-legend-item ${q3 ? 'lit' : 'sealed'}"><span>${q3 ? '☀️' : '🔒'}</span> Cung III: Cồng Chiêng (${q3 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
+          <div class="gs-legend-item ${q4 ? 'lit' : 'sealed'}"><span>${q4 ? '☀️' : '🔒'}</span> Cung IV: Lửa Thiêng (${q4 ? 'ĐÃ SÁNG' : 'PHONG ẤN'})</div>
+        </div>
+      </div>
+    `;
+  }
+
+  private showQuadrantUnlockedCelebration(stationId: string, stationName: string, isNew: boolean) {
+    this.clearActiveToast();
+
+    const toast = document.createElement('div');
+    toast.className = 'gs-score-toast gs-drum-unlock-toast';
+
+    const quad = gameshow.getStationQuadrant(stationId);
+    const totalKeys = gameshow.getCollectedKeysCount();
+
+    const headerBadge = document.createElement('div');
+    headerBadge.className = 'gs-drum-unlock-badge';
+    headerBadge.textContent = isNew
+      ? `🔑 BỪNG SÁNG CUNG PHẦN TƯ THỨ ${quad?.index || 1} / 4 TRỐNG ĐỒNG!`
+      : `🔑 CUNG PHẦN TƯ THỨ ${quad?.index || 1} / 4 (ĐÃ HOÀN THÀNH TRƯỚC ĐÓ)`;
+
+    const drumVisualWrap = document.createElement('div');
+    drumVisualWrap.className = 'gs-drum-unlock-visual';
+    drumVisualWrap.innerHTML = this.renderTrongDongQuadrantsHtml(stationId, 250);
+
+    const title = document.createElement('div');
+    title.className = 'gs-result-team-name';
+    title.textContent = `✨ THẮP SÁNG ${quad?.name || ''}: ${stationName.toUpperCase()} ✨`;
+
+    const exp = document.createElement('div');
+    exp.className = 'gs-result-explanation';
+    exp.innerHTML = `Chúc mừng các đội đã hoàn thành xuất sắc [${stationName}]!<br>
+      <strong>Cung phần tư thứ ${quad?.index || 1}</strong> trên Trống Đồng Đông Sơn đã chính thức bừng sáng rực rỡ.<br>
+      Hiện tại đã thắp sáng được <strong>${totalKeys}/4</strong> cung phần tư (còn thiếu <strong>${4 - totalKeys}</strong> cung nữa để giải trừ hoàn toàn phong ấn).`;
+
+    const actionWrap = document.createElement('div');
+    actionWrap.className = 'gs-drum-unlock-actions';
+
+    const goHubBtn = document.createElement('button');
+    goHubBtn.className = 'gs-victory-btn primary';
+    goHubBtn.textContent = '🗺️ Về Bản Đồ Ngắm Trống Đồng & Chọn Lán Tiếp Theo';
+    goHubBtn.onclick = (e) => {
+      e.stopPropagation();
+      dismiss();
+      this.close();
+    };
+
+    const stayBtn = document.createElement('button');
+    stayBtn.className = 'gs-victory-btn secondary';
+    stayBtn.textContent = '✨ Tiếp tục xem kết quả vòng này';
+    stayBtn.onclick = (e) => {
+      e.stopPropagation();
+      dismiss();
+    };
+
+    actionWrap.appendChild(goHubBtn);
+    actionWrap.appendChild(stayBtn);
+
+    toast.appendChild(headerBadge);
+    toast.appendChild(drumVisualWrap);
+    toast.appendChild(title);
+    toast.appendChild(exp);
+    toast.appendChild(actionWrap);
+
+    let dismissed = false;
+    const dismiss = () => {
+      if (dismissed) return;
+      dismissed = true;
+      if (this.toastTimeout !== null) {
+        clearTimeout(this.toastTimeout);
+        this.toastTimeout = null;
+      }
+      toast.remove();
       this.render();
+    };
+
+    toast.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).tagName === 'BUTTON') return;
+      dismiss();
     });
+
+    this.modalContainer.appendChild(toast);
+    this.toastTimeout = window.setTimeout(dismiss, 12000);
   }
 
   private showDrumUnsealedCelebrationToast(stationName?: string) {
@@ -2896,11 +3042,7 @@ export class StationGameModal {
 
     const drumVisualWrap = document.createElement('div');
     drumVisualWrap.className = 'gs-drum-unlock-visual';
-    const drumImg = document.createElement('img');
-    drumImg.src = 'assets/sprites/trong_dong_dong_son.svg';
-    drumImg.alt = 'Trống Đồng Đông Sơn Hoàng Kim';
-    drumImg.className = 'gs-drum-unlock-img';
-    drumVisualWrap.appendChild(drumImg);
+    drumVisualWrap.innerHTML = this.renderTrongDongQuadrantsHtml(undefined, 250);
 
     const title = document.createElement('div');
     title.className = 'gs-result-team-name';

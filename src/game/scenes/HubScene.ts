@@ -34,8 +34,14 @@ export class HubScene extends Phaser.Scene {
   private drumBaseAura?: Phaser.GameObjects.Arc;
   private drumOuterAura?: Phaser.GameObjects.Arc;
   private drumAuraTween?: Phaser.Tweens.Tween;
-  private drumBlackBox?: Phaser.GameObjects.Rectangle;
-  private drumWorldLabel?: Phaser.GameObjects.DOMElement;
+  private drumRotateTween?: Phaser.Tweens.Tween;
+  private drumCoverQ1?: Phaser.GameObjects.Rectangle;
+  private drumCoverQ2?: Phaser.GameObjects.Rectangle;
+  private drumCoverQ3?: Phaser.GameObjects.Rectangle;
+  private drumCoverQ4?: Phaser.GameObjects.Rectangle;
+  private drumDividerH?: Phaser.GameObjects.Line;
+  private drumDividerV?: Phaser.GameObjects.Line;
+    private drumWorldLabel?: Phaser.GameObjects.DOMElement;
   nearby?: Interactable;
 
   constructor() {
@@ -278,25 +284,68 @@ export class HubScene extends Phaser.Scene {
       repeat: -1,
     });
 
+    const cx = map.board.x;
+    const cy = map.board.y - 10;
+    const drumR = 65;
+
     this.drumSprite = this.add
-      .image(map.board.x, map.board.y - 10, 'trong-dong')
+      .image(cx, cy, 'trong-dong')
       .setOrigin(0.5, 0.5)
-      .setDisplaySize(130, 130)
-      .setDepth(map.board.y + 8);
+      .setDisplaySize(drumR * 2, drumR * 2)
+      .setDepth(cy + 8);
 
-    // Khối vuông đen xoay che trống đồng khi chưa đủ 4 chìa khóa
-    this.drumBlackBox = this.add
-      .rectangle(map.board.x, map.board.y - 10, 130, 130, 0x000000, 1)
+    // 4 Cung phần tư phong ấn Trống Đồng Đông Sơn (Q1: Trên-Phải, Q2: Dưới-Phải, Q3: Dưới-Trái, Q4: Trên-Trái)
+    this.drumCoverQ1 = this.add
+      .rectangle(cx + drumR / 2, cy - drumR / 2, drumR, drumR, 0x161310, 0.94)
       .setOrigin(0.5, 0.5)
-      .setDepth(map.board.y + 9);
+      .setDepth(cy + 9);
 
-    this.tweens.add({
-      targets: [this.drumSprite, this.drumBlackBox],
+    this.drumCoverQ2 = this.add
+      .rectangle(cx + drumR / 2, cy + drumR / 2, drumR, drumR, 0x161310, 0.94)
+      .setOrigin(0.5, 0.5)
+      .setDepth(cy + 9);
+
+    this.drumCoverQ3 = this.add
+      .rectangle(cx - drumR / 2, cy + drumR / 2, drumR, drumR, 0x161310, 0.94)
+      .setOrigin(0.5, 0.5)
+      .setDepth(cy + 9);
+
+    this.drumCoverQ4 = this.add
+      .rectangle(cx - drumR / 2, cy - drumR / 2, drumR, drumR, 0x161310, 0.94)
+      .setOrigin(0.5, 0.5)
+      .setDepth(cy + 9);
+
+    const maskGfx = this.make.graphics();
+    maskGfx.fillStyle(0xffffff);
+    maskGfx.fillCircle(cx, cy, drumR);
+    const drumCircleMask = maskGfx.createGeometryMask();
+    this.drumCoverQ1.setMask(drumCircleMask);
+    this.drumCoverQ2.setMask(drumCircleMask);
+    this.drumCoverQ3.setMask(drumCircleMask);
+    this.drumCoverQ4.setMask(drumCircleMask);
+
+    this.drumDividerH = this.add
+      .line(cx, cy, -drumR, 0, drumR, 0)
+      .setStrokeStyle(2, 0xd4af37, 0.75)
+      .setDepth(cy + 10);
+    this.drumDividerV = this.add
+      .line(cx, cy, 0, -drumR, 0, drumR)
+      .setStrokeStyle(2, 0xd4af37, 0.75)
+      .setDepth(cy + 10);
+
+    this.add
+      .circle(cx, cy, 7, 0xffd700, 1)
+      .setStrokeStyle(1.5, 0x5d4037)
+      .setDepth(cy + 11);
+
+    this.drumRotateTween = this.tweens.add({
+      targets: [this.drumSprite],
       angle: 360,
       duration: 48000,
       repeat: -1,
       ease: 'Linear',
     });
+    this.drumRotateTween.pause();
 
     this.drumWorldLabel = this.addWorldLabel(
       map.board.x,
@@ -732,16 +781,15 @@ export class HubScene extends Phaser.Scene {
     const keys = gameshow.getCollectedKeysCount();
     const unlocked = keys >= 4;
 
-    if (this.drumBlackBox) {
-      this.drumBlackBox.setVisible(!unlocked);
-    }
+    const q1Solved = gameshow.isStationCompleted('M01');
+    const q2Solved = gameshow.isStationCompleted('M02');
+    const q3Solved = gameshow.isStationCompleted('M03');
+    const q4Solved = gameshow.isStationCompleted('M04');
 
-    if (this.drumSprite) {
-      this.drumSprite.setVisible(unlocked);
-      if (unlocked) {
-        this.drumSprite.clearTint().setAlpha(1);
-      }
-    }
+    if (this.drumCoverQ1) this.drumCoverQ1.setVisible(!q1Solved);
+    if (this.drumCoverQ2) this.drumCoverQ2.setVisible(!q2Solved);
+    if (this.drumCoverQ3) this.drumCoverQ3.setVisible(!q3Solved);
+    if (this.drumCoverQ4) this.drumCoverQ4.setVisible(!q4Solved);
 
     if (this.drumBaseAura && this.drumOuterAura) {
       this.drumBaseAura.setVisible(unlocked);
@@ -750,9 +798,22 @@ export class HubScene extends Phaser.Scene {
       else this.drumAuraTween?.pause();
     }
 
+    if (unlocked) {
+      this.drumRotateTween?.resume();
+      this.drumDividerH?.setAlpha(0.25);
+      this.drumDividerV?.setAlpha(0.25);
+    } else {
+      this.drumRotateTween?.pause();
+      this.drumSprite?.setAngle(0);
+      this.drumDividerH?.setAlpha(0.75);
+      this.drumDividerV?.setAlpha(0.75);
+    }
+
     if (this.drumWorldLabel) {
       const labelEl = this.drumWorldLabel.node as HTMLElement;
-      labelEl.textContent = 'TRỐNG ĐỒNG ĐÔNG SƠN';
+      labelEl.textContent = unlocked
+        ? '✨ TRỐNG ĐỒNG ĐÔNG SƠN (MỞ KHÓA) ✨'
+        : `TRỐNG ĐỒNG ĐÔNG SƠN (${keys}/4 CUNG SÁNG)`;
       const baseX = Number(labelEl.dataset.baseX || this.drumWorldLabel.x);
       this.drumWorldLabel.updateSize();
       this.drumWorldLabel.x = baseX + this.drumWorldLabel.width * 0.1;

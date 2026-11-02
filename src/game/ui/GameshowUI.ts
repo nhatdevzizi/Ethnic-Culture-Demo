@@ -189,14 +189,6 @@ export class GameshowUI {
       num.textContent = String(i + 1);
       tile.appendChild(num);
 
-      const q = r1Data.questions[i];
-      if (!isOpened && q && q.has_card) {
-        const badge = document.createElement('span');
-        badge.className = 'gs-tile-badge';
-        badge.textContent = '⭐PHIẾU';
-        tile.appendChild(badge);
-      }
-
       tile.addEventListener('click', () => {
         if (!isOpened) {
           this.activeQuestionIndex = i;
