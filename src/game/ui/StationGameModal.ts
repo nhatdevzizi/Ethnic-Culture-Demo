@@ -2954,63 +2954,59 @@ export class StationGameModal {
   private showQuadrantUnlockedCelebration(stationId: string, stationName: string, isNew: boolean) {
     this.clearActiveToast();
 
-    const toast = document.createElement('div');
-    toast.className = 'gs-score-toast gs-drum-unlock-toast';
-
+    const themes: Record<string, { accent: string; deep: string }> = {
+      M01: { accent: '#a63d2f', deep: '#7e2c21' },
+      M02: { accent: '#4f6b3a', deep: '#38502a' },
+      M03: { accent: '#2f4a6b', deep: '#223750' },
+      M04: { accent: '#b5562a', deep: '#8a3f1c' },
+    };
+    const theme = themes[stationId] || themes.M01;
     const quad = gameshow.getStationQuadrant(stationId);
     const totalKeys = gameshow.getCollectedKeysCount();
 
-    const headerBadge = document.createElement('div');
-    headerBadge.className = 'gs-drum-unlock-badge';
-    headerBadge.textContent = isNew
-      ? `🔑 BỪNG SÁNG CUNG PHẦN TƯ THỨ ${quad?.index || 1} / 4 TRỐNG ĐỒNG!`
-      : `🔑 CUNG PHẦN TƯ THỨ ${quad?.index || 1} / 4 (ĐÃ HOÀN THÀNH TRƯỚC ĐÓ)`;
+    const toast = document.createElement('div');
+    toast.className = 'gs-score-toast gs-key-toast';
+    toast.style.setProperty('--key-accent', theme.accent);
+    toast.style.setProperty('--key-deep', theme.deep);
 
-    const drumVisualWrap = document.createElement('div');
-    drumVisualWrap.className = 'gs-drum-unlock-visual';
-    drumVisualWrap.innerHTML = this.renderTrongDongQuadrantsHtml(stationId, 250);
-
-    const title = document.createElement('div');
-    title.className = 'gs-result-team-name';
-    title.textContent = `✨ THẮP SÁNG ${quad?.name || ''}: ${stationName.toUpperCase()} ✨`;
-
-    const exp = document.createElement('div');
-    exp.className = 'gs-result-explanation';
-    exp.innerHTML = `Chúc mừng các đội đã hoàn thành xuất sắc [${stationName}]!<br>
-      <strong>Cung phần tư thứ ${quad?.index || 1}</strong> trên Trống Đồng Đông Sơn đã chính thức bừng sáng rực rỡ.<br>
-      Hiện tại đã thắp sáng được <strong>${totalKeys}/4</strong> cung phần tư (còn thiếu <strong>${4 - totalKeys}</strong> cung nữa để giải trừ hoàn toàn phong ấn).`;
+    const card = document.createElement('div');
+    card.className = 'gs-key-card';
+    card.innerHTML = `
+      <div class="gs-key-icon">🗝️</div>
+      <div class="gs-key-title">${isNew ? 'ĐÃ NHẬN CHÌA KHÓA' : 'ĐÃ CÓ CHÌA KHÓA'} VÒNG ${quad?.index || 1}</div>
+      <div class="gs-key-station">${stationName}</div>
+      <div class="gs-key-count">Chìa khóa thu thập: ${totalKeys}/4</div>
+    `;
 
     const actionWrap = document.createElement('div');
-    actionWrap.className = 'gs-drum-unlock-actions';
+    actionWrap.className = 'gs-key-actions';
 
     const goHubBtn = document.createElement('button');
-    goHubBtn.className = 'gs-victory-btn primary';
-    goHubBtn.textContent = '🗺️ Về Bản Đồ Ngắm Trống Đồng & Chọn Lán Tiếp Theo';
-    goHubBtn.onclick = (e) => {
-      e.stopPropagation();
-      dismiss();
+    goHubBtn.type = 'button';
+    goHubBtn.className = 'gs-key-btn primary';
+    goHubBtn.textContent = '🗺️ Về bản đồ';
+    goHubBtn.onclick = (ev) => {
+      ev.stopPropagation();
+      dismiss(false);
       this.close();
     };
 
     const stayBtn = document.createElement('button');
-    stayBtn.className = 'gs-victory-btn secondary';
-    stayBtn.textContent = '✨ Tiếp tục xem kết quả vòng này';
-    stayBtn.onclick = (e) => {
-      e.stopPropagation();
-      dismiss();
+    stayBtn.type = 'button';
+    stayBtn.className = 'gs-key-btn';
+    stayBtn.textContent = 'Tiếp tục';
+    stayBtn.onclick = (ev) => {
+      ev.stopPropagation();
+      dismiss(true);
     };
 
     actionWrap.appendChild(goHubBtn);
     actionWrap.appendChild(stayBtn);
-
-    toast.appendChild(headerBadge);
-    toast.appendChild(drumVisualWrap);
-    toast.appendChild(title);
-    toast.appendChild(exp);
-    toast.appendChild(actionWrap);
+    card.appendChild(actionWrap);
+    toast.appendChild(card);
 
     let dismissed = false;
-    const dismiss = () => {
+    const dismiss = (rerender: boolean) => {
       if (dismissed) return;
       dismissed = true;
       if (this.toastTimeout !== null) {
@@ -3018,16 +3014,16 @@ export class StationGameModal {
         this.toastTimeout = null;
       }
       toast.remove();
-      this.render();
+      if (rerender) this.render();
     };
 
-    toast.addEventListener('click', (e) => {
-      if ((e.target as HTMLElement).tagName === 'BUTTON') return;
-      dismiss();
+    toast.addEventListener('click', (ev) => {
+      if ((ev.target as HTMLElement).tagName === 'BUTTON') return;
+      dismiss(true);
     });
 
     this.modalContainer.appendChild(toast);
-    this.toastTimeout = window.setTimeout(dismiss, 12000);
+    this.toastTimeout = window.setTimeout(() => dismiss(true), 12000);
   }
 
   private showDrumUnsealedCelebrationToast(stationName?: string) {

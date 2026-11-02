@@ -35,12 +35,7 @@ export class HubScene extends Phaser.Scene {
   private drumOuterAura?: Phaser.GameObjects.Arc;
   private drumAuraTween?: Phaser.Tweens.Tween;
   private drumRotateTween?: Phaser.Tweens.Tween;
-  private drumCoverQ1?: Phaser.GameObjects.Rectangle;
-  private drumCoverQ2?: Phaser.GameObjects.Rectangle;
-  private drumCoverQ3?: Phaser.GameObjects.Rectangle;
-  private drumCoverQ4?: Phaser.GameObjects.Rectangle;
-  private drumDividerH?: Phaser.GameObjects.Line;
-  private drumDividerV?: Phaser.GameObjects.Line;
+  private drumCovers: Phaser.GameObjects.Graphics[] = [];
     private drumWorldLabel?: Phaser.GameObjects.DOMElement;
   nearby?: Interactable;
 
@@ -294,49 +289,22 @@ export class HubScene extends Phaser.Scene {
       .setDisplaySize(drumR * 2, drumR * 2)
       .setDepth(cy + 8);
 
-    // 4 Cung phần tư phong ấn Trống Đồng Đông Sơn (Q1: Trên-Phải, Q2: Dưới-Phải, Q3: Dưới-Trái, Q4: Trên-Trái)
-    this.drumCoverQ1 = this.add
-      .rectangle(cx + drumR / 2, cy - drumR / 2, drumR, drumR, 0x161310, 0.94)
-      .setOrigin(0.5, 0.5)
-      .setDepth(cy + 9);
-
-    this.drumCoverQ2 = this.add
-      .rectangle(cx + drumR / 2, cy + drumR / 2, drumR, drumR, 0x161310, 0.94)
-      .setOrigin(0.5, 0.5)
-      .setDepth(cy + 9);
-
-    this.drumCoverQ3 = this.add
-      .rectangle(cx - drumR / 2, cy + drumR / 2, drumR, drumR, 0x161310, 0.94)
-      .setOrigin(0.5, 0.5)
-      .setDepth(cy + 9);
-
-    this.drumCoverQ4 = this.add
-      .rectangle(cx - drumR / 2, cy - drumR / 2, drumR, drumR, 0x161310, 0.94)
-      .setOrigin(0.5, 0.5)
-      .setDepth(cy + 9);
-
-    const maskGfx = this.make.graphics();
-    maskGfx.fillStyle(0xffffff);
-    maskGfx.fillCircle(cx, cy, drumR);
-    const drumCircleMask = maskGfx.createGeometryMask();
-    this.drumCoverQ1.setMask(drumCircleMask);
-    this.drumCoverQ2.setMask(drumCircleMask);
-    this.drumCoverQ3.setMask(drumCircleMask);
-    this.drumCoverQ4.setMask(drumCircleMask);
-
-    this.drumDividerH = this.add
-      .line(cx, cy, -drumR, 0, drumR, 0)
-      .setStrokeStyle(2, 0xd4af37, 0.75)
-      .setDepth(cy + 10);
-    this.drumDividerV = this.add
-      .line(cx, cy, 0, -drumR, 0, drumR)
-      .setStrokeStyle(2, 0xd4af37, 0.75)
-      .setDepth(cy + 10);
-
-    this.add
-      .circle(cx, cy, 7, 0xffd700, 1)
-      .setStrokeStyle(1.5, 0x5d4037)
-      .setDepth(cy + 11);
+    // 4 cung phần tư (hình quạt) phủ tối lên mặt trống: Q1 trên-phải, Q2 dưới-phải, Q3 dưới-trái, Q4 trên-trái
+    this.drumCovers = [];
+    for (let i = 0; i < 4; i++) {
+      const g = this.add.graphics().setDepth(cy + 9);
+      g.fillStyle(0x161310, 0.95);
+      g.slice(
+        cx,
+        cy,
+        drumR,
+        Phaser.Math.DegToRad(-90 + i * 90),
+        Phaser.Math.DegToRad(i * 90),
+        false
+      );
+      g.fillPath();
+      this.drumCovers.push(g);
+    }
 
     this.drumRotateTween = this.tweens.add({
       targets: [this.drumSprite],
@@ -786,10 +754,8 @@ export class HubScene extends Phaser.Scene {
     const q3Solved = gameshow.isStationCompleted('M03');
     const q4Solved = gameshow.isStationCompleted('M04');
 
-    if (this.drumCoverQ1) this.drumCoverQ1.setVisible(!q1Solved);
-    if (this.drumCoverQ2) this.drumCoverQ2.setVisible(!q2Solved);
-    if (this.drumCoverQ3) this.drumCoverQ3.setVisible(!q3Solved);
-    if (this.drumCoverQ4) this.drumCoverQ4.setVisible(!q4Solved);
+    const solvedFlags = [q1Solved, q2Solved, q3Solved, q4Solved];
+    this.drumCovers.forEach((g, i) => g.setVisible(!solvedFlags[i]));
 
     if (this.drumBaseAura && this.drumOuterAura) {
       this.drumBaseAura.setVisible(unlocked);
@@ -800,13 +766,9 @@ export class HubScene extends Phaser.Scene {
 
     if (unlocked) {
       this.drumRotateTween?.resume();
-      this.drumDividerH?.setAlpha(0.25);
-      this.drumDividerV?.setAlpha(0.25);
     } else {
       this.drumRotateTween?.pause();
       this.drumSprite?.setAngle(0);
-      this.drumDividerH?.setAlpha(0.75);
-      this.drumDividerV?.setAlpha(0.75);
     }
 
     if (this.drumWorldLabel) {
