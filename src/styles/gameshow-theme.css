@@ -1259,22 +1259,109 @@
   flex-shrink: 0;
 }
 
-/* Thông báo toast điểm số / sự kiện */
-.gs-score-toast {
-  padding: 24px 40px !important;
-  max-width: 88vw !important;
-  border-radius: 14px !important;
+/* ==========================================================================
+   TOAST OVERLAY (Màn thông báo kết quả điểm số, trừ điểm, thẻ chức năng, trống đồng)
+   Đảm bảo luôn phủ kín 100% viewport trên mọi loại màn hình và tỷ lệ khung hình
+   ========================================================================== */
+.gs-score-toast,
+#station-game-modal .gs-score-toast {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  margin: 0 !important;
+  padding: clamp(20px, 4vw, 48px) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: rgba(18, 13, 9, 0.94) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  z-index: 99999 !important;
+  box-sizing: border-box !important;
+  cursor: pointer !important;
+  overflow-y: auto !important;
 }
-.gs-score-toast .gs-result-team-name {
-  font-size: clamp(26px, 2.5vw, 36px) !important;
-  font-weight: 900 !important;
-}
+
+.gs-score-toast .gs-floating-score,
 .gs-score-toast .gs-result-delta {
-  font-size: clamp(40px, 3.8vw, 60px) !important;
+  font-size: clamp(52px, 5.5vw, 84px) !important;
+  font-weight: 900 !important;
+  line-height: 1.1 !important;
+  margin-bottom: 12px !important;
 }
+
+.gs-score-toast .gs-result-team-name {
+  font-size: clamp(28px, 2.8vw, 42px) !important;
+  font-weight: 900 !important;
+  color: #f6e7bd !important;
+  max-width: min(1000px, 90vw) !important;
+  margin-bottom: 12px !important;
+}
+
+.gs-score-toast .gs-result-explanation,
 .gs-score-toast .gs-result-reason {
-  font-size: clamp(21px, 2.0vw, 29px) !important;
+  font-size: clamp(20px, 2.0vw, 30px) !important;
   line-height: 1.5 !important;
+  color: #f6ecd2 !important;
+  max-width: min(1000px, 88vw) !important;
+  margin: 0 auto !important;
+  white-space: pre-line !important;
+}
+
+.gs-score-toast .gs-toast-progress-bar {
+  width: min(540px, 75vw) !important;
+  height: 6px !important;
+  background: rgba(246, 231, 189, 0.25) !important;
+  border-radius: 3px !important;
+  margin: 20px auto 10px auto !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.gs-score-toast .gs-result-timer {
+  font-size: clamp(14px, 1.4vw, 18px) !important;
+  color: #cdb98f !important;
+  margin-top: 8px !important;
+}
+
+/* Các biến thể Card Award Toast & Drum Unlock Toast */
+.gs-score-toast.gs-card-award-toast,
+.gs-score-toast.gs-drum-unlock-toast,
+#station-game-modal .gs-score-toast.gs-card-award-toast,
+#station-game-modal .gs-score-toast.gs-drum-unlock-toast {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
+  min-width: 100vw !important;
+  min-height: 100vh !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: rgba(18, 13, 9, 0.94) !important;
+}
+
+.gs-score-toast .gs-card-award-card {
+  max-width: min(620px, 90vw) !important;
+  width: 100% !important;
+  background: radial-gradient(circle at 50% 30%, rgba(35, 26, 18, 0.98), rgba(18, 14, 10, 0.99)) !important;
+  border: 3px solid var(--gs-gold, #ffd700) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 215, 0, 0.3) !important;
+  padding: clamp(18px, 2.5vw, 28px) !important;
+  box-sizing: border-box !important;
 }
 
 /* Đại kết cục: Câu hỏi ý nghĩa & Trống Đồng */
