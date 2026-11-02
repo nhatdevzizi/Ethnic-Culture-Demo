@@ -672,7 +672,7 @@ export class StationGameModal {
 
     const text = document.createElement('div');
     text.className = 'gs-q-text';
-    text.textContent = 'Chọn Đội đang trả lời và nhập từ khóa ngắn gọn của Bức tranh bí ẩn vào ô bên dưới (Đội đoán sai sẽ mất lượt đoán bức tranh và chuyển quyền cho đội khác):';
+    text.textContent = 'Chọn Đội đang trả lời và nhập từ khóa ngắn gọn của Bức tranh bí ẩn vào ô bên dưới (Đội đoán sai sẽ mất quyền đoán bức tranh):';
     panel.appendChild(text);
 
     const teamTickBox = document.createElement('div');
@@ -798,11 +798,10 @@ export class StationGameModal {
             }
           );
         } else {
-          const remainingTeams = gameshow.teams.filter((t) => !t.isEliminatedInRound1);
           this.showScoreToast(
             answeringTeam.name,
             0,
-            `❌ Đáp án "${rawValue}" chưa chính xác!\n${answeringTeam.name} đã mất quyền đoán Bức tranh tổng thể (Chuyển quyền cho: ${remainingTeams.map((t) => t.name).join(', ')} — từ khóa vẫn đang giữ kín).`,
+            `❌ Đáp án "${rawValue}" chưa chính xác!\n${answeringTeam.name} đã mất quyền đoán Bức tranh tổng thể (từ khóa vẫn đang được giữ kín).`,
             3500,
             () => {
               this.isQuestionAnswered = false;
@@ -1303,11 +1302,10 @@ export class StationGameModal {
             }
           );
         } else {
-          const remaining = gameshow.teams.filter((t) => !t.isEliminatedInRound2Vertical);
           this.showScoreToast(
             `❌ ${answeringTeam.name} ĐOÁN SAI (MẤT LƯỢT HÀNG DỌC)`,
             -10,
-            `Đáp án "${rawValue}" chưa chính xác! Từ khóa Hàng Dọc vẫn đang giữ kín.\n👉 Chuyển quyền đoán cho: ${remaining.map((t) => t.name).join(', ')}`,
+            `Đáp án "${rawValue}" chưa chính xác! Từ khóa Hàng Dọc vẫn đang được giữ kín.`,
             3400,
             () => {
               this.isQuestionAnswered = false;
@@ -1870,7 +1868,7 @@ export class StationGameModal {
       this.showScoreToast(
         `❌ ${currentTeam.name} TRẢ LỜI SAI (MẤT LƯỢT CÂU NÀY)`,
         delta,
-        `Đáp án vẫn đang được giữ kín để đội khác trả lời!\n👉 Chuyển quyền trả lời sang: ${nextTeam.name} (Còn ${remainingTeams.length} nhóm còn lượt ở câu này).${preyNotice}`,
+        `Đáp án vẫn đang được giữ kín để đội khác trả lời!${preyNotice}`,
         3200,
         () => {
           if (nextIdx !== -1) {
@@ -3117,10 +3115,6 @@ export class StationGameModal {
     title.className = 'gs-result-team-name';
     title.textContent = teamName;
 
-    const exp = document.createElement('div');
-    exp.className = 'gs-result-explanation';
-    exp.textContent = explanation;
-
     const progressBar = document.createElement('div');
     progressBar.className = 'gs-toast-progress-bar';
 
@@ -3130,7 +3124,12 @@ export class StationGameModal {
 
     toast.appendChild(scoreNum);
     toast.appendChild(title);
-    toast.appendChild(exp);
+    if (explanation && explanation.trim().length > 0) {
+      const exp = document.createElement('div');
+      exp.className = 'gs-result-explanation';
+      exp.textContent = explanation;
+      toast.appendChild(exp);
+    }
     toast.appendChild(progressBar);
     toast.appendChild(hint);
 

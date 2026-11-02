@@ -565,7 +565,7 @@ export class GameshowUI {
 
     if (this.activeRound === 1) {
       const q = r1Data.questions[this.activeQuestionIndex];
-      explanation = q?.explanation || '';
+      explanation = isCorrect ? 'Chính xác!' : '';
       if (isCorrect) {
         delta = 10;
         this.engine.r1OpenedTiles[this.activeQuestionIndex] = true;
@@ -579,7 +579,7 @@ export class GameshowUI {
       }
     } else if (this.activeRound === 2) {
       const q = r2Data.questions[this.activeQuestionIndex % r2Data.questions.length];
-      explanation = q?.explanation || '';
+      explanation = isCorrect ? 'Chính xác!' : '';
       const bid = this.r2Bids[curTeam.id] || 10;
       delta = isCorrect ? bid : -bid;
 
@@ -589,7 +589,7 @@ export class GameshowUI {
       }
     } else if (this.activeRound === 3) {
       const q = r3Data.questions[this.activeQuestionIndex % r3Data.questions.length];
-      explanation = q?.explanation || '';
+      explanation = isCorrect ? 'Chính xác!' : '';
       if (isCorrect) {
         delta = 20;
         if (q && q.has_card) {
@@ -601,7 +601,7 @@ export class GameshowUI {
       }
     } else if (this.activeRound === 4) {
       const q = r4Data.questions[this.activeQuestionIndex % r4Data.questions.length];
-      explanation = q?.explanation || '';
+      explanation = isCorrect ? 'Chính xác!' : '';
       const torch = this.r4Torches[curTeam.id];
 
       if (!torch) {
@@ -653,7 +653,7 @@ export class GameshowUI {
 
     overlay.appendChild(scoreDisplay);
     overlay.appendChild(teamTitle);
-    overlay.appendChild(expText);
+    if (explanation) overlay.appendChild(expText);
 
     if (cardAwarded) {
       const cardMsg = document.createElement('div');
