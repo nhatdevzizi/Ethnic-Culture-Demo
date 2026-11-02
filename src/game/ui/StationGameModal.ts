@@ -83,6 +83,10 @@ export class StationGameModal {
       document.body.appendChild(container);
     }
     this.modalContainer = container;
+    if (typeof window !== 'undefined') {
+      (window as any).__stationModal = this;
+      (window as any).__gameshow = gameshow;
+    }
   }
 
   static get(): StationGameModal {
@@ -234,7 +238,7 @@ export class StationGameModal {
     this.ensureValidSelectedTeam();
 
     const dialog = document.createElement('div');
-    dialog.className = `gs-station-dialog gs-theme-${this.activeStationId}`;
+    dialog.className = `gs-station-dialog gs-theme-${this.activeStationId}${this.isGrandFinaleCelebration ? ' gs-kahoot-mode' : ''}`;
 
     // 1. Team Selector Bar (Chọn Nhóm trả lời, dùng thẻ & Nút Về Bản Đồ)
     if (!this.isGrandFinaleCelebration) {
@@ -1662,56 +1666,144 @@ export class StationGameModal {
     return layout;
   }
 
-  // ==========================================================================
-  // KHU VỰC CHÚC MỪNG HOÀN THÀNH CUỘC CHƠI (GRAND VICTORY PODIUM)
+    // ==========================================================================
+  // KHU VỰC CHÚC MỪNG HOÀN THÀNH CUỘC CHƠI (KAHOOT-STYLE PODIUM)
   // ==========================================================================
   private renderGrandVictoryCelebrationArea(): HTMLElement {
     const wrap = document.createElement('div');
-    wrap.className = 'gs-victory-hall';
+    wrap.className = 'gs-victory-hall gs-kahoot-victory-screen';
+
+    try {
+      sfx.playCardAwardFanfare();
+    } catch {
+      // Audio fallback
+    }
 
     const rankedTeams = [...gameshow.teams].sort((a, b) => b.score - a.score);
-    const champion = rankedTeams[0];
+    const champion = rankedTeams[0] || { name: 'Nhóm 1', score: 0, color: '#f1c40f' };
+    const runnerUp = rankedTeams[1] || { name: 'Nhóm 2', score: 0, color: '#bdc3c7' };
+    const third = rankedTeams[2] || { name: 'Nhóm 3', score: 0, color: '#e67e22' };
+    const runnersUp = rankedTeams.slice(3);
 
-    const medals = ['🥇 QUÁN QUÂN', '🥈 Á QUÂN', '🥉 HẠNG BA', '🏅 KHUYẾN KHÍCH', '🏅 KHUYẾN KHÍCH'];
-
-    const podiumHTML = rankedTeams
-      .map(
-        (team, idx) => `
-        <div class="gs-victory-rank-card ${idx === 0 ? 'champion' : ''}" style="border-color: ${team.color}">
-          <div class="gs-victory-rank-medal">${medals[idx] || `HẠNG ${idx + 1}`}</div>
-          <div class="gs-victory-rank-name" style="color: ${team.color}">${team.name}</div>
-          <div class="gs-victory-rank-score">${team.score} <span>ĐIỂM</span></div>
-        </div>
-      `
-      )
+    // Confetti particles (random positions, delays, shapes)
+    const confettiColors = ['#f39c12', '#e74c3c', '#2ecc71', '#3498db', '#e84393', '#fdcb6e', '#00cec9', '#9b59b6'];
+    const confettiHTML = Array.from({ length: 45 })
+      .map((_, i) => {
+        const left = Math.floor(Math.random() * 96) + 2;
+        const delay = (Math.random() * 3).toFixed(2);
+        const duration = (2.2 + Math.random() * 3).toFixed(2);
+        const size = Math.floor(Math.random() * 10) + 8;
+        const color = confettiColors[i % confettiColors.length];
+        const shape = i % 3 === 0 ? '50%' : i % 3 === 1 ? '3px' : '0%';
+        const rot = Math.floor(Math.random() * 360);
+        return `<div class="gs-k-confetti-piece" style="left:${left}%; animation-delay:${delay}s; animation-duration:${duration}s; width:${size}px; height:${Math.round(size * 0.7)}px; background:${color}; border-radius:${shape}; transform: rotate(${rot}deg);"></div>`;
+      })
       .join('');
 
+    // Runners up pills (Ranks 4, 5, 6...)
+    const runnersHTML =
+      runnersUp.length > 0
+        ? `
+        <div class="gs-kahoot-runners">
+          ${runnersUp
+            .map(
+              (team, idx) => `
+            <div class="gs-kahoot-runner-item" style="border-left: 3.5px solid ${team.color};">
+              <span class="gs-kahoot-runner-rank">#${idx + 4}</span>
+              <span class="gs-kahoot-runner-name">${team.name}</span>
+              <span class="gs-kahoot-runner-score">${team.score}đ</span>
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+      `
+        : '';
+
     wrap.innerHTML = `
-      <div class="gs-victory-banner">
-        <div class="gs-victory-crown">👑🎉🏆🎉👑</div>
-        <h1 class="gs-victory-title">CHÚC MỪNG HOÀN THÀNH HÀNH TRÌNH</h1>
-        <h2 class="gs-victory-subtitle">“THANH ÂM ĐẠI NGÀN — ĐẠI ĐOÀN KẾT 54 DÂN TỘC VIỆT NAM”</h2>
-        <p class="gs-victory-desc">
-          🏆 <strong>${finaleData.challenge_question.special_reward_title}</strong><br>
+      <div class="gs-kahoot-confetti-layer" aria-hidden="true">
+        ${confettiHTML}
+      </div>
+
+      <!-- Top Kahoot-style White Banner -->
+      <div class="gs-kahoot-top-header">
+        <div class="gs-kahoot-white-banner">
+          <span class="gs-kahoot-banner-title">HÀNH TRÌNH VĂN HÓA: THANH ÂM ĐẠI NGÀN</span>
+          <span class="gs-kahoot-banner-tag">VICTORY 🎉</span>
+        </div>
+        <div class="gs-kahoot-honor-bar">
+          👑 <strong>${finaleData.challenge_question.special_reward_title}:</strong>
           ${finaleData.challenge_question.special_reward_message}
-        </p>
-        <div class="gs-victory-champion-spotlight">
-          🌟 NHÓM CHIẾN THẮNG CHUNG CUỘC: <strong style="color:${champion.color}">${champion.name.toUpperCase()} (${champion.score} ĐIỂM)</strong> 🌟
         </div>
       </div>
 
-      <div class="gs-victory-podium-grid">
-        ${podiumHTML}
+      <!-- Kahoot 3-tier Podium Arena -->
+      <div class="gs-kahoot-podium-arena">
+        <!-- Rank 2: Runner-up (Left) -->
+        <div class="gs-kahoot-podium-col rank-2">
+          <div class="gs-kahoot-player-head">
+            <div class="gs-kahoot-player-name" title="${runnerUp.name}">
+              <span class="gs-kahoot-team-pip" style="background:${runnerUp.color}"></span>
+              ${runnerUp.name}
+            </div>
+          </div>
+          <div class="gs-kahoot-pillar">
+            <div class="gs-kahoot-shield-badge rank-2">
+              <span class="gs-kahoot-badge-num">2</span>
+            </div>
+            <div class="gs-kahoot-pillar-score">${runnerUp.score}</div>
+            <div class="gs-kahoot-pillar-label">Á QUÂN</div>
+          </div>
+        </div>
+
+        <!-- Rank 1: Champion (Center - Tallest) -->
+        <div class="gs-kahoot-podium-col rank-1">
+          <div class="gs-kahoot-player-head">
+            <div class="gs-kahoot-crown">👑</div>
+            <div class="gs-kahoot-player-name" title="${champion.name}">
+              <span class="gs-kahoot-team-pip" style="background:${champion.color}"></span>
+              ${champion.name}
+            </div>
+          </div>
+          <div class="gs-kahoot-pillar">
+            <div class="gs-kahoot-shield-badge rank-1">
+              <span class="gs-kahoot-badge-num">1</span>
+            </div>
+            <div class="gs-kahoot-pillar-score">${champion.score}</div>
+            <div class="gs-kahoot-pillar-label">QUÁN QUÂN</div>
+          </div>
+        </div>
+
+        <!-- Rank 3: Third place (Right - Shortest) -->
+        <div class="gs-kahoot-podium-col rank-3">
+          <div class="gs-kahoot-player-head">
+            <div class="gs-kahoot-player-name" title="${third.name}">
+              <span class="gs-kahoot-team-pip" style="background:${third.color}"></span>
+              ${third.name}
+            </div>
+          </div>
+          <div class="gs-kahoot-pillar">
+            <div class="gs-kahoot-shield-badge rank-3">
+              <span class="gs-kahoot-badge-num">3</span>
+            </div>
+            <div class="gs-kahoot-pillar-score">${third.score}</div>
+            <div class="gs-kahoot-pillar-label">HẠNG BA</div>
+          </div>
+        </div>
       </div>
 
-      <div class="gs-victory-actions">
-        <button type="button" class="gs-victory-btn primary" data-action="ending">
+      <!-- Runners-up section -->
+      ${runnersHTML}
+
+      <!-- Bottom Actions -->
+      <div class="gs-kahoot-actions">
+        <button type="button" class="gs-kahoot-btn gs-kahoot-btn-primary" data-action="ending">
           📜 VÀO KHU VỰC TỔNG KẾT HÀNH TRÌNH
         </button>
-        <button type="button" class="gs-victory-btn secondary" data-action="replay-finale">
+        <button type="button" class="gs-kahoot-btn gs-kahoot-btn-secondary" data-action="replay-finale">
           🔄 XEM LẠI CÂU HỎI ĐẠI KẾT CỤC
         </button>
-        <button type="button" class="gs-victory-btn hub" data-action="hub">
+        <button type="button" class="gs-kahoot-btn gs-kahoot-btn-tertiary" data-action="hub">
           🚶 DẠO QUANH BẢN ĐỒ LỄ HỘI
         </button>
       </div>
