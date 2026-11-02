@@ -319,17 +319,17 @@ class OverlayController {
   keysPanel() {
     const count = gameshow.getCollectedKeysCount();
     const r1 = gameshow.isStationCompleted('M01')
-      ? '✅ ĐÃ THU THẬP (Vòng 1: Mảnh ghép thổ cẩm)'
-      : '🔒 CHƯA HOÀN THÀNH (Vòng 1: Mảnh ghép thổ cẩm)';
+      ? '✅ ĐÃ THU THẬP (Mảnh ghép thổ cẩm)'
+      : '🔒 CHƯA HOÀN THÀNH (Mảnh ghép thổ cẩm)';
     const r2 = gameshow.isStationCompleted('M02')
-      ? '✅ ĐÃ THU THẬP (Vòng 2: Phiên chợ vùng cao)'
-      : '🔒 CHƯA HOÀN THÀNH (Vòng 2: Phiên chợ vùng cao)';
+      ? '✅ ĐÃ THU THẬP (Phiên chợ vùng cao)'
+      : '🔒 CHƯA HOÀN THÀNH (Phiên chợ vùng cao)';
     const r3 = gameshow.isStationCompleted('M03')
-      ? '✅ ĐÃ THU THẬP (Vòng 3: Tiếng vang đại ngàn)'
-      : '🔒 CHƯA HOÀN THÀNH (Vòng 3: Tiếng vang đại ngàn)';
+      ? '✅ ĐÃ THU THẬP (Tiếng vang đại ngàn)'
+      : '🔒 CHƯA HOÀN THÀNH (Tiếng vang đại ngàn)';
     const r4 = gameshow.isStationCompleted('M04')
-      ? '✅ ĐÃ THU THẬP (Vòng 4: Lửa thiêng đại ngàn)'
-      : '🔒 CHƯA HOÀN THÀNH (Vòng 4: Lửa thiêng đại ngàn)';
+      ? '✅ ĐÃ THU THẬP (Lửa thiêng đại ngàn)'
+      : '🔒 CHƯA HOÀN THÀNH (Lửa thiêng đại ngàn)';
 
     const statusMsg =
       count >= 4

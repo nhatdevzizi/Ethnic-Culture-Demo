@@ -96,10 +96,10 @@ export class GameshowUI {
 
     const roundSubtitle = document.createElement('div');
     roundSubtitle.className = 'gs-round-badge';
-    if (this.activeRound === 1) roundSubtitle.textContent = 'VÒNG 1: MẢNH GHÉP THỔ CẨM';
-    else if (this.activeRound === 2) roundSubtitle.textContent = 'VÒNG 2: PHIÊN CHỢ VÙNG CAO';
-    else if (this.activeRound === 3) roundSubtitle.textContent = 'VÒNG 3: TIẾNG VANG ĐẠI NGÀN';
-    else if (this.activeRound === 4) roundSubtitle.textContent = 'VÒNG 4: LỬA THIÊNG ĐẠI NGÀN';
+    if (this.activeRound === 1) roundSubtitle.textContent = 'MẢNH GHÉP THỔ CẨM';
+    else if (this.activeRound === 2) roundSubtitle.textContent = 'PHIÊN CHỢ VÙNG CAO';
+    else if (this.activeRound === 3) roundSubtitle.textContent = 'TIẾNG VANG ĐẠI NGÀN';
+    else if (this.activeRound === 4) roundSubtitle.textContent = 'LỬA THIÊNG ĐẠI NGÀN';
     else roundSubtitle.textContent = 'ĐẠI KẾT CỤC: BỨC TRANH ĐẠI ĐOÀN KẾT';
 
     titleBadge.appendChild(title);
@@ -541,7 +541,7 @@ export class GameshowUI {
     // Button: [CHUYỂN VÒNG THI]
     const btnNextRound = document.createElement('button');
     btnNextRound.className = 'gs-mc-btn action';
-    btnNextRound.textContent = '⏩ CHUYỂN VÒNG';
+    btnNextRound.textContent = '⏩ CHUYỂN TRÒ CHƠI';
     btnNextRound.addEventListener('click', () => this.handleNextRound());
 
     controls.appendChild(btnCorrect);
@@ -708,7 +708,7 @@ export class GameshowUI {
     const curTeam = this.engine.teams[this.activeTeamIndex];
     const points = this.engine.getRound1PictureGuessPoints();
     const confirmed = window.confirm(
-      `${curTeam.name} muốn đoán bức tranh tổng thể (+${points} điểm nếu đúng, BỊ LOẠI khỏi Vòng 1 nếu sai)?`
+      `${curTeam.name} muốn đoán bức tranh tổng thể (+${points} điểm nếu đúng, BỊ LOẠI khỏi trò chơi này nếu sai)?`
     );
     if (!confirmed) return;
 
@@ -724,7 +724,7 @@ export class GameshowUI {
     } else {
       curTeam.isEliminatedInRound1 = true;
       sfx.playFailure();
-      alert(`${curTeam.name} đoán sai và BỊ LOẠI khỏi Vòng 1!`);
+      alert(`${curTeam.name} đoán sai và BỊ LOẠI khỏi trò chơi này!`);
     }
     this.render();
   }

@@ -451,9 +451,9 @@ export class StationGameModal {
               gameshow.r1OpenedTiles[this.currentQuestionIndex] = true;
               gameshow.r1AnsweredCount++;
             }
-            gameshow.modifyScore(currentTeam.id, +20, 'Trả lời đúng mảnh ghép Vòng 1');
+            gameshow.modifyScore(currentTeam.id, +20, 'Trả lời đúng mảnh ghép');
           } else {
-            gameshow.modifyScore(currentTeam.id, -10, 'Trả lời sai mảnh ghép Vòng 1');
+            gameshow.modifyScore(currentTeam.id, -10, 'Trả lời sai mảnh ghép');
           }
         }
       );
@@ -473,7 +473,7 @@ export class StationGameModal {
     const secretImg = document.createElement('img');
     secretImg.className = 'gs-secret-img';
     secretImg.src = r1Data.secret_image;
-    secretImg.alt = 'Bức tranh bí ẩn Vòng 1';
+    secretImg.alt = 'Bức tranh bí ẩn';
     mosaicBox.appendChild(secretImg);
 
     const grid = document.createElement('div');
@@ -530,10 +530,10 @@ export class StationGameModal {
     const completeBtn = document.createElement('button');
     completeBtn.className = `gs-round-complete-btn ${isCompleted ? 'done' : ''}`;
     completeBtn.textContent = isCompleted
-      ? '✅ ĐÃ HOÀN THÀNH VÒNG 1 (ĐÃ CÓ CHÌA KHÓA 1)'
-      : '🏁 HOÀN THÀNH VÒNG 1 (NHẬN CHÌA KHÓA 1 🗝️)';
+      ? '✅ ĐÃ HOÀN THÀNH (ĐÃ CÓ CHÌA KHÓA)'
+      : '🏁 HOÀN THÀNH GAME (NHẬN CHÌA KHÓA 🗝️)';
     completeBtn.addEventListener('click', () => {
-      this.finishCurrentStation('M01', 'Vòng 1: Mảnh Ghép Thổ Cẩm');
+      this.finishCurrentStation('M01', 'Mảnh Ghép Thổ Cẩm');
     });
     leftCol.appendChild(completeBtn);
 
@@ -740,7 +740,7 @@ export class StationGameModal {
         this.showScoreToast(
           answeringTeam.name,
           0,
-          `⚠️ ${answeringTeam.name} đã đoán sai trước đó và mất quyền đoán Bức tranh tổng thể ở Vòng 1. Hãy chọn đội khác!`,
+          `⚠️ ${answeringTeam.name} đã đoán sai trước đó và mất quyền đoán Bức tranh tổng thể. Hãy chọn đội khác!`,
           2500
         );
         return;
@@ -766,7 +766,7 @@ export class StationGameModal {
         this.showScoreToast(
           answeringTeam.name,
           points,
-          `🎉 CHÍNH XÁC! Từ khóa bức tranh là: "${r1Data.secret_title}".\n${answeringTeam.name} giành trọn +${points} điểm và mở khóa Chìa Khóa Vòng 1 (${totalKeysAfterR1}/4)!`,
+          `🎉 CHÍNH XÁC! Từ khóa bức tranh là: "${r1Data.secret_title}".\n${answeringTeam.name} giành trọn +${points} điểm và nhận Chìa Khóa (${totalKeysAfterR1}/4)!`,
           4000,
           () => {
             this.isGuessingSecretPainting = false;
@@ -986,10 +986,10 @@ export class StationGameModal {
     completeBtn.type = 'button';
     completeBtn.className = `gs-round-complete-btn ${isCompleted ? 'done' : ''}`;
     completeBtn.textContent = isCompleted
-      ? '✅ ĐÃ HOÀN THÀNH VÒNG 2 (ĐÃ CÓ CHÌA KHÓA 2)'
-      : '🏁 HOÀN THÀNH VÒNG 2 (NHẬN CHÌA KHÓA 2 🗝️)';
+      ? '✅ ĐÃ HOÀN THÀNH (ĐÃ CÓ CHÌA KHÓA)'
+      : '🏁 HOÀN THÀNH GAME (NHẬN CHÌA KHÓA 🗝️)';
     completeBtn.addEventListener('click', () => {
-      this.finishCurrentStation('M02', 'Vòng 2: Ô Chữ Đại Ngàn');
+      this.finishCurrentStation('M02', 'Ô Chữ Đại Ngàn');
     });
     leftActions.appendChild(completeBtn);
 
@@ -1258,7 +1258,7 @@ export class StationGameModal {
 
       if (isCorrect) {
         input.classList.add('correct');
-        gameshow.modifyScore(answeringTeam.id, points, 'Giải mã đúng Từ khóa Hàng Dọc Vòng 2');
+        gameshow.modifyScore(answeringTeam.id, points, 'Giải mã đúng Từ khóa Hàng Dọc');
         gameshow.r2OpenedRows.fill(true);
         gameshow.r2VerticalRevealed = true;
         gameshow.markStationCompleted('M02');
@@ -1269,7 +1269,7 @@ export class StationGameModal {
         this.showScoreToast(
           answeringTeam.name,
           points,
-          `🎉 CHÍNH XÁC! Từ khóa Hàng Dọc là: "${r2Data.vertical_keyword}".\n(${answeringTeam.name} giành +${points} điểm và mở khóa Chìa Khóa Vòng 2: ${totalKeys}/4!)`,
+          `🎉 CHÍNH XÁC! Từ khóa Hàng Dọc là: "${r2Data.vertical_keyword}".\n(${answeringTeam.name} giành +${points} điểm và nhận Chìa Khóa: ${totalKeys}/4!)`,
           4200,
           () => {
             this.isGuessingVerticalKeyword = false;
@@ -1283,7 +1283,7 @@ export class StationGameModal {
       } else {
         input.classList.add('incorrect');
         answeringTeam.isEliminatedInRound2Vertical = true;
-        gameshow.modifyScore(answeringTeam.id, -10, 'Đoán sai Từ khóa Hàng Dọc Vòng 2');
+        gameshow.modifyScore(answeringTeam.id, -10, 'Đoán sai Từ khóa Hàng Dọc');
         sfx.playFailure();
 
         const allEliminatedNow = gameshow.teams.every((t) => Boolean(t.isEliminatedInRound2Vertical));
@@ -1404,12 +1404,12 @@ export class StationGameModal {
       const qPanel = this.renderQuestionByFormat(q, subtitle, (isCorrect) => {
         const currentTeam = gameshow.teams[this.selectedTeamIndex];
         const delta = isCorrect ? 20 : -10;
-        gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Trả lời đúng Vòng 3' : 'Trả lời sai Vòng 3');
+        gameshow.modifyScore(currentTeam.id, delta, isCorrect ? 'Trả lời đúng' : 'Trả lời sai');
       });
       container.appendChild(qPanel);
     }
 
-    const nav = this.createRoundNav(r3Data.questions.length, 'M03', 'Vòng 3: Tiếng Vang Đại Ngàn');
+    const nav = this.createRoundNav(r3Data.questions.length, 'M03', 'Tiếng Vang Đại Ngàn');
     container.appendChild(nav);
 
     return container;
@@ -1511,7 +1511,7 @@ export class StationGameModal {
       container.appendChild(qPanel);
     }
 
-    const nav = this.createRoundNav(r4Data.questions.length, 'M04', 'Vòng 4: Lửa Thiêng Đại Ngàn');
+    const nav = this.createRoundNav(r4Data.questions.length, 'M04', 'Lửa Thiêng Đại Ngàn');
     container.appendChild(nav);
 
     return container;
@@ -1566,7 +1566,7 @@ export class StationGameModal {
         <div class="gs-locked-icon">🔒</div>
         <h2>TRỐNG ĐỒNG ĐÔNG SƠN ĐANG BỊ PHONG ẤN!</h2>
         <p>Hiện tại các đội mới thu thập được <strong style="color:var(--gs-gold)">${keys}/4</strong> Chìa Khóa.</p>
-        <p>Để bước vào ĐẠI KẾT CỤC, bạn cần hoàn thành cả 4 Vòng thi (còn thiếu <strong class="gs-text-danger">${4 - keys}</strong> chìa khóa).</p>
+        <p>Để bước vào ĐẠI KẾT CỤC, bạn cần hoàn thành cả 4 trò chơi (còn thiếu <strong class="gs-text-danger">${4 - keys}</strong> chìa khóa).</p>
         <button class="gs-btn-back-hub" style="margin-top:24px; font-size:18px; padding:14px 32px;">🚶 QUAY LẠI BẢN ĐỒ ĐỂ KHÁM PHÁ TIẾP</button>
       `;
       lockedBox.querySelector('button')!.addEventListener('click', () => this.close());
@@ -2829,8 +2829,8 @@ export class StationGameModal {
     const completeBtn = document.createElement('button');
     completeBtn.className = `gs-nav-complete-btn ${isCompleted ? 'done' : ''}`;
     completeBtn.textContent = isCompleted
-      ? '✅ ĐÃ NHẬN CHÌA KHÓA VÒNG NÀY'
-      : '🏁 HOÀN THÀNH VÒNG & NHẬN CHÌA KHÓA 🗝️';
+      ? '✅ ĐÃ NHẬN CHÌA KHÓA'
+      : '🏁 HOÀN THÀNH GAME & NHẬN CHÌA KHÓA 🗝️';
     completeBtn.addEventListener('click', () => {
       this.finishCurrentStation(stationId, stationName);
     });
@@ -2989,7 +2989,6 @@ export class StationGameModal {
       M04: { accent: '#b5562a', deep: '#8a3f1c' },
     };
     const theme = themes[stationId] || themes.M01;
-    const quad = gameshow.getStationQuadrant(stationId);
     const totalKeys = gameshow.getCollectedKeysCount();
 
     const toast = document.createElement('div');
@@ -3001,7 +3000,7 @@ export class StationGameModal {
     card.className = 'gs-key-card';
     card.innerHTML = `
       <div class="gs-key-icon">🗝️</div>
-      <div class="gs-key-title">${isNew ? 'ĐÃ NHẬN CHÌA KHÓA' : 'ĐÃ CÓ CHÌA KHÓA'} VÒNG ${quad?.index || 1}</div>
+      <div class="gs-key-title">${isNew ? 'ĐÃ NHẬN CHÌA KHÓA' : 'ĐÃ CÓ CHÌA KHÓA'}</div>
       <div class="gs-key-station">${stationName}</div>
       <div class="gs-key-count">Chìa khóa thu thập: ${totalKeys}/4</div>
     `;
@@ -3092,7 +3091,7 @@ export class StationGameModal {
 
     const stayBtn = document.createElement('button');
     stayBtn.className = 'gs-victory-btn secondary';
-    stayBtn.textContent = '✨ Tiếp tục xem kết quả vòng này';
+    stayBtn.textContent = '✨ Tiếp tục xem kết quả';
     stayBtn.onclick = (e) => {
       e.stopPropagation();
       dismiss();
