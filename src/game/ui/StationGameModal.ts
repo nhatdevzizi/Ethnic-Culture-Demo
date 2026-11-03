@@ -440,6 +440,14 @@ export class StationGameModal {
   // ROUND 1: MẢNH GHÉP THỔ CẨM (Phần 1: Khái niệm & Đặc trưng cơ bản của Dân tộc)
   // ==========================================================================
   private renderRound1(): HTMLElement {
+    // Khi đang đoán bức tranh tổng thể -> Mở toàn màn hình form đoán
+    if (this.isGuessingSecretPainting && !gameshow.r1SecretRevealed) {
+      const fullWrap = document.createElement('div');
+      fullWrap.className = 'gs-r1-fullscreen-question-wrap';
+      fullWrap.appendChild(this.renderGuessSecretPaintingCard());
+      return fullWrap;
+    }
+
     // Khi người chơi bấm vào 1 mảnh ghép -> Tạm ẩn bảng 9 mảnh ghép, mở toàn màn hình câu hỏi của mảnh đó!
     if (this.r1ActiveTileQuestion && !this.isGuessingSecretPainting) {
       const fullWrap = document.createElement('div');
@@ -471,8 +479,9 @@ export class StationGameModal {
     const container = document.createElement('div');
     container.className = 'gs-r1-layout';
 
-    // Left: Mosaic Box (3x3 grid)
+    // Center: Mosaic Box (3x3 grid) — single column, no right panel
     const leftCol = document.createElement('div');
+    leftCol.className = 'gs-r1-center-col';
     const mosaicBox = document.createElement('div');
     mosaicBox.className = 'gs-mosaic-container';
 
@@ -544,72 +553,6 @@ export class StationGameModal {
     leftCol.appendChild(completeBtn);
 
     container.appendChild(leftCol);
-
-    // Right: Secret Painting Guess Form OR Prompt Panel
-    const allTeamsEliminated = gameshow.teams.every((t) => Boolean(t.isEliminatedInRound1));
-    if (allTeamsEliminated) {
-      gameshow.r1SecretRevealed = true;
-    }
-
-    let rightCol: HTMLElement;
-
-    if (this.isGuessingSecretPainting && !gameshow.r1SecretRevealed) {
-      rightCol = this.renderGuessSecretPaintingCard();
-    } else if (gameshow.r1SecretRevealed) {
-      rightCol = document.createElement('div');
-      rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
-      const headerStatus = allTeamsEliminated
-        ? '📢 TẤT CẢ CÁC NHÓM ĐỀU ĐÃ ĐOÁN SAI · LỘ DIỆN TỪ KHÓA BỨC TRANH!'
-        : '🎉 ĐÃ GIẢI MÃ THÀNH CÔNG BỨC TRANH TỔNG THỂ!';
-      rightCol.innerHTML = `
-        <div class="gs-q-theme">${headerStatus}</div>
-        <div class="gs-q-text" style="text-align:center; padding: 20px 15px;">
-          <p style="font-size: 26px; color: var(--gs-gold); font-weight:800; margin-bottom: 12px;">
-            🔑 Từ khóa bức tranh: ${r1Data.secret_title}
-          </p>
-          <p style="font-size: 18px; color: var(--gs-text-sub); line-height: 1.6;">
-            ${r1Data.secret_description}
-          </p>
-        </div>
-      `;
-    } else {
-      const allOpened = gameshow.r1OpenedTiles.every(Boolean);
-
-      if (allOpened) {
-        rightCol = document.createElement('div');
-        rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
-        rightCol.innerHTML = `
-          <div class="gs-q-theme">🖼️ ĐÃ LẬT MỞ TOÀN BỘ 9 MẢNH GHÉP! (TỪ KHÓA ĐANG ẨN)</div>
-          <div class="gs-q-text" style="text-align:center; padding: 22px 15px;">
-            <p style="font-size: 22px; color: var(--gs-gold); font-weight:800; margin-bottom: 12px;">
-              Bức tranh đã lộ diện hoàn toàn! Nhưng từ khóa vẫn đang được giữ kín.
-            </p>
-            <p style="font-size: 17px; color: var(--gs-text-sub); line-height: 1.65;">
-              👉 Hãy bấm nút <strong>"🔔 ĐOÁN BỨC TRANH TỔNG THỂ"</strong> bên trái để các đội nhập đáp án.<br>
-              • Từ khóa đáp án sẽ chỉ hiển thị sau khi <strong>có 1 đội đoán đúng</strong> hoặc <strong>tất cả các nhóm đều đoán sai</strong>!
-            </p>
-          </div>
-        `;
-      } else {
-        const openedCount = gameshow.r1OpenedTiles.filter(Boolean).length;
-        rightCol = document.createElement('div');
-        rightCol.className = 'gs-question-panel gs-r1-prompt-panel';
-        rightCol.innerHTML = `
-          <div class="gs-q-theme">🎯 ĐÃ MỞ ${openedCount} / 9 MẢNH GHÉP · MỜI CHỌN MẢNH GHÉP TIẾP THEO</div>
-          <div class="gs-q-text" style="text-align:center; padding: 25px 15px;">
-            <p style="font-size: 24px; color: var(--gs-gold); font-weight:800; margin-bottom: 14px;">
-              👉 BẤM VÀO MỘT Ô SỐ (1 – 9) BÊN TRÁI ĐỂ MỞ CÂU HỎI!
-            </p>
-            <p style="font-size: 18px; color: var(--gs-text-sub); line-height: 1.7;">
-              • Khi bấm vào 1 mảnh, bảng mảnh ghép sẽ tạm ẩn đi để hiển thị câu hỏi toàn màn hình.<br>
-              • Sau khi tìm ra đáp án (có nhóm trả lời đúng hoặc tất cả các nhóm đều sai), bấm nút <strong>"🔙 QUAY VỀ BẢNG MẢNH GHÉP"</strong> và mảnh vừa trả lời sẽ mở khóa hình ảnh!
-            </p>
-          </div>
-        `;
-      }
-    }
-
-    container.appendChild(rightCol);
     return container;
   }
 
