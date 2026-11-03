@@ -651,7 +651,7 @@ export class HubScene extends Phaser.Scene {
     const keys = gameshow.getCollectedKeysCount();
     if (keys < 4) {
       ui.panel(
-        '🔒 TRỐNG ĐỒNG ĐÔNG SƠN ĐANG BỊ PHONG ẤN!',
+        'TRỐNG ĐỒNG ĐÔNG SƠN ĐANG BỊ PHONG ẤN!',
         `Hiện tại các đội mới thu thập được ${keys}/4 Chìa Khóa.\n\nHãy hoàn thành cả 4 Lán Trại văn hóa (còn thiếu ${
           4 - keys
         } chìa khóa) để giải trừ phong ấn và bước vào ĐẠI KẾT CỤC!`,
@@ -774,8 +774,8 @@ export class HubScene extends Phaser.Scene {
     if (this.drumWorldLabel) {
       const labelEl = this.drumWorldLabel.node as HTMLElement;
       labelEl.textContent = unlocked
-        ? '✨ TRỐNG ĐỒNG ĐÔNG SƠN (MỞ KHÓA) ✨'
-        : `TRỐNG ĐỒNG ĐÔNG SƠN (${keys}/4 CUNG SÁNG)`;
+        ? 'TRỐNG ĐỒNG ĐÔNG SƠN'
+        : `TRỐNG ĐỒNG ĐÔNG SƠN`;
       const baseX = Number(labelEl.dataset.baseX || this.drumWorldLabel.x);
       this.drumWorldLabel.updateSize();
       this.drumWorldLabel.x = baseX + this.drumWorldLabel.width * 0.1;

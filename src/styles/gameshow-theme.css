@@ -580,7 +580,7 @@
   background: var(--gs-brown);
 }
 .gs-station-dialog .gs-mosaic-grid {
-  gap: 3px;
+  gap: 0;
   background: transparent;
 }
 .gs-station-dialog .gs-mosaic-tile {
@@ -589,6 +589,11 @@
     repeating-linear-gradient(45deg, rgba(246, 231, 189, 0.2) 0 2px, transparent 2px 14px),
     repeating-linear-gradient(-45deg, rgba(246, 231, 189, 0.2) 0 2px, transparent 2px 14px);
   border: 1.5px solid var(--gs-ochre);
+  outline: 1px solid var(--gs-ochre);
+  outline-offset: -1px;
+  box-sizing: border-box;
+  position: relative;
+  opacity: 1;
 }
 .gs-station-dialog .gs-mosaic-tile:hover {
   filter: brightness(1.12);
@@ -1243,7 +1248,7 @@
 .gs-station-dialog .gs-mosaic-container {
   width: 100%;
   aspect-ratio: 3/2;
-  max-height: calc(100vh - 200px);
+  max-height: calc(100vh - 235px);
   max-width: 100%;
   flex-shrink: 1;
   min-height: 0;
