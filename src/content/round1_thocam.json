@@ -17,7 +17,12 @@
         "Bộ tộc — Cộng đồng hình thành khi xuất hiện chế độ tư hữu và phân hóa giai cấp; liên kết lãnh thổ vượt ngoài huyết thống nhưng kinh tế còn tự cấp, tự túc",
         "Dân tộc — Cộng đồng người ổn định hợp thành nhân dân một nước với lãnh thổ chung, nền kinh tế thống nhất, ngôn ngữ chung và nhà nước độc lập"
       ],
-      "initial_order": [2, 0, 3, 1],
+      "initial_order": [
+        2,
+        0,
+        3,
+        1
+      ],
       "explanation": "Sự phát triển của phương thức sản xuất quyết định sự biến đổi tuần tự của các hình thức cộng đồng người từ thấp đến cao: Thị tộc → Bộ lạc → Bộ tộc → Dân tộc."
     },
     {
@@ -64,7 +69,12 @@
         "C. Yếu tố cốt lõi để phân biệt một Quốc gia – Dân tộc (Nation) với một Dân tộc – Tộc người (Ethnie)",
         "D. Phục vụ giao tiếp thống nhất trong toàn xã hội nhưng vẫn tồn tại song hành cùng tiếng nói riêng của các tộc người"
       ],
-      "correct_pairs": [1, 0, 3, 2],
+      "correct_pairs": [
+        1,
+        0,
+        3,
+        2
+      ],
       "explanation": "Đáp án nối đúng: (1 ↔ B) Lãnh thổ là không gian sinh tồn thuộc chủ quyền; (2 ↔ A) Kinh tế là đặc trưng quan trọng nhất; (3 ↔ D) Ngôn ngữ quốc gia chung tồn tại cùng ngôn ngữ tộc người; (4 ↔ C) Nhà nước chung phân biệt Nation với Ethnie."
     },
     {
@@ -111,7 +121,12 @@
         "C. Bao gồm tiếng nói và chữ viết riêng; tuy nhiên một số tộc người có thể chuyển sang dùng ngôn ngữ khác nên không thể xét đơn độc",
         "D. Phản ánh truyền thống, lối sống, phong tục, tập quán, tín ngưỡng qua các giá trị văn hóa vật thể và phi vật thể"
       ],
-      "correct_pairs": [2, 3, 0, 1],
+      "correct_pairs": [
+        2,
+        3,
+        0,
+        1
+      ],
       "explanation": "Đáp án nối đúng: (1 ↔ C) Ngôn ngữ tộc người; (2 ↔ D) Văn hóa vật thể & phi vật thể; (3 ↔ A) Ý thức tự giác tộc người là tiêu chí quan trọng nhất; (4 ↔ B) Đa số và thiểu số chỉ căn cứ vào quy mô dân số."
     },
     {
@@ -156,12 +171,12 @@
       "has_card": null,
       "question": "Trường hợp một bộ phận người dân tộc thiểu số trong quá trình sinh sống đan xen đã sử dụng thành thạo tiếng phổ thông trong giao tiếp hằng ngày nhưng vẫn giữ phong tục truyền thống, trang phục lễ hội và tự hào về tên gọi dân tộc mình phản ánh điều gì?",
       "options": [
+        "Việc xác định tộc người chỉ cần xét 2 tiêu chí, trong đó tiêu chí ngôn ngữ và văn hóa giữ vai trò cốt lõi ngay cả khi điều kiện ý thức tự giác có sự giao thoa",
+        "Việc xác định tộc người phải xét tổng hợp cả 3 tiêu chí, trong đó tiêu chí ngôn ngữ thuần nhất giữ vai trò tiên quyết tuyệt đối ngay cả khi điều kiện văn hóa có sự giao thoa",
         "Việc xác định tộc người phải xét tổng hợp cả 3 tiêu chí, trong đó ý thức tự giác tộc người và văn hóa giữ vai trò cốt lõi ngay cả khi điều kiện ngôn ngữ có sự giao thoa",
-        "Cộng đồng đó đã hoàn toàn mất đi bản sắc và không còn được coi là một tộc người riêng biệt",
-        "Ngôn ngữ chung của quốc gia đã xóa bỏ hoàn toàn sự tồn tại của các tộc người thiểu số",
-        "Chỉ những người không biết nói tiếng phổ thông mới được công nhận là thành viên của tộc người đó"
+        "Việc xác định tộc người phải xét tổng hợp cả 3 tiêu chí, trong đó yếu tố địa bàn cư trú và kinh tế biệt lập giữ vai trò cốt lõi ngay cả khi điều kiện ngôn ngữ có sự giao thoa"
       ],
-      "correct_index": 0,
+      "correct_index": 2,
       "explanation": "Không thể phân định tộc người chỉ bằng ngôn ngữ đơn độc mà phải xét tổng hợp 3 tiêu chí (ngôn ngữ, văn hóa, ý thức tự giác tộc người), trong đó ý thức tự giác tộc người là quan trọng nhất."
     },
     {
@@ -176,7 +191,12 @@
         "Các tộc người giao lưu, cư trú gắn bó trên cùng một lãnh thổ, chung phương thức sinh hoạt kinh tế và ngôn ngữ quốc gia",
         "Hợp thành Quốc gia – Dân tộc Việt Nam thống nhất dưới sự quản lý của Nhà nước Cộng hòa xã hội chủ nghĩa Việt Nam"
       ],
-      "initial_order": [2, 0, 3, 1],
+      "initial_order": [
+        2,
+        0,
+        3,
+        1
+      ],
       "explanation": "Trình tự kết nối chặt chẽ từ: (1) Ý thức tự giác tộc người → (2) Cộng đồng 54 tộc người → (3) Liên kết lãnh thổ, kinh tế, ngôn ngữ chung → (4) Chỉnh thể Quốc gia – Dân tộc Việt Nam thống nhất."
     }
   ]
