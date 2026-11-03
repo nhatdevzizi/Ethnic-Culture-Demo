@@ -1835,14 +1835,20 @@
 
 
 /* ==========================================================================
-   KAHOOT-STYLE PODIUM & GRAND VICTORY CELEBRATION
+   KAHOOT-STYLE PODIUM & GRAND VICTORY CELEBRATION (ĐỒNG BỘ MÀU & ASSET MINI GAME)
    ========================================================================== */
 .gs-station-dialog.gs-kahoot-mode {
-  background: radial-gradient(circle at 50% 25%, #46178f 0%, #250854 100%) !important;
+  background-color: var(--gs-paper, #f1e6cc) !important;
+  background-image:
+    url('/assets/decor/drum-watermark.svg'),
+    url('/assets/decor/paper-weave.svg') !important;
+  background-repeat: no-repeat, repeat !important;
+  background-position: right -90px bottom -90px, 0 0 !important;
+  background-size: 460px 460px, 14px 14px !important;
 }
 
 .gs-station-dialog.gs-kahoot-mode .gs-station-body {
-  padding: 8px 16px !important;
+  padding: 16px 24px !important;
   background: transparent !important;
   display: flex !important;
   flex-direction: column !important;
@@ -1853,20 +1859,33 @@
 .gs-victory-hall.gs-kahoot-victory-screen {
   position: relative;
   width: 100%;
-  max-width: 980px;
+  max-width: 1020px;
   height: 100%;
-  max-height: 94vh;
-  min-height: 550px;
+  max-height: 92vh;
+  min-height: 540px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(160deg, #371173 0%, #46178f 45%, #250852 100%);
-  border: 3px solid #7d3fc0;
-  border-radius: 20px;
-  padding: 16px 24px 14px;
-  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.75), inset 0 0 80px rgba(70, 23, 143, 0.4);
+  background-color: var(--gs-paper-light, #fbf6ea);
+  background-image:
+    url('/assets/decor/drum-watermark.svg'),
+    url('/assets/decor/paper-weave.svg');
+  background-repeat: no-repeat, repeat;
+  background-position: center 42%, 0 0;
+  background-size: 400px 400px, 14px 14px;
+  color: var(--gs-ink, #2b1d14);
+  border-style: solid;
+  border-color: var(--gs-brown, #3b2a1e);
+  border-width: 14px 0 14px 0;
+  border-image: url('/assets/decor/brocade-strip.svg') 20 0 20 0 / 14px 0 14px 0 round;
+  border-radius: 0;
+  padding: 28px 32px 22px;
+  box-shadow:
+    inset 2.5px 0 0 var(--gs-brown, #3b2a1e),
+    inset -2.5px 0 0 var(--gs-brown, #3b2a1e),
+    6px 6px 0 rgba(59, 42, 30, 0.22);
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1891,17 +1910,17 @@
   animation-name: kahootConfettiFall;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  opacity: 0.95;
+  opacity: 0.88;
 }
 
 @keyframes kahootConfettiFall {
   0% {
     top: -20px;
     transform: translateY(0) rotate(0deg);
-    opacity: 1;
+    opacity: 0.95;
   }
   85% {
-    opacity: 0.9;
+    opacity: 0.85;
   }
   100% {
     top: 105%;
@@ -1910,73 +1929,39 @@
   }
 }
 
-/* Top Header & White Banner */
-.gs-kahoot-top-header {
+/* Tiêu đề Bảng Xếp Hạng Các Nhóm */
+.gs-kahoot-board-header {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
   width: 100%;
-  margin-top: 2px;
+  text-align: center;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gs-line-strong, #8a6a3a);
+  margin-bottom: 8px;
 }
 
-.gs-kahoot-white-banner {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 8px 30px;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.35);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.gs-kahoot-banner-title {
-  color: #2c3e50;
-  font-size: clamp(16px, 2.1vw, 22px);
+.gs-kahoot-board-title {
+  margin: 0;
+  font-size: clamp(22px, 2.5vw, 32px);
   font-weight: 900;
-  letter-spacing: 0.8px;
+  color: var(--gs-accent-deep, #7e2c21);
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-}
-
-.gs-kahoot-banner-tag {
-  background: #e74c3c;
-  color: #ffffff;
-  font-size: 11.5px;
-  font-weight: 900;
-  padding: 3px 9px;
-  border-radius: 4px;
-  letter-spacing: 0.8px;
-  box-shadow: 0 2px 6px rgba(231, 76, 60, 0.4);
-}
-
-.gs-kahoot-honor-bar {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 20px;
-  color: #f1f2f6;
-  font-size: 13.5px;
-  padding: 6px 20px;
-  max-width: 820px;
-  line-height: 1.45;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* 3-Tier Podium Arena */
 .gs-kahoot-podium-arena {
   position: relative;
   z-index: 2;
+  flex: 1;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  gap: clamp(12px, 3vw, 32px);
+  gap: clamp(16px, 3vw, 34px);
   width: 100%;
   max-width: 820px;
-  margin: 12px auto 0;
+  margin: auto;
+  border-bottom: 3px solid var(--gs-brown, #3b2a1e);
 }
 
 .gs-kahoot-podium-col {
@@ -1985,8 +1970,8 @@
   align-items: center;
   justify-content: flex-end;
   flex: 1;
-  max-width: 230px;
-  min-width: 140px;
+  max-width: 235px;
+  min-width: 145px;
 }
 
 .gs-kahoot-player-head {
@@ -1999,10 +1984,10 @@
 }
 
 .gs-kahoot-crown {
-  font-size: 38px;
+  font-size: 40px;
   animation: kahootCrownBounce 1.4s ease-in-out infinite alternate;
-  margin-bottom: -2px;
-  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+  margin-bottom: 2px;
+  filter: drop-shadow(0 3px 0 rgba(59, 42, 30, 0.25));
 }
 
 @keyframes kahootCrownBounce {
@@ -2015,45 +2000,60 @@
 }
 
 .gs-kahoot-player-name {
-  font-size: clamp(18px, 2.3vw, 25px);
-  font-weight: 800;
-  color: #ffffff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+  font-size: clamp(20px, 2.3vw, 26px);
+  font-weight: 900;
+  color: var(--gs-ink, #2b1d14);
+  text-shadow: none;
   display: flex;
   align-items: center;
   gap: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
 }
 
 .gs-kahoot-team-pip {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
+  border: 2px solid var(--gs-brown, #3b2a1e);
   display: inline-block;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.85);
   flex-shrink: 0;
 }
 
-/* Pillar Blocks (Kahoot flat-purple 3D style) */
+/* Pillar Blocks (Phong cách thổ cẩm & giấy dó của mini game) */
 .gs-kahoot-pillar {
+  position: relative;
   width: 100%;
-  background: #7d3fc0;
-  border-top: 4px solid #9c59df;
-  border-left: 2px solid #8e49d6;
-  border-right: 2px solid #6c2fb8;
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45), inset 0 2px 6px rgba(255, 255, 255, 0.25);
+  background-color: var(--gs-leaf, #4f6b3a);
+  background-image:
+    repeating-linear-gradient(45deg, rgba(246, 231, 189, 0.16) 0 2px, transparent 2px 14px),
+    repeating-linear-gradient(-45deg, rgba(246, 231, 189, 0.16) 0 2px, transparent 2px 14px);
+  border: 2.5px solid var(--gs-brown, #3b2a1e);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  box-shadow: 5px 0 0 rgba(59, 42, 30, 0.22);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 14px;
+  padding-top: 22px;
   box-sizing: border-box;
+  overflow: hidden;
   transform-origin: bottom center;
   animation: kahootPillarRise 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+.gs-kahoot-pillar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: url('/assets/decor/brocade-strip.svg') repeat-x left center / auto 12px;
+  border-bottom: 1.5px solid var(--gs-brown, #3b2a1e);
 }
 
 @keyframes kahootPillarRise {
@@ -2069,21 +2069,21 @@
 
 /* Heights & Staggered Rise */
 .gs-kahoot-podium-col.rank-1 .gs-kahoot-pillar {
-  height: clamp(235px, 29vh, 280px);
+  height: clamp(235px, 30.5vh, 285px);
   animation-delay: 0.5s;
-  background: #864cbf;
-  border-top: 4px solid #a666e3;
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.55), 0 0 28px rgba(134, 76, 191, 0.45);
+  background-color: var(--gs-brick, #a63d2f);
 }
 
 .gs-kahoot-podium-col.rank-2 .gs-kahoot-pillar {
-  height: clamp(175px, 22vh, 215px);
+  height: clamp(180px, 23.5vh, 225px);
   animation-delay: 0.25s;
+  background-color: var(--gs-indigo, #2f4a6b);
 }
 
 .gs-kahoot-podium-col.rank-3 .gs-kahoot-pillar {
-  height: clamp(135px, 17vh, 165px);
+  height: clamp(145px, 19vh, 180px);
   animation-delay: 0.05s;
+  background-color: var(--gs-leaf, #4f6b3a);
 }
 
 /* Pentagon Badges */
@@ -2092,60 +2092,58 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   box-sizing: border-box;
+  filter: drop-shadow(0 3px 0 #3b2a1e);
 }
 
 .gs-kahoot-podium-col.rank-1 .gs-kahoot-shield-badge {
-  width: 58px;
-  height: 62px;
+  width: 60px;
+  height: 64px;
 }
 .gs-kahoot-podium-col.rank-2 .gs-kahoot-shield-badge {
-  width: 52px;
-  height: 56px;
+  width: 54px;
+  height: 58px;
 }
 .gs-kahoot-podium-col.rank-3 .gs-kahoot-shield-badge {
-  width: 48px;
-  height: 52px;
+  width: 50px;
+  height: 54px;
 }
 
 .gs-kahoot-badge-num {
   font-size: 26px;
   font-weight: 900;
-  color: #ffffff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  color: var(--gs-ink, #2b1d14);
+  text-shadow: none;
   margin-top: 4px;
 }
 
 .gs-kahoot-shield-badge.rank-1 {
-  background: linear-gradient(180deg, #ffd32a 0%, #ff9f1a 100%);
-  box-shadow: 0 0 18px rgba(255, 211, 42, 0.8);
+  background: #e2b54f;
 }
 
 .gs-kahoot-shield-badge.rank-2 {
-  background: linear-gradient(180deg, #d2dae2 0%, #808e9b 100%);
-  box-shadow: 0 0 14px rgba(210, 218, 226, 0.6);
+  background: #e6e1d4;
 }
 
 .gs-kahoot-shield-badge.rank-3 {
-  background: linear-gradient(180deg, #f5cd79 0%, #e15f41 100%);
-  box-shadow: 0 0 14px rgba(225, 95, 65, 0.6);
+  background: #d99b52;
 }
 
 .gs-kahoot-pillar-score {
-  font-size: clamp(24px, 2.7vw, 34px);
+  font-size: clamp(26px, 2.9vw, 36px);
   font-weight: 900;
-  color: #ffffff;
+  color: #fbf6ea;
   line-height: 1.1;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 2px 0 rgba(43, 29, 20, 0.65);
 }
 
 .gs-kahoot-pillar-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-top: 5px;
+  letter-spacing: 1.2px;
+  color: #f6e7bd;
+  margin-top: 6px;
   text-transform: uppercase;
 }
 
@@ -2156,34 +2154,34 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: 16px;
   width: 100%;
   max-width: 820px;
 }
 
 .gs-kahoot-runner-item {
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(6px);
-  border-radius: 8px;
-  padding: 6px 14px;
+  background: var(--gs-paper, #f1e6cc);
+  border: 2px solid var(--gs-brown, #3b2a1e);
+  border-radius: 6px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #ffffff;
-  font-size: 13.5px;
-  font-weight: 700;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  gap: 10px;
+  color: var(--gs-ink, #2b1d14);
+  font-size: 15px;
+  font-weight: 800;
+  box-shadow: 3px 3px 0 rgba(59, 42, 30, 0.2);
 }
 
 .gs-kahoot-runner-rank {
-  color: #f1c40f;
-  font-weight: 800;
-  font-size: 13px;
+  color: var(--gs-accent-deep, #7e2c21);
+  font-weight: 900;
+  font-size: 14px;
 }
 
 .gs-kahoot-runner-score {
-  color: #2ecc71;
+  color: var(--gs-leaf-ok, #4f7a3a);
   font-weight: 900;
 }
 
@@ -2196,7 +2194,9 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1.5px dashed var(--gs-line-strong, #8a6a3a);
   width: 100%;
 }
 
@@ -2205,9 +2205,11 @@
   font-size: 13.5px !important;
   white-space: nowrap !important;
   font-weight: 800 !important;
-  border-radius: 10px !important;
+  border-radius: 6px !important;
+  border: 2px solid var(--gs-brown, #3b2a1e) !important;
+  box-shadow: 4px 4px 0 var(--gs-brown, #3b2a1e) !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.18s ease !important;
   font-family: inherit !important;
   text-decoration: none !important;
   display: inline-flex !important;
@@ -2216,38 +2218,34 @@
 }
 
 .gs-kahoot-btn.gs-kahoot-btn-primary {
-  background: linear-gradient(180deg, #f1c40f 0%, #e67e22 100%) !important;
-  color: #1a0933 !important;
-  border: 2px solid #ffd32a !important;
-  box-shadow: 0 4px 18px rgba(241, 196, 15, 0.6) !important;
+  background: var(--gs-brick, #a63d2f) !important;
+  color: #fbf6ea !important;
 }
 
 .gs-kahoot-btn.gs-kahoot-btn-primary:hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 24px rgba(241, 196, 15, 0.8) !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 5px 5px 0 var(--gs-brown, #3b2a1e) !important;
 }
 
 .gs-kahoot-btn.gs-kahoot-btn-secondary {
-  background: rgba(255, 255, 255, 0.15) !important;
-  color: #ffffff !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.35) !important;
+  background: var(--gs-paper, #f1e6cc) !important;
+  color: var(--gs-ink, #2b1d14) !important;
 }
 
 .gs-kahoot-btn.gs-kahoot-btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.25) !important;
-  transform: translateY(-2px) !important;
+  background: #f6e2b0 !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 5px 5px 0 var(--gs-brown, #3b2a1e) !important;
 }
 
 .gs-kahoot-btn.gs-kahoot-btn-tertiary {
-  background: rgba(46, 204, 113, 0.2) !important;
-  color: #2ecc71 !important;
-  border: 1.5px solid #2ecc71 !important;
+  background: var(--gs-leaf, #4f6b3a) !important;
+  color: #fbf6ea !important;
 }
 
 .gs-kahoot-btn.gs-kahoot-btn-tertiary:hover {
-  background: rgba(46, 204, 113, 0.35) !important;
-  color: #ffffff !important;
-  transform: translateY(-2px) !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 5px 5px 0 var(--gs-brown, #3b2a1e) !important;
 }
 
 .gs-ending-podium {

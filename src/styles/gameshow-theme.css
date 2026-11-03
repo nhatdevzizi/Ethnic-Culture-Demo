@@ -1457,30 +1457,30 @@
 .gs-station-dialog .gs-finale-container .gs-question-panel {
   flex: 1;
   min-height: 0;
-  padding: 18px 28px !important;
-  gap: 12px !important;
+  padding: 16px 26px !important;
+  gap: 10px !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: space-between !important;
 }
 .gs-station-dialog .gs-finale-container .gs-q-text {
-  font-size: clamp(26px, 2.5vw, 38px) !important;
-  line-height: 1.4 !important;
+  font-size: clamp(22px, 2.0vw, 30px) !important;
+  line-height: 1.38 !important;
   font-weight: 800 !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 4px !important;
 }
 .gs-station-dialog .gs-finale-container .gs-options-grid {
   grid-template-columns: 1fr 1fr !important;
-  gap: 16px !important;
+  gap: 12px !important;
   flex: 1 !important;
 }
 .gs-station-dialog .gs-finale-container .gs-option-btn {
-  padding: 20px 26px !important;
-  font-size: clamp(22px, 2.1vw, 30px) !important;
+  padding: 14px 22px !important;
+  font-size: clamp(18px, 1.6vw, 24px) !important;
   font-weight: 800 !important;
-  min-height: 96px !important;
+  min-height: 76px !important;
   height: 100% !important;
-  line-height: 1.42 !important;
+  line-height: 1.38 !important;
 }
 
 

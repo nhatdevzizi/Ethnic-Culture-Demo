@@ -73,7 +73,7 @@ export class StationGameModal {
   private cardTargetPicker: { type: 'steal' | 'block'; userTeamId: string } | null = null;
 
   private onCloseCallback?: () => void;
-  private onFinishGameCallback?: () => void;
+
 
   private constructor() {
     let container = document.getElementById('station-game-modal');
@@ -103,7 +103,7 @@ export class StationGameModal {
   open(
     stationId: 'M01' | 'M02' | 'M03' | 'M04' | 'board',
     onClose?: () => void,
-    onFinishGame?: () => void
+    _onFinishGame?: () => void
   ) {
     this.clearAllTimers();
     this.activeStationId = stationId;
@@ -119,7 +119,7 @@ export class StationGameModal {
     this.currentQuestionIndex = 0;
     this.resetCurrentQuestionAttemptState();
     this.onCloseCallback = onClose;
-    this.onFinishGameCallback = onFinishGame;
+
 
     this.modalContainer.style.display = 'flex';
     sfx.playGong();
@@ -241,7 +241,9 @@ export class StationGameModal {
     dialog.className = `gs-station-dialog gs-theme-${this.activeStationId}${this.isGrandFinaleCelebration ? ' gs-kahoot-mode' : ''}`;
 
     // 1. Team Selector Bar (Chọn Nhóm trả lời, dùng thẻ & Nút Về Bản Đồ)
-    if (!this.isGrandFinaleCelebration) {
+    const isBoardCompletedReview =
+      this.activeStationId === 'board' && gameshow.isStationCompleted('board');
+    if (!this.isGrandFinaleCelebration && !isBoardCompletedReview) {
       const teamSelectorBar = this.createTeamSelectorBar();
       dialog.appendChild(teamSelectorBar);
     }
@@ -1633,6 +1635,12 @@ export class StationGameModal {
 
     layout.appendChild(leftCol);
 
+    const isBoardAlreadyCompleted = gameshow.isStationCompleted('board');
+    if (isBoardAlreadyCompleted) {
+      this.isQuestionRevealed = true;
+      this.isQuestionAnswered = true;
+    }
+
     if (!this.isQuestionRevealed) {
       const promptCol = this.createRevealQuestionPrompt(
         '🌟 THỬ THÁCH ĐẠI KẾT CỤC · GIẢI MÃ TRỐNG ĐỒNG ĐÔNG SƠN',
@@ -1644,6 +1652,7 @@ export class StationGameModal {
         finaleData.challenge_question,
         '🌟 PHẦN THƯỞNG ĐẶC BIỆT DÀNH CHO ĐỘI / CÁ NHÂN GIẢI MÃ Ý NGHĨA (+100 ĐIỂM)',
         (isCorrect) => {
+          if (isBoardAlreadyCompleted) return;
           const currentTeam = gameshow.teams[this.selectedTeamIndex];
           if (isCorrect) {
             gameshow.modifyScore(currentTeam.id, +100, 'Giải mã Đại Kết Cục Trống Đồng');
@@ -1660,6 +1669,19 @@ export class StationGameModal {
           this.render();
         }
       );
+
+      if (isBoardAlreadyCompleted) {
+        const backToPodiumBtn = document.createElement('button');
+        backToPodiumBtn.type = 'button';
+        backToPodiumBtn.className = 'gs-r1-back-to-board-btn unlocked';
+        backToPodiumBtn.textContent = '🏆 QUAY LẠI BẢNG XẾP HẠNG CÁC NHÓM';
+        backToPodiumBtn.addEventListener('click', () => {
+          this.isGrandFinaleCelebration = true;
+          this.render();
+        });
+        qPanel.appendChild(backToPodiumBtn);
+      }
+
       layout.appendChild(qPanel);
     }
 
@@ -1686,7 +1708,7 @@ export class StationGameModal {
     const runnersUp = rankedTeams.slice(3);
 
     // Confetti particles (random positions, delays, shapes)
-    const confettiColors = ['#f39c12', '#e74c3c', '#2ecc71', '#3498db', '#e84393', '#fdcb6e', '#00cec9', '#9b59b6'];
+    const confettiColors = ['#a63d2f', '#c08a2e', '#4f6b3a', '#2f4a6b', '#b5562a', '#d49a17', '#7e2c21', '#3b2a1e'];
     const confettiHTML = Array.from({ length: 45 })
       .map((_, i) => {
         const left = Math.floor(Math.random() * 96) + 2;
@@ -1725,16 +1747,9 @@ export class StationGameModal {
         ${confettiHTML}
       </div>
 
-      <!-- Top Kahoot-style White Banner -->
-      <div class="gs-kahoot-top-header">
-        <div class="gs-kahoot-white-banner">
-          <span class="gs-kahoot-banner-title">HÀNH TRÌNH VĂN HÓA: THANH ÂM ĐẠI NGÀN</span>
-          <span class="gs-kahoot-banner-tag">VICTORY 🎉</span>
-        </div>
-        <div class="gs-kahoot-honor-bar">
-          👑 <strong>${finaleData.challenge_question.special_reward_title}:</strong>
-          ${finaleData.challenge_question.special_reward_message}
-        </div>
+      <!-- Tiêu đề Bảng Xếp Hạng Các Nhóm -->
+      <div class="gs-kahoot-board-header">
+        <h2 class="gs-kahoot-board-title">BẢNG XẾP HẠNG CÁC NHÓM</h2>
       </div>
 
       <!-- Kahoot 3-tier Podium Arena -->
@@ -1797,9 +1812,6 @@ export class StationGameModal {
 
       <!-- Bottom Actions -->
       <div class="gs-kahoot-actions">
-        <button type="button" class="gs-kahoot-btn gs-kahoot-btn-primary" data-action="ending">
-          📜 VÀO KHU VỰC TỔNG KẾT HÀNH TRÌNH
-        </button>
         <button type="button" class="gs-kahoot-btn gs-kahoot-btn-secondary" data-action="replay-finale">
           🔄 XEM LẠI CÂU HỎI ĐẠI KẾT CỤC
         </button>
@@ -1809,20 +1821,11 @@ export class StationGameModal {
       </div>
     `;
 
-    const endingBtn = wrap.querySelector<HTMLButtonElement>('[data-action="ending"]');
-    endingBtn?.addEventListener('click', () => {
-      sfx.playGong();
-      this.close();
-      if (this.onFinishGameCallback) {
-        this.onFinishGameCallback();
-      }
-    });
-
     const replayBtn = wrap.querySelector<HTMLButtonElement>('[data-action="replay-finale"]');
     replayBtn?.addEventListener('click', () => {
       this.isGrandFinaleCelebration = false;
-      this.isQuestionRevealed = false;
-      this.resetCurrentQuestionAttemptState();
+      this.isQuestionRevealed = true;
+      this.isQuestionAnswered = true;
       this.render();
     });
 
