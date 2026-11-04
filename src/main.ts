@@ -13,6 +13,14 @@ import './styles/main.css';
 import './styles/fonts.css';
 import './styles/gameshow.css';
 import './styles/gameshow-theme.css';
+import './styles/responsive.css';
+
+const appElement = document.getElementById('app')!;
+const fitInterface = () => {
+  appElement.style.setProperty('--interface-scale', String(appElement.clientWidth / 1280));
+};
+new ResizeObserver(fitInterface).observe(appElement);
+fitInterface();
 
 let game: Phaser.Game | undefined;
 ui.onFatalError = () => { game?.scene.getScenes(true).forEach(scene => scene.scene.pause()); };

@@ -1,0 +1,16 @@
+/* Keep the HTML interface aligned with the game's 1280 × 720 canvas. */
+html, body { width: 100%; height: 100%; overflow: hidden; }
+#app, #app:fullscreen {
+  width: min(100vw, calc(100dvh * 16 / 9));
+  height: min(100dvh, calc(100vw * 9 / 16));
+  aspect-ratio: 16 / 9;
+}
+#ui {
+  width: 1280px;
+  height: 720px;
+  right: auto;
+  bottom: auto;
+  transform: scale(var(--interface-scale, 1));
+  transform-origin: top left;
+}
+#modal { max-height: 90dvh; }

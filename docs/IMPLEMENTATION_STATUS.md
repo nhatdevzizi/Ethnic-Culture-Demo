@@ -109,3 +109,7 @@ Final natural-world checks: typecheck/build PASS, 41 unit PASS, 7 focused browse
 Bridge and steps now use a ground layer. Solid props have wider lower collision areas. Character, instructor and house layers follow their visible feet. Removed independent rectangular ground samples from work clearings; they now share the surrounding grass. Plant reservations and supplied roads remain. Typecheck/build, 41 unit and 8 focused browser checks pass; the specific bug was reproduced before the fix. See SCENERY_LAYERS_QA.md.
 
 Final static-build verification for the scenery correction: 3 offline production tests PASS. See SCENERY_LAYERS_QA.md.
+
+## Responsive screen scaling
+Canvas and HTML interface now share the 1280 × 720 coordinate space and scale together. ResizeObserver updates the interface on resize and fullscreen changes. Letterboxing preserves the game aspect ratio. Typecheck/build PASS; 49 unit tests PASS; responsive browser check PASS at 1280×720, 1920×1080, 1024×600, 667×375 and 390×844. Phone touch movement remains outside this change.
+
