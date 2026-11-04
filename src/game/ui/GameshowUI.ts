@@ -723,8 +723,9 @@ export class GameshowUI {
       alert(`CHÚC MỪNG ${curTeam.name} ĐÃ ĐOÁN ĐÚNG VÀ GIÀNH TRỌN +${points} ĐIỂM!`);
     } else {
       curTeam.isEliminatedInRound1 = true;
+      this.engine.modifyScore(curTeam.id, -10, 'Đoán sai Bức tranh tổng thể (-10 điểm)');
       sfx.playFailure();
-      alert(`${curTeam.name} đoán sai và BỊ LOẠI khỏi trò chơi này!`);
+      alert(`${curTeam.name} đoán sai, bị trừ 10 điểm và BỊ LOẠI khỏi quyền đoán bức tranh này!`);
     }
     this.render();
   }

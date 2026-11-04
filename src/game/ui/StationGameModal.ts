@@ -621,7 +621,7 @@ export class StationGameModal {
 
     const text = document.createElement('div');
     text.className = 'gs-q-text';
-    text.textContent = 'Chọn Đội đang trả lời và nhập từ khóa ngắn gọn của Bức tranh bí ẩn vào ô bên dưới (Đội đoán sai sẽ mất quyền đoán bức tranh):';
+    text.textContent = 'Chọn Đội đang trả lời và nhập từ khóa ngắn gọn của Bức tranh bí ẩn vào ô bên dưới (Đội đoán sai sẽ bị trừ 10 điểm và mất quyền đoán bức tranh):';
     panel.appendChild(text);
 
     const teamTickBox = document.createElement('div');
@@ -629,7 +629,7 @@ export class StationGameModal {
 
     const tickLabel = document.createElement('div');
     tickLabel.className = 'gs-guess-team-tick-label';
-    tickLabel.textContent = '1. CHỌN NHÓM ĐANG ĐOÁN BỨC TRANH:';
+    tickLabel.textContent = 'CHỌN NHÓM ĐANG ĐOÁN BỨC TRANH:';
     teamTickBox.appendChild(tickLabel);
 
     const tickGrid = document.createElement('div');
@@ -729,6 +729,7 @@ export class StationGameModal {
       } else {
         input.classList.add('incorrect');
         answeringTeam.isEliminatedInRound1 = true;
+        gameshow.modifyScore(answeringTeam.id, -10, 'Đoán sai Bức tranh tổng thể (-10 điểm)');
         sfx.playFailure();
 
         const allEliminatedNow = gameshow.teams.every((t) => Boolean(t.isEliminatedInRound1));
@@ -737,8 +738,8 @@ export class StationGameModal {
           gameshow.r1SecretRevealed = true;
           this.showScoreToast(
             '📢 TẤT CẢ CÁC NHÓM ĐỀU TRẢ LỜI SAI',
-            0,
-            '',
+            -10,
+            `${answeringTeam.name} bị trừ 10 điểm và mất quyền đoán. Tất cả các nhóm đều đã đoán sai, bức tranh được mở toàn bộ!`,
             3500,
             () => {
               this.isGuessingSecretPainting = false;
@@ -749,8 +750,8 @@ export class StationGameModal {
         } else {
           this.showScoreToast(
             answeringTeam.name,
-            0,
-            `❌ Đáp án "${rawValue}" chưa chính xác!\n${answeringTeam.name} đã mất quyền đoán Bức tranh tổng thể (từ khóa vẫn đang được giữ kín).`,
+            -10,
+            `❌ Đáp án "${rawValue}" chưa chính xác!\n${answeringTeam.name} bị trừ 10 điểm và mất quyền đoán Bức tranh tổng thể (từ khóa vẫn đang được giữ kín).`,
             3500,
             () => {
               this.isQuestionAnswered = false;
