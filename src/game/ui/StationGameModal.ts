@@ -300,7 +300,7 @@ export class StationGameModal {
       this.showScoreToast(
         '⏱ HẾT THỜI GIAN!',
         0,
-        'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới. Không trừ điểm.',
+        'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới.',
         3000
       );
       return;
@@ -316,7 +316,7 @@ export class StationGameModal {
       this.showScoreToast(
         '⏱ HẾT THỜI GIAN!',
         0,
-        `Đã hết 30 giây — Từ khóa Hàng Dọc được mở toàn bộ!\nĐáp án: "${r2Data.vertical_keyword}". Không trừ điểm.`,
+        `Đã hết 30 giây — Từ khóa Hàng Dọc được mở toàn bộ!\nĐáp án: "${r2Data.vertical_keyword}".`,
         3500,
         () => {
           this.isGuessingVerticalKeyword = false;
@@ -341,7 +341,7 @@ export class StationGameModal {
       this.showScoreToast(
         '⏱ HẾT THỜI GIAN!',
         0,
-        `Đã hết 30 giây — Đáp án Hàng ngang ${rowIdx + 1} là: "${rowQ.word_display}" (Chữ cái Hàng Dọc: "${rowQ.vertical_char}"). Không trừ điểm.`,
+        `Đã hết 30 giây — Đáp án Hàng ngang ${rowIdx + 1} là: "${rowQ.word_display}" (Chữ cái Hàng Dọc: "${rowQ.vertical_char}").`,
         3500
       );
       return;
@@ -354,7 +354,7 @@ export class StationGameModal {
     this.showScoreToast(
       '⏱ HẾT THỜI GIAN!',
       0,
-      'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới. Không trừ điểm.',
+      'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới.',
       3000
     );
   }
