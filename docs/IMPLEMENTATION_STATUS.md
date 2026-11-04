@@ -113,3 +113,7 @@ Final static-build verification for the scenery correction: 3 offline production
 ## Responsive screen scaling
 Canvas and HTML interface now share the 1280 × 720 coordinate space and scale together. ResizeObserver updates the interface on resize and fullscreen changes. Letterboxing preserves the game aspect ratio. Typecheck/build PASS; 49 unit tests PASS; responsive browser check PASS at 1280×720, 1920×1080, 1024×600, 667×375 and 390×844. Phone touch movement remains outside this change.
 
+
+## Station responsiveness correction
+Removed fixed question-panel height and shrinking answer rows. Long statements now determine row height, with viewport scrolling and a two-column narrow-screen layout. Reduced excessive question/statement font scaling. Typecheck/build PASS; 49 unit tests PASS; 2 browser responsive checks PASS, including long statements and reachable submit controls at desktop and phone widths.
+
