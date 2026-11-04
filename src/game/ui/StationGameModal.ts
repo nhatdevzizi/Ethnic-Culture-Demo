@@ -277,7 +277,7 @@ export class StationGameModal {
       this.showScoreToast(
         '⏱ HẾT THỜI GIAN!',
         0,
-        `Đã hết 30 giây — Bức tranh bí ẩn được mở toàn bộ!\nĐáp án: "${r1Data.secret_title}". Không trừ điểm.`,
+        `Đã hết 30 giây — Bức tranh bí ẩn được mở toàn bộ!\nĐáp án: "${r1Data.secret_title}"`,
         3500,
         () => {
           this.isGuessingSecretPainting = false;
@@ -1913,7 +1913,7 @@ export class StationGameModal {
             </div>
             <div class="gs-podium-mascot-wrap rank-2">
               <div class="gs-mascot-sprite-box">
-                <img src="assets/sprites/npc_thai.png" alt="Linh vật Dân tộc Thái" class="gs-mascot-character" title="Linh vật Dân tộc Thái (Á Quân)" />
+                <img src="assets/sprites/npc_lovan.png" alt="Lò Văn (Thái)" class="gs-mascot-character" title="Lò Văn - Dân tộc Thái (Á Quân)" />
                 <div class="gs-mascot-shadow"></div>
               </div>
             </div>

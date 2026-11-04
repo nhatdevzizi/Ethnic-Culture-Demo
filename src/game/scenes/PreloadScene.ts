@@ -23,7 +23,7 @@ export class PreloadScene extends Phaser.Scene {
       frameWidth: 128,
       frameHeight: 220,
     });
-    for (const npc of ['npc_dao', 'npc_thai', 'npc_hmong', 'npc_ede']) {
+    for (const npc of ['npc_dao', 'npc_thai', 'npc_hmong', 'npc_ede', 'npc_lovan']) {
       this.load.image(npc, `${import.meta.env.BASE_URL}assets/sprites/${npc}.png`);
     }
     for (const fest of [
