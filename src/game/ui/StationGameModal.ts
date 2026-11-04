@@ -266,15 +266,95 @@ export class StationGameModal {
 
   private handleQuestionTimeout() {
     if (this.isQuestionAnswered) return;
-    // Hết thời gian: coi như tất cả đã sai, hiển thị đáp án, KHÔNG trừ điểm
+
+    // 1. Đoán Bức Tranh Bí Ẩn (Vòng 1 - Ô bí mật)
+    if (this.activeStationId === 'M01' && this.isGuessingSecretPainting) {
+      this.isQuestionAnswered = true;
+      gameshow.r1OpenedTiles.fill(true);
+      gameshow.r1SecretRevealed = true;
+      sfx.playFailure();
+      this.render();
+      this.showScoreToast(
+        '⏱ HẾT THỜI GIAN!',
+        0,
+        `Đã hết 30 giây — Bức tranh bí ẩn được mở toàn bộ!\nĐáp án: "${r1Data.secret_title}". Không trừ điểm.`,
+        3500,
+        () => {
+          this.isGuessingSecretPainting = false;
+          this.r1ActiveTileQuestion = false;
+          this.render();
+        }
+      );
+      return;
+    }
+
+    // 2. Đoán Mảnh Ghép Câu Hỏi (Vòng 1 - Ô bí mật)
+    if (this.activeStationId === 'M01' && this.r1ActiveTileQuestion) {
+      if (!gameshow.r1OpenedTiles[this.currentQuestionIndex]) {
+        gameshow.r1OpenedTiles[this.currentQuestionIndex] = true;
+        gameshow.r1AnsweredCount++;
+      }
+      this.isQuestionAnswered = true;
+      sfx.playFailure();
+      this.render();
+      this.showScoreToast(
+        '⏱ HẾT THỜI GIAN!',
+        0,
+        'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới. Không trừ điểm.',
+        3000
+      );
+      return;
+    }
+
+    // 3. Đoán Từ Khóa Hàng Dọc (Vòng 2 - Thanh dọc)
+    if (this.activeStationId === 'M02' && this.isGuessingVerticalKeyword) {
+      this.isQuestionAnswered = true;
+      gameshow.r2OpenedRows.fill(true);
+      gameshow.r2VerticalRevealed = true;
+      sfx.playFailure();
+      this.render();
+      this.showScoreToast(
+        '⏱ HẾT THỜI GIAN!',
+        0,
+        `Đã hết 30 giây — Từ khóa Hàng Dọc được mở toàn bộ!\nĐáp án: "${r2Data.vertical_keyword}". Không trừ điểm.`,
+        3500,
+        () => {
+          this.isGuessingVerticalKeyword = false;
+          this.r2ActiveRowQuestion = false;
+          this.render();
+        }
+      );
+      return;
+    }
+
+    // 4. Đoán Hàng Ngang (Vòng 2 - Thanh ngang)
+    if (this.activeStationId === 'M02' && this.r2ActiveRowQuestion) {
+      const rowIdx = this.currentQuestionIndex;
+      const rowQ = r2Data.questions[rowIdx];
+      if (!gameshow.r2OpenedRows[rowIdx]) {
+        gameshow.r2OpenedRows[rowIdx] = true;
+        gameshow.r2AnsweredCount++;
+      }
+      this.isQuestionAnswered = true;
+      sfx.playFailure();
+      this.render();
+      this.showScoreToast(
+        '⏱ HẾT THỜI GIAN!',
+        0,
+        `Đã hết 30 giây — Đáp án Hàng ngang ${rowIdx + 1} là: "${rowQ.word_display}" (Chữ cái Hàng Dọc: "${rowQ.vertical_char}"). Không trừ điểm.`,
+        3500
+      );
+      return;
+    }
+
+    // 5. Các câu hỏi thông thường khác (Vòng 3, Vòng 4, Bảng tổng kết)
     this.isQuestionAnswered = true;
     sfx.playFailure();
     this.render();
-    // Hiện toast thông báo
     this.showScoreToast(
       '⏱ HẾT THỜI GIAN!',
       0,
-      'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới.',
+      'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới. Không trừ điểm.',
       3000
     );
   }
@@ -604,11 +684,15 @@ export class StationGameModal {
     guessBtn.textContent = `🔔 ĐOÁN BỨC TRANH TỔNG THỂ (+${guessPoints} ĐIỂM)`;
     guessBtn.addEventListener('click', () => {
       this.clearActiveToast();
-      this.stopQuestionTimer();
       this.isGuessingSecretPainting = true;
       this.r1ActiveTileQuestion = false;
       this.isQuestionAnswered = false;
       sfx.playBuzzer();
+      if (!gameshow.r1SecretRevealed) {
+        this.startQuestionTimer();
+      } else {
+        this.stopQuestionTimer();
+      }
       this.render();
     });
     leftCol.appendChild(guessBtn);
@@ -678,6 +762,10 @@ export class StationGameModal {
   private renderGuessSecretPaintingCard(): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    if (!this.isQuestionAnswered && !gameshow.r1SecretRevealed) {
+      panel.appendChild(this.createTimerWidget());
+    }
 
     if (gameshow.teams[this.selectedTeamIndex]?.isEliminatedInRound1) {
       const availableIdx = gameshow.teams.findIndex((t) => !t.isEliminatedInRound1);
@@ -845,6 +933,18 @@ export class StationGameModal {
     inputRow.appendChild(submitBtn);
     panel.appendChild(inputRow);
 
+    if (this.isQuestionAnswered || gameshow.r1SecretRevealed) {
+      const solvedBox = document.createElement('div');
+      solvedBox.className = 'gs-cw-solved-explanation';
+      solvedBox.style.margin = '10px 0';
+      solvedBox.innerHTML = `
+        <div class="gs-cw-solved-title">
+          🌟 TỪ KHÓA BỨC TRANH BÍ ẨN: ${r1Data.secret_title}
+        </div>
+      `;
+      panel.appendChild(solvedBox);
+    }
+
     const cancelRow = document.createElement('div');
     cancelRow.style.marginTop = '12px';
     cancelRow.style.display = 'flex';
@@ -975,6 +1075,11 @@ export class StationGameModal {
         this.r2ActiveRowQuestion = true;
         this.resetCurrentQuestionAttemptState();
         sfx.playBuzzer();
+        if (!gameshow.r2OpenedRows[rowIdx] && !gameshow.r2VerticalRevealed) {
+          this.startQuestionTimer();
+        } else {
+          this.stopQuestionTimer();
+        }
         this.render();
       });
 
@@ -1000,6 +1105,11 @@ export class StationGameModal {
       this.r2ActiveRowQuestion = false;
       this.isQuestionAnswered = false;
       sfx.playBuzzer();
+      if (!gameshow.r2VerticalRevealed) {
+        this.startQuestionTimer();
+      } else {
+        this.stopQuestionTimer();
+      }
       this.render();
     });
     leftActions.appendChild(guessVerticalBtn);
@@ -1028,6 +1138,10 @@ export class StationGameModal {
     panel.className = 'gs-question-panel';
 
     const isAlreadySolved = gameshow.r2OpenedRows[rowIdx];
+
+    if (!this.isQuestionAnswered && !isAlreadySolved) {
+      panel.appendChild(this.createTimerWidget());
+    }
 
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
@@ -1070,6 +1184,7 @@ export class StationGameModal {
       backBtn.innerHTML = '🔙 Quay về bảng ô chữ';
       backBtn.addEventListener('click', () => {
         this.clearActiveToast();
+        this.stopQuestionTimer();
         this.r2ActiveRowQuestion = false;
         this.resetCurrentQuestionAttemptState();
         sfx.playSuccess();
@@ -1168,6 +1283,7 @@ export class StationGameModal {
       cancelBtn.innerHTML = '⬅ Quay về bảng ô chữ (Chưa mở hàng này)';
       cancelBtn.addEventListener('click', () => {
         this.clearActiveToast();
+        this.stopQuestionTimer();
         this.r2ActiveRowQuestion = false;
         this.resetCurrentQuestionAttemptState();
         this.render();
@@ -1181,6 +1297,10 @@ export class StationGameModal {
   private renderGuessVerticalKeywordCard(): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    if (!this.isQuestionAnswered && !gameshow.r2VerticalRevealed) {
+      panel.appendChild(this.createTimerWidget());
+    }
 
     if (gameshow.teams[this.selectedTeamIndex]?.isEliminatedInRound2Vertical) {
       const availableIdx = gameshow.teams.findIndex((t) => !t.isEliminatedInRound2Vertical);
@@ -1362,12 +1482,25 @@ export class StationGameModal {
     inputRow.appendChild(submitBtn);
     panel.appendChild(inputRow);
 
+    if (this.isQuestionAnswered || gameshow.r2VerticalRevealed) {
+      const solvedBox = document.createElement('div');
+      solvedBox.className = 'gs-cw-solved-explanation';
+      solvedBox.style.margin = '10px 0';
+      solvedBox.innerHTML = `
+        <div class="gs-cw-solved-title">
+          🌟 TỪ KHÓA HÀNG DỌC: ${r2Data.vertical_keyword}
+        </div>
+      `;
+      panel.appendChild(solvedBox);
+    }
+
     const cancelBtn = document.createElement('button');
     cancelBtn.type = 'button';
     cancelBtn.className = 'gs-r1-back-to-board-btn secondary';
     cancelBtn.innerHTML = '⬅ Quay về bảng ô chữ';
     cancelBtn.addEventListener('click', () => {
       this.clearActiveToast();
+      this.stopQuestionTimer();
       this.isGuessingVerticalKeyword = false;
       this.render();
     });
