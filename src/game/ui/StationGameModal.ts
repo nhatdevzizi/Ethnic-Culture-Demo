@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Station Game Modal for "Thanh Âm Đại Ngàn"
  * Directly opens when player approaches any of the 4 stations (Lán trại) in the Hub,
  * or the central board for the Grand Finale.
@@ -65,6 +65,8 @@ export class StationGameModal {
 
   // Question Lock & Toast State
   private questionTimerInterval: number | null = null;
+  private questionCountdown = 30;
+  private questionCountdownTick: number | null = null;
   private isQuestionAnswered = false;
   private toastTimeout: number | null = null;
 
@@ -223,7 +225,17 @@ export class StationGameModal {
   private startQuestionTimer(_limitSeconds?: number) {
     this.stopQuestionTimer();
     this.isQuestionAnswered = false;
-    // MC chủ động đếm thời gian và chọn đội trả lời
+    this.questionCountdown = 30;
+    // Update display immediately
+    this.updateTimerDisplay();
+    this.questionCountdownTick = window.setInterval(() => {
+      this.questionCountdown--;
+      this.updateTimerDisplay();
+      if (this.questionCountdown <= 0) {
+        this.stopQuestionTimer();
+        this.handleQuestionTimeout();
+      }
+    }, 1000) as unknown as number;
   }
 
   private stopQuestionTimer() {
@@ -231,6 +243,67 @@ export class StationGameModal {
       clearInterval(this.questionTimerInterval);
       this.questionTimerInterval = null;
     }
+    if (this.questionCountdownTick !== null) {
+      clearInterval(this.questionCountdownTick);
+      this.questionCountdownTick = null;
+    }
+  }
+
+  private updateTimerDisplay() {
+    const numEl = this.modalContainer.querySelector<HTMLElement>('#gs-q-countdown .gs-q-timer-num');
+    const barEl = this.modalContainer.querySelector<HTMLElement>('#gs-q-countdown .gs-q-timer-bar');
+    if (numEl) {
+      numEl.textContent = String(this.questionCountdown);
+      numEl.classList.toggle('urgent', this.questionCountdown <= 10);
+    }
+    if (barEl) {
+      barEl.style.width = `${(this.questionCountdown / 30) * 100}%`;
+      if (this.questionCountdown <= 10) {
+        barEl.style.background = '#c0392b';
+      }
+    }
+  }
+
+  private handleQuestionTimeout() {
+    if (this.isQuestionAnswered) return;
+    // Hết thời gian: coi như tất cả đã sai, hiển thị đáp án, KHÔNG trừ điểm
+    this.isQuestionAnswered = true;
+    sfx.playFailure();
+    this.render();
+    // Hiện toast thông báo
+    this.showScoreToast(
+      '⏱ HẾT THỜI GIAN!',
+      0,
+      'Đã hết 30 giây — đáp án đúng được hiển thị bên dưới.',
+      3000
+    );
+  }
+
+  private createTimerWidget(): HTMLElement {
+    const wrap = document.createElement('div');
+    wrap.className = 'gs-q-timer';
+    wrap.id = 'gs-q-countdown';
+
+    const label = document.createElement('span');
+    label.className = 'gs-q-timer-label';
+    label.textContent = '⏱';
+
+    const barWrap = document.createElement('div');
+    barWrap.className = 'gs-q-timer-bar-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'gs-q-timer-bar';
+    bar.style.width = `${(this.questionCountdown / 30) * 100}%`;
+    if (this.questionCountdown <= 10) bar.style.background = '#c0392b';
+    barWrap.appendChild(bar);
+
+    const num = document.createElement('span');
+    num.className = `gs-q-timer-num${this.questionCountdown <= 10 ? ' urgent' : ''}` ;
+    num.textContent = String(this.questionCountdown);
+
+    wrap.appendChild(label);
+    wrap.appendChild(barWrap);
+    wrap.appendChild(num);
+    return wrap;
   }
 
   render() {
@@ -2026,6 +2099,8 @@ export class StationGameModal {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
 
+    if (!this.isQuestionAnswered) panel.appendChild(this.createTimerWidget());
+
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
     theme.textContent = subtitle;
@@ -2132,7 +2207,6 @@ export class StationGameModal {
         return;
       }
 
-      this.stopQuestionTimer();
       this.interactiveWarningMsg = null;
 
       const correctCount = q.statements.filter((s, idx) => this.tfSelections[idx] === s.is_true).length;
@@ -2169,6 +2243,8 @@ export class StationGameModal {
   ): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    if (!this.isQuestionAnswered) panel.appendChild(this.createTimerWidget());
 
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
@@ -2292,7 +2368,6 @@ export class StationGameModal {
     submitBtn.disabled = this.isQuestionAnswered;
     const checkOrderAnswer = () => {
       if (this.isQuestionAnswered) return;
-      this.stopQuestionTimer();
       this.orderingSwapIdx = null;
 
       const isCorrect = this.orderingCurrent.every((itemIdx, pos) => itemIdx === pos);
@@ -2332,6 +2407,8 @@ export class StationGameModal {
   ): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    if (!this.isQuestionAnswered) panel.appendChild(this.createTimerWidget());
 
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
@@ -2574,7 +2651,6 @@ export class StationGameModal {
         return;
       }
 
-      this.stopQuestionTimer();
       this.interactiveWarningMsg = null;
 
       const correctCount = q.correct_pairs.filter((expectedRight, leftIdx) => this.matchingPairs[leftIdx] === expectedRight).length;
@@ -2607,6 +2683,8 @@ export class StationGameModal {
   ): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel';
+
+    if (!this.isQuestionAnswered) panel.appendChild(this.createTimerWidget());
 
     if (this.activeStrategyNotice) {
       const noticeBanner = document.createElement('div');
@@ -2642,7 +2720,6 @@ export class StationGameModal {
           const now = Date.now();
           if (now - this.lastSubmitTime < 1000) return;
           this.lastSubmitTime = now;
-          this.stopQuestionTimer();
 
           allOptionButtons.forEach((b) => {
             b.disabled = true;
@@ -2693,6 +2770,8 @@ export class StationGameModal {
   ): HTMLElement {
     const panel = document.createElement('div');
     panel.className = 'gs-question-panel gs-fillin-card-panel';
+
+    if (!this.isQuestionAnswered) panel.appendChild(this.createTimerWidget());
 
     const theme = document.createElement('div');
     theme.className = 'gs-q-theme';
@@ -2797,7 +2876,6 @@ export class StationGameModal {
         return;
       }
 
-      this.stopQuestionTimer();
       input.disabled = true;
       submitBtn.disabled = true;
 

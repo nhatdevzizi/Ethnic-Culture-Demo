@@ -2018,3 +2018,53 @@
 }
 .gs-key-btn.primary { background: var(--key-accent); color: #fff; box-shadow: 0 4px 0 var(--key-deep); }
 .gs-key-btn:hover { filter: brightness(1.08); }
+
+/* ==============================
+   QUESTION COUNTDOWN TIMER
+   ============================== */
+.gs-q-timer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.06);
+  border: 1.5px solid rgba(0,0,0,0.08);
+}
+.gs-q-timer-label {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.gs-q-timer-bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: rgba(0,0,0,0.12);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.gs-q-timer-bar {
+  height: 100%;
+  background: var(--gs-accent, #8b2500);
+  border-radius: 5px;
+  /* No transition — bar updates every 1s via setInterval, transition gây giật khi re-render */
+  transition: background 0.3s;
+}
+.gs-q-timer-num {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--gs-accent-deep, #78281f);
+  min-width: 36px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+.gs-q-timer-num.urgent {
+  color: #c0392b;
+  animation: gs-timer-pulse 0.6s ease-in-out infinite alternate;
+}
+@keyframes gs-timer-pulse {
+  from { transform: scale(1); }
+  to   { transform: scale(1.18); }
+}
