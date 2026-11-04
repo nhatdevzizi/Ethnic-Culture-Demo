@@ -44,6 +44,8 @@ export class HubScene extends Phaser.Scene {
   }
 
   create() {
+    (window as any).__gameshow = gameshow;
+    (window as any).__StationGameModal = StationGameModal;
     this.objects = [];
     this.nearby = undefined;
     this.stationPlaques = [];

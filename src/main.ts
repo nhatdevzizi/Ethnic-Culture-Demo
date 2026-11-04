@@ -7,6 +7,8 @@ import { facts } from './game/core/content';
 import { minigameRegistry } from './game/core/MinigameRegistry';
 import type { HubScene } from './game/scenes/HubScene';
 import type { PatternStudioScene } from './game/minigames/PatternStudioScene';
+import { gameshow } from './game/core/GameshowEngine';
+import { StationGameModal } from './game/ui/StationGameModal';
 import './styles/main.css';
 import './styles/fonts.css';
 import './styles/gameshow.css';
@@ -35,6 +37,8 @@ async function startGame() {
     if (ui.hasError) return;
     const createdGame = new Phaser.Game(gameConfig); game = createdGame;
     (window as any).__phaserGame = createdGame;
+    (window as any).__gameshow = gameshow;
+    (window as any).__StationGameModal = StationGameModal;
     if (ui.hasError) { ui.onFatalError?.(); return; }
     if (import.meta.env.DEV) {
       const debugWindow = window as unknown as { render_game_to_text: () => string; advanceTime: (ms: number) => void };

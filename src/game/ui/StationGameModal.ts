@@ -898,8 +898,8 @@ export class StationGameModal {
     const boardHeader = document.createElement('div');
     boardHeader.className = 'gs-cw-board-header';
     boardHeader.innerHTML = `
-      <div class="gs-cw-board-title">🧩 BẢNG Ô CHỮ: 7 HÀNG NGANG & 1 HÀNG DỌC</div>
-      <div class="gs-cw-board-sub">Bấm vào Hàng ngang (1–7) để mở câu hỏi · Cột màu vàng thẳng đứng là <strong>TỪ KHÓA HÀNG DỌC (7 chữ cái)</strong></div>
+      <div class="gs-cw-board-title">🧩 BẢNG Ô CHỮ: ${r2Data.questions.length} HÀNG NGANG & 1 HÀNG DỌC</div>
+      <div class="gs-cw-board-sub">Bấm vào Hàng ngang (1–${r2Data.questions.length}) để mở câu hỏi · Cột màu vàng thẳng đứng là <strong>TỪ KHÓA HÀNG DỌC (${r2Data.vertical_cells.length} chữ cái)</strong></div>
     `;
     boardPanel.appendChild(boardHeader);
 
@@ -1256,7 +1256,7 @@ export class StationGameModal {
     const input = document.createElement('input');
     input.type = 'text';
     input.className = 'gs-fillin-input';
-    input.placeholder = `Nhập Từ khóa Hàng Dọc (7 chữ cái) cho [${currentTeam.name}]...`;
+    input.placeholder = `Nhập Từ khóa Hàng Dọc (${r2Data.vertical_cells.length} chữ cái) cho [${currentTeam.name}]...`;
     input.disabled = this.isQuestionAnswered;
 
     const submitBtn = document.createElement('button');
@@ -1778,6 +1778,12 @@ export class StationGameModal {
               <span class="gs-kahoot-team-pip" style="background:${runnerUp.color}"></span>
               ${runnerUp.name}
             </div>
+            <div class="gs-podium-mascot-wrap rank-2">
+              <div class="gs-mascot-sprite-box">
+                <img src="assets/sprites/npc_thai.png" alt="Linh vật Dân tộc Thái" class="gs-mascot-character" title="Linh vật Dân tộc Thái (Á Quân)" />
+                <div class="gs-mascot-shadow"></div>
+              </div>
+            </div>
           </div>
           <div class="gs-kahoot-pillar">
             <div class="gs-kahoot-shield-badge rank-2">
@@ -1796,6 +1802,12 @@ export class StationGameModal {
               <span class="gs-kahoot-team-pip" style="background:${champion.color}"></span>
               ${champion.name}
             </div>
+            <div class="gs-podium-mascot-wrap rank-1">
+              <div class="gs-mascot-sprite-box">
+                <img src="assets/sprites/npc_ede.png" alt="Linh vật Dân tộc Ê Đê" class="gs-mascot-character" title="Linh vật Dân tộc Ê Đê (Quán Quân)" />
+                <div class="gs-mascot-shadow"></div>
+              </div>
+            </div>
           </div>
           <div class="gs-kahoot-pillar">
             <div class="gs-kahoot-shield-badge rank-1">
@@ -1812,6 +1824,12 @@ export class StationGameModal {
             <div class="gs-kahoot-player-name" title="${third.name}">
               <span class="gs-kahoot-team-pip" style="background:${third.color}"></span>
               ${third.name}
+            </div>
+            <div class="gs-podium-mascot-wrap rank-3">
+              <div class="gs-mascot-sprite-box">
+                <img src="assets/sprites/npc_dao.png" alt="Linh vật Dân tộc Dao" class="gs-mascot-character" title="Linh vật Dân tộc Dao (Hạng Ba)" />
+                <div class="gs-mascot-shadow"></div>
+              </div>
             </div>
           </div>
           <div class="gs-kahoot-pillar">

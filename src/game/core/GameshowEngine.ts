@@ -42,7 +42,7 @@ export class GameshowEngine {
   r1SecretRevealed = false;
 
   // Vòng 2: Trạng thái 7 Hàng Ngang Ô Chữ & Từ khóa Hàng Dọc
-  r2OpenedRows: boolean[] = Array(7).fill(false);
+  r2OpenedRows: boolean[] = Array(8).fill(false);
   r2AnsweredCount = 0;
   r2VerticalRevealed = false;
 
@@ -100,7 +100,7 @@ export class GameshowEngine {
 
     const stationsConfig: Record<string, { totalQuestions: number; cardCount: number }> = {
       M01: { totalQuestions: 9, cardCount: 2 }, // 2 thẻ ngẫu nhiên trên 9 câu
-      M02: { totalQuestions: 7, cardCount: 2 }, // 2 thẻ ngẫu nhiên trên 7 hàng
+      M02: { totalQuestions: 8, cardCount: 2 }, // 2 thẻ ngẫu nhiên trên 7 hàng
       M03: { totalQuestions: 4, cardCount: 1 }, // 1 thẻ ngẫu nhiên trên 4 câu
       M04: { totalQuestions: 5, cardCount: 2 }, // 2 thẻ ngẫu nhiên trên 5 câu
     };

@@ -127,9 +127,9 @@ describe('GameshowEngine', () => {
     }
     expect(m01Cards).toBe(2);
 
-    // M02 (7 questions): cardCount = 2
+    // M02 (8 questions): cardCount = 2
     let m02Cards = 0;
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       if (engine.getQuestionCard('M02', i) !== null) m02Cards++;
     }
     expect(m02Cards).toBe(2);

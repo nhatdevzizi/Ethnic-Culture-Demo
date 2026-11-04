@@ -1993,15 +1993,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 12px;
+  margin-bottom: -2px;
   width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
 .gs-kahoot-crown {
-  font-size: 40px;
-  animation: kahootCrownBounce 1.4s ease-in-out infinite alternate;
+  font-size: 30px;
+  animation: kahootCrownBounce 1.2s ease-in-out infinite alternate;
   margin-bottom: 2px;
-  filter: drop-shadow(0 3px 0 rgba(59, 42, 30, 0.25));
+  filter: drop-shadow(0 3px 6px rgba(244, 196, 48, 0.6));
 }
 
 @keyframes kahootCrownBounce {
@@ -2014,17 +2016,166 @@
 }
 
 .gs-kahoot-player-name {
-  font-size: clamp(20px, 2.3vw, 26px);
+  font-size: clamp(14px, 1.6vw, 20px);
   font-weight: 900;
   color: var(--gs-ink, #2b1d14);
-  text-shadow: none;
-  display: flex;
+  background: rgba(251, 246, 234, 0.95);
+  border: 2px solid var(--gs-brown, #3b2a1e);
+  padding: 3px 12px;
+  border-radius: 20px;
+  box-shadow: 2px 2px 0 rgba(59, 42, 30, 0.25);
+  margin-bottom: 12px;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   white-space: nowrap;
+  max-width: 90%;
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: 0.4px;
+}
+
+/* Mascot Characters standing on Podium Pillars */
+.gs-podium-mascot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 5;
+}
+
+.gs-mascot-sprite-box {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gs-mascot-character {
+  display: block;
+  image-rendering: pixelated;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.gs-podium-mascot-wrap.rank-1 .gs-mascot-character {
+  height: clamp(120px, 16vh, 165px);
+  animation: mascotJumpRank1 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 6px 12px rgba(126, 44, 33, 0.25));
+}
+
+.gs-podium-mascot-wrap.rank-2 .gs-mascot-character {
+  height: clamp(105px, 14vh, 140px);
+  animation: mascotJumpRank2 1.4s ease-in-out infinite 0.2s;
+  filter: drop-shadow(0 5px 10px rgba(47, 74, 107, 0.22));
+}
+
+.gs-podium-mascot-wrap.rank-3 .gs-mascot-character {
+  height: clamp(98px, 13vh, 130px);
+  animation: mascotJumpRank3 1.3s ease-in-out infinite 0.4s;
+  filter: drop-shadow(0 5px 10px rgba(79, 107, 58, 0.22));
+}
+
+.gs-mascot-shadow {
+  width: 65%;
+  height: 8px;
+  background: radial-gradient(ellipse at center, rgba(43, 29, 20, 0.5) 0%, transparent 75%);
+  border-radius: 50%;
+  margin-top: -5px;
+}
+
+.gs-podium-mascot-wrap.rank-1 .gs-mascot-shadow {
+  animation: mascotShadowRank1 1.2s ease-in-out infinite;
+}
+
+.gs-podium-mascot-wrap.rank-2 .gs-mascot-shadow {
+  animation: mascotShadowRank2 1.4s ease-in-out infinite 0.2s;
+}
+
+.gs-podium-mascot-wrap.rank-3 .gs-mascot-shadow {
+  animation: mascotShadowRank3 1.3s ease-in-out infinite 0.4s;
+}
+
+@keyframes mascotJumpRank1 {
+  0%, 100% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-22px) scale(0.96, 1.05) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-28px) scale(1.02, 0.98) rotate(3deg);
+  }
+  75% {
+    transform: translateY(0) scale(1.06, 0.94) rotate(0deg);
+  }
+  88% {
+    transform: translateY(-7px) scale(0.98, 1.02) rotate(-1deg);
+  }
+}
+
+@keyframes mascotShadowRank1 {
+  0%, 75%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  25%, 50% {
+    transform: scale(0.55);
+    opacity: 0.16;
+  }
+}
+
+@keyframes mascotJumpRank2 {
+  0%, 100% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-16px) scale(0.97, 1.04) rotate(2deg);
+  }
+  60% {
+    transform: translateY(0) scale(1.04, 0.96) rotate(-2deg);
+  }
+  80% {
+    transform: translateY(-5px) scale(0.98, 1.02) rotate(1deg);
+  }
+}
+
+@keyframes mascotShadowRank2 {
+  0%, 60%, 100% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  30% {
+    transform: scale(0.65);
+    opacity: 0.18;
+  }
+}
+
+@keyframes mascotJumpRank3 {
+  0%, 100% {
+    transform: translateY(0) scale(1, 1) rotate(0deg);
+  }
+  35% {
+    transform: translateY(-13px) scale(0.97, 1.03) rotate(-2deg);
+  }
+  65% {
+    transform: translateY(0) scale(1.03, 0.97) rotate(2deg);
+  }
+  85% {
+    transform: translateY(-4px) scale(0.99, 1.01) rotate(-1deg);
+  }
+}
+
+@keyframes mascotShadowRank3 {
+  0%, 65%, 100% {
+    transform: scale(1);
+    opacity: 0.42;
+  }
+  35% {
+    transform: scale(0.7);
+    opacity: 0.18;
+  }
 }
 
 .gs-kahoot-team-pip {
